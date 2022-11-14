@@ -18,12 +18,16 @@ import android.widget.Toast;
 import com.monheim.barcode_inout_v2.R;
 
 public class BarcodeInFragment extends Fragment {
+    BarcodeIN barIn = new BarcodeIN();
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_barcode_in, container, false);
 
         EditText etBarcode = rootView.findViewById(R.id.etBarcode);
+        TextView tvSapCode = rootView.findViewById(R.id.tvSapCode);
+        TextView tvDesc = rootView.findViewById(R.id.tvDesc);
 
         etBarcode.requestFocus();
 
@@ -31,7 +35,14 @@ public class BarcodeInFragment extends Fragment {
             public boolean onKey(View v, int keyCode, KeyEvent event) {
                 if ((event.getAction() == KeyEvent.ACTION_DOWN) &&
                         (keyCode == KeyEvent.KEYCODE_ENTER)) {
-                    
+
+                    String barcode = etBarcode.getText().toString();
+
+                    barIn.GetSapCode(barcode,tvSapCode,tvDesc);
+
+
+                    etBarcode.setText("");
+                    etBarcode.requestFocus();
                     return true;
                 }
                 return false;
