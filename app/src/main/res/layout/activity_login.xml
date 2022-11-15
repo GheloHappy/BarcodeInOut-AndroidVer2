@@ -17,7 +17,8 @@
         app:layout_constraintHorizontal_bias="0.532"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:inputType="text"/>
+        android:inputType="text"
+        android:text="admin"/>
 
     <EditText
         android:id="@+id/edtPassword"
@@ -32,6 +33,7 @@
         app:layout_constraintHorizontal_bias="0.532"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/edtUserName"
+        android:text="adminx"
         />
 
     <Button

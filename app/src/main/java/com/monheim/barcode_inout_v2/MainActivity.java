@@ -1,6 +1,5 @@
 package com.monheim.barcode_inout_v2;
 
-import androidx.annotation.GravityInt;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
@@ -9,12 +8,9 @@ import androidx.drawerlayout.widget.DrawerLayout;
 
 import android.os.Bundle;
 import android.view.MenuItem;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.Toast;
 
 import com.google.android.material.navigation.NavigationView;
-import com.monheim.barcode_inout_v2.BarcodeIn.BarcodeInFragment;
+import com.monheim.barcode_inout_v2.BarcodeInOut.BarcodeInFragment;
 import com.monheim.barcode_inout_v2.Home.HomeFragment;
 
 public class MainActivity extends AppCompatActivity {
