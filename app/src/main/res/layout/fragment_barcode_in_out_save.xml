@@ -3,25 +3,51 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".BarcodeInOut.BarcodeInOutSave">
+    tools:context=".BarcodeInOut.BarcodeInOutSave"
+    android:background="@drawable/gradient_color"
+    android:paddingTop="20dp"
+    android:paddingLeft="10dp"
+    android:paddingRight="10dp">
 
     <ListView
         android:id="@+id/lvBarcodeTrans"
-        android:layout_width="588dp"
-        android:layout_height="437dp"
+        android:layout_width="match_parent"
+        android:layout_height="653dp"
         android:layout_alignParentStart="true"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="4dp"
-        android:layout_marginBottom="408dp" />
+        android:layout_marginBottom="290dp"
+        android:background="#fff"
+        android:outlineAmbientShadowColor="@color/black" />
 
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="89dp"
+    <TextView
+        android:layout_width="149dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginTop="174dp"
-        android:layout_marginBottom="212dp"
-        android:text="test"
-        android:id="@+id/btn"/>
+        android:layout_marginEnd="460dp"
+        android:layout_marginBottom="235dp"
+        android:text="Reference #:"
+        android:textColor="@color/white"
+        android:textSize="20dp"
+        android:textStyle="bold" />
+
+    <EditText
+        android:id="@+id/etRefNbr"
+        android:layout_width="254dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="336dp"
+        android:layout_marginBottom="171dp"
+        android:background="@drawable/login_input_bg"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:textColor="@color/white"
+        android:textSize="25dp"
+        android:singleLine="true"
+        android:inputType="text"/>
+
 </RelativeLayout>

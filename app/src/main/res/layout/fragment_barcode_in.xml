@@ -9,10 +9,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="IN"
-        android:textSize="150dp"
+        android:textSize="120dp"
         android:textAlignment="center"
-        android:textColor="#FFF"
-        android:background="#000"/>
+        android:textColor="@color/white"
+        android:background="@drawable/gradient_color"/>
 
 
     <EditText
@@ -21,12 +21,13 @@
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:layout_marginStart="42dp"
+        android:layout_marginStart="40dp"
         android:layout_marginLeft="20dp"
-        android:layout_marginTop="261dp"
+        android:layout_marginTop="205dp"
         android:gravity="center"
         android:inputType="text"
-        android:textSize="20dp" />
+        android:textSize="20dp"
+        android:singleLine="true"/>
 
     <Spinner
         android:id="@+id/spUom"
@@ -34,21 +35,21 @@
         android:layout_height="54dp"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
-        android:layout_marginStart="205dp"
-        android:layout_marginTop="225dp"
-        android:layout_marginEnd="43dp"
+        android:layout_marginStart="209dp"
+        android:layout_marginTop="175dp"
+        android:layout_marginEnd="39dp"
         android:layout_toEndOf="@+id/etBarcode"
-        android:entries="@array/spUomItems"/>
+        android:entries="@array/spUomItems" />
 
     <TextView
         android:layout_width="73dp"
         android:layout_height="46dp"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
-        android:layout_marginTop="237dp"
-        android:layout_marginEnd="153dp"
+        android:layout_marginTop="254dp"
+        android:layout_marginEnd="151dp"
         android:layout_marginBottom="73dp"
-        android:text="UOM :"
+        android:text="QTY :"
         android:textAlignment="center"
         android:textSize="20dp" />
 
@@ -58,39 +59,38 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
-        android:layout_marginStart="204dp"
-        android:layout_marginTop="297dp"
-        android:layout_marginEnd="39dp"
+        android:layout_marginStart="208dp"
+        android:layout_marginTop="247dp"
+        android:layout_marginEnd="35dp"
         android:layout_toEndOf="@+id/etBarcode"
-        android:enabled="false"
         android:gravity="center"
         android:inputType="number"
         android:text="1"
-        android:textSize="20dp" />
+        android:textSize="20dp"
+        />
 
     <TextView
         android:layout_width="73dp"
         android:layout_height="46dp"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
-        android:layout_marginTop="304dp"
-        android:layout_marginEnd="155dp"
+        android:layout_marginTop="187dp"
+        android:layout_marginEnd="149dp"
         android:layout_marginBottom="73dp"
-        android:text="QTY :"
+        android:text="UOM :"
         android:textAlignment="center"
         android:textSize="20dp" />
 
     <TextView
         android:id="@+id/tvSapCode"
         android:layout_width="wrap_content"
-        android:layout_height="214dp"
+        android:layout_height="134dp"
         android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginStart="19dp"
-        android:layout_marginTop="32dp"
-        android:layout_marginEnd="17dp"
-        android:layout_marginBottom="288dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="372dp"
+        android:layout_marginEnd="10dp"
         android:text="Barcode"
         android:textAlignment="center"
         android:textColor="@color/black"
@@ -100,13 +100,12 @@
         android:id="@+id/tvDesc"
         android:layout_width="558dp"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/tvSapCode"
         android:layout_alignParentStart="true"
         android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="379dp"
-        android:layout_marginEnd="22dp"
-        android:layout_marginBottom="201dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="12dp"
         android:text="Description"
         android:textAlignment="center"
         android:textSize="50dp" />
@@ -115,12 +114,12 @@
         android:id="@+id/btnSave"
         android:layout_width="312dp"
         android:layout_height="73dp"
+        android:layout_below="@+id/tvDesc"
         android:layout_alignParentStart="true"
         android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginStart="147dp"
-        android:layout_marginEnd="141dp"
-        android:layout_marginBottom="31dp"
+        android:layout_marginStart="143dp"
+        android:layout_marginTop="84dp"
+        android:layout_marginEnd="145dp"
         android:background="#24F24E"
         android:text="Save"
         android:textSize="30dp" />

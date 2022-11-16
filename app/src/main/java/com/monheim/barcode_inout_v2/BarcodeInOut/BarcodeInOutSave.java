@@ -21,25 +21,23 @@ public class BarcodeInOutSave extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
         View rootView = inflater.inflate(R.layout.fragment_barcode_in_out_save, container, false);
 
-        ListView lvTempBarcodeTran = rootView.findViewById(R.id.lvBarcodeTrans);
-        Button btn = rootView.findViewById(R.id.btn);
-
-        btn.setOnClickListener(v -> {
-            List<Map<String, String>> dataList = null;
-            BarcodeInOutFunctions barFUnc = new BarcodeInOutFunctions();
-            dataList = barFUnc.GetTempBarList();
-
-            String[] from = {"id","tranType","barcode","description"};
-            int[] to = {R.id.id,R.id.tranType,R.id.barcode,R.id.description};
-            simAd = new SimpleAdapter(getActivity(),dataList,R.layout.temp_barcode_tran_list_template,from,to);
-            lvTempBarcodeTran.setAdapter(simAd);
-
-            System.out.println("test");
-        });
+        ListTempBarcodeTran(rootView);
 
         return rootView;
+    }
+
+    private void ListTempBarcodeTran(View v) {
+        ListView lvTempBarcodeTran = v.findViewById(R.id.lvBarcodeTrans);
+
+        List<Map<String, String>> dataList;
+        BarcodeInOutFunctions barFUnc = new BarcodeInOutFunctions();
+        dataList = barFUnc.GetTempBarList();
+
+        String[] from = {"id","barcode","sapCode","description","uom","qty"};
+        int[] to = {R.id.id,R.id.barcode,R.id.sapCode,R.id.description,R.id.uom,R.id.qty};
+        simAd = new SimpleAdapter(getActivity(),dataList,R.layout.temp_barcode_tran_list_template,from,to);
+        lvTempBarcodeTran.setAdapter(simAd);
     }
 }

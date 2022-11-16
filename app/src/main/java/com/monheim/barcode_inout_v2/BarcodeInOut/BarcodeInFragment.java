@@ -1,5 +1,6 @@
 package com.monheim.barcode_inout_v2.BarcodeInOut;
 
+import android.content.Context;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -8,6 +9,8 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
@@ -32,28 +35,45 @@ public class BarcodeInFragment extends Fragment {
 
         etBarcode.requestFocus();
 
-        barInOut.ClearTempTrans();
+        if(barInOut.CheckTempBarTranData() == true) {
+            btnSave.setEnabled(true);
+        }else {
+            btnSave.setEnabled(false);
+        }
 
-        etBarcode.setOnKeyListener(new View.OnKeyListener() {
-            public boolean onKey(View v, int keyCode, KeyEvent event) {
-                if ((event.getAction() == KeyEvent.ACTION_DOWN) &&
-                        (keyCode == KeyEvent.KEYCODE_ENTER)) {
+        etBarcode.setOnKeyListener((v, keyCode, event) -> {
+            if ((event.getAction() == KeyEvent.ACTION_DOWN) &&
+                    (keyCode == KeyEvent.KEYCODE_ENTER)) {
 
-                    String barcode = etBarcode.getText().toString();
-                    String uom = spUom.getSelectedItem().toString();
-                    Integer qty = Integer.parseInt(etBarcodeQty.getText().toString());
+                String barcode = etBarcode.getText().toString();
+                String uom = spUom.getSelectedItem().toString();
+                Integer qty = Integer.parseInt(etBarcodeQty.getText().toString());
 
-                    if (barInOut.GetSapCode(barcode,tvSapCode,tvDesc) == true) {
-                        barInOut.InsertIn(barcode,uom,qty,"IN");
-                    }
-
-                    etBarcode.setText("");
-                    etBarcodeQty.setText("1");
-                    etBarcode.requestFocus();
-                    return true;
+                if (barInOut.GetSapCode(barcode,tvSapCode,tvDesc) == true) {
+                    barInOut.InsertIn(barcode,uom,qty,"IN");
                 }
-                return false;
+
+                if(barInOut.CheckTempBarTranData() == true) {
+                    btnSave.setEnabled(true);
+                }
+
+                etBarcode.setText("");
+                etBarcodeQty.setText("1");
+                etBarcode.post(() -> etBarcode.requestFocus()); //focus request
+                return true;
             }
+
+            return false;
+        });
+
+        etBarcodeQty.setOnKeyListener((v, keyCode, event) -> {
+            if ((event.getAction() == KeyEvent.ACTION_DOWN) &&
+                    ((keyCode == KeyEvent.KEYCODE_NUMPAD_ENTER) || keyCode == KeyEvent.KEYCODE_ENTER)) {
+
+                etBarcode.post(() -> etBarcode.requestFocus()); //focus request
+                return true;
+            }
+            return false;
         });
 
         BarcodeInOutSave barSaveFrag = new BarcodeInOutSave();

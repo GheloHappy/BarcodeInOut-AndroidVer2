@@ -11,6 +11,7 @@ import android.view.MenuItem;
 
 import com.google.android.material.navigation.NavigationView;
 import com.monheim.barcode_inout_v2.BarcodeInOut.BarcodeInFragment;
+import com.monheim.barcode_inout_v2.BarcodeInOut.BarcodeInOutFunctions;
 import com.monheim.barcode_inout_v2.Home.HomeFragment;
 
 public class MainActivity extends AppCompatActivity {

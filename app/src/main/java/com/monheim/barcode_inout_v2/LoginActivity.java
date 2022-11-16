@@ -12,9 +12,13 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.monheim.barcode_inout_v2.BarcodeInOut.BarcodeInOutFunctions;
+
 import MssqlCon.Login;
 
 public class LoginActivity extends AppCompatActivity {
+    BarcodeInOutFunctions barInOutFunc = new BarcodeInOutFunctions();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -29,6 +33,7 @@ public class LoginActivity extends AppCompatActivity {
         EditText etPass = (EditText) findViewById(R.id.edtPassword);
 
         Login login = new Login();
+        barInOutFunc.ClearTempTrans();
 
         btnLogin.setOnClickListener(v -> {
             ConnectivityManager cm =(ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);

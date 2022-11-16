@@ -4,48 +4,91 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".LoginActivity">
+    tools:context=".LoginActivity"
+    android:background="@drawable/login_gradient_color">
 
-    <EditText
-        android:id="@+id/edtUserName"
-        android:layout_width="332dp"
-        android:layout_height="51dp"
-        android:layout_marginTop="260dp"
-        android:hint="Username"
-        android:textSize="30sp"
+    <RelativeLayout
+        android:layout_width="502dp"
+        android:layout_height="576dp"
+        android:background="@drawable/login_gradient_color"
+        android:padding="30dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.532"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:inputType="text"
-        android:text="admin"/>
+        app:layout_constraintVertical_bias="0.473">
 
-    <EditText
-        android:id="@+id/edtPassword"
-        android:layout_width="332dp"
-        android:layout_height="60dp"
-        android:layout_marginTop="44dp"
-        android:ems="10"
-        android:hint="Password"
-        android:textSize="30sp"
-        android:inputType="textPassword"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.532"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/edtUserName"
-        android:text="adminx"
-        />
+        <EditText
+            android:id="@+id/edtUserName"
+            android:layout_width="match_parent"
+            android:layout_height="51dp"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="239dp"
+            android:background="@drawable/login_input_bg"
+            android:drawableLeft="@drawable/ic_baseline_person_24"
+            android:drawablePadding="10dp"
+            android:hint="Username"
+            android:inputType="text"
+            android:paddingLeft="20dp"
+            android:paddingRight="10dp"
+            android:text="admin"
+            android:textColor="#fff"
+            android:textColorHighlight="#fff"
+            android:textSize="30sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.533"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-    <Button
-        android:id="@+id/btnLogin"
-        android:layout_width="302dp"
-        android:layout_height="86dp"
-        android:layout_marginTop="60dp"
-        android:text="LOGIN"
-        android:textSize="30sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.544"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/edtPassword" />
+        <EditText
+            android:id="@+id/edtPassword"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="312dp"
+            android:background="@drawable/login_input_bg"
+            android:drawableLeft="@drawable/ic_baseline_security_24"
+            android:drawablePadding="10dp"
+            android:ems="10"
+            android:hint="Password"
+            android:inputType="textPassword"
+            android:paddingLeft="20dp"
+            android:paddingRight="10dp"
+            android:text="adminx"
+            android:textColor="#fff"
+            android:textSize="30sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.532"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/edtUserName" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btnLogin"
+            android:layout_width="302dp"
+            android:layout_height="86dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginStart="108dp"
+            android:layout_marginTop="416dp"
+            android:layout_marginEnd="105dp"
+            android:background="@drawable/login_button_bg"
+            android:text="LOGIN"
+            android:textSize="30sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.544"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/edtPassword" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="22dp"
+            android:text="Warehouse Barcode System"
+            android:textAlignment="center"
+            android:textColor="#fff"
+            android:textSize="50dp" />
+    </RelativeLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
