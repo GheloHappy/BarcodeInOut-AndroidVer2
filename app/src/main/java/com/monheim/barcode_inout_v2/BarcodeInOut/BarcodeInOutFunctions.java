@@ -5,6 +5,8 @@ import android.graphics.Color;
 import android.util.Log;
 import android.widget.TextView;
 
+import org.w3c.dom.Text;
+
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
@@ -17,12 +19,13 @@ import java.util.Locale;
 import java.util.Date;
 import java.util.Map;
 
+import MssqlCon.PublicVars;
 import MssqlCon.SqlCon;
 
 public class BarcodeInOutFunctions extends SqlCon {
     Connection con;
 
-    @SuppressLint("SetTextI18n")
+    //Barcode In Out Fragment
     public boolean GetSapCode(String barcode, TextView etSap, TextView etDesc) {
         con = SQLConnection();
 
@@ -50,7 +53,6 @@ public class BarcodeInOutFunctions extends SqlCon {
 
         return true;
     }
-
     int id = 1;
     public void InsertIn(String barcode, String uom, int qty, String tranType){
         Date c = Calendar.getInstance().getTime();
@@ -58,6 +60,10 @@ public class BarcodeInOutFunctions extends SqlCon {
         SimpleDateFormat dfTime = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss", Locale.getDefault());
         String currentDate = dfDate.format(c);
         String currentTime = dfTime.format(c);
+
+        if (CheckTempBarTranData() == false) {
+            id = 1;
+        }
 
         try {
             if (con != null) {
@@ -71,7 +77,6 @@ public class BarcodeInOutFunctions extends SqlCon {
 
         id++;
     }
-
     public void ClearTempTrans(){
         con = SQLConnection();
         try {
@@ -84,10 +89,8 @@ public class BarcodeInOutFunctions extends SqlCon {
             Log.e("Error", e.getMessage());
         }
     }
-
     public boolean CheckTempBarTranData() {
         con = SQLConnection();
-
         try {
             if (con != null) {
                 String query = "SELECT * FROM TempBarcodeTranDetail";
@@ -95,7 +98,7 @@ public class BarcodeInOutFunctions extends SqlCon {
                 ResultSet rs = st.executeQuery(query);
 
                 if (!rs.next()) {
-                    return false;
+                    return false; //return false if no data
                 }
             }
         } catch (Exception e) {
@@ -106,6 +109,7 @@ public class BarcodeInOutFunctions extends SqlCon {
         return true;
     }
 
+    //Barcode In Out Save Fragment
     public List<Map<String, String>> GetTempBarList() {
         List<Map<String, String>> data;
         data = new ArrayList<>();
@@ -120,9 +124,9 @@ public class BarcodeInOutFunctions extends SqlCon {
                 while(rs.next()) {
                     Map<String, String> dtTempBarTran = new HashMap<>();
                     dtTempBarTran.put("id", rs.getString("id"));
-                    //dtTempBarTran.put("tranType", rs.getString("tranType"));
+                    dtTempBarTran.put("tranType", rs.getString("tranType"));
                     dtTempBarTran.put("barcode", rs.getString("barcode"));
-                    dtTempBarTran.put("sapCode", rs.getString("sapCode"));
+                    //dtTempBarTran.put("sapCode", rs.getString("sapCode"));
                     dtTempBarTran.put("description", rs.getString("description"));
                     dtTempBarTran.put("uom", rs.getString("uom"));
                     dtTempBarTran.put("qty", rs.getString("qty"));
@@ -134,5 +138,37 @@ public class BarcodeInOutFunctions extends SqlCon {
         }
 
         return data;
+    }
+    public void GetToTQty(TextView tvTotCase) {
+        con = SQLConnection();
+        try {
+            if (con != null) {
+                String queryCS = "SELECT SUM(qty) as totCs FROM tempBarcodeTrans WHERE Uom = 'CS'";
+                Statement st = con.createStatement();
+                ResultSet rsCS = st.executeQuery(queryCS);
+
+                if (rsCS.next()) {
+                    tvTotCase.setText(rsCS.getString(1));
+                } else {
+                    tvTotCase.setText("n/a");
+                }
+            }
+        } catch (Exception e) {
+            Log.e("Error", e.getMessage());
+        }
+    }
+    public boolean InsertRefNbr(String refnbr,String remarks) {
+        try {
+            con = SQLConnection();
+            if (con != null) {
+                String query = "INSERT INTO BarcodeTrans SELECT barcode,uom, qty, date, date_entry,tranType,'"+ refnbr + "','" + remarks + "' FROM tempBarcodeTrans";
+                Statement st = con.createStatement();
+                st.execute(query);
+            }
+        } catch (Exception e) {
+            Log.e("Error", e.getMessage());
+            return false;
+        }
+        return true;
     }
 }

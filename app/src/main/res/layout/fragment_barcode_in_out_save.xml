@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".BarcodeInOut.BarcodeInOutSave"
+    tools:context=".BarcodeInOut.BarcodeInOutSaveFragment"
     android:background="@drawable/gradient_color"
     android:paddingTop="20dp"
     android:paddingLeft="10dp"
@@ -11,26 +11,84 @@
 
     <ListView
         android:id="@+id/lvBarcodeTrans"
-        android:layout_width="match_parent"
-        android:layout_height="653dp"
+        android:layout_width="570dp"
+        android:layout_height="647dp"
         android:layout_alignParentStart="true"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginBottom="290dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="293dp"
         android:background="#fff"
-        android:outlineAmbientShadowColor="@color/black" />
+        android:outlineAmbientShadowColor="@color/black"/>
 
     <TextView
-        android:layout_width="149dp"
+        android:layout_width="61dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="199dp"
+        android:layout_marginEnd="330dp"
+        android:layout_marginBottom="240dp"
+        android:text="CS: "
+        android:textColor="@color/white"
+        android:textSize="30dp" />
+
+    <TextView
+        android:id="@+id/tvTotCase"
+        android:layout_width="114dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="258dp"
+        android:layout_marginEnd="218dp"
+        android:layout_marginBottom="238dp"
+        android:hint="0"
+        android:textColor="#f50717"
+        android:textSize="30dp" />
+
+    <TextView
+        android:layout_width="76dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="369dp"
+        android:layout_marginEnd="145dp"
+        android:layout_marginBottom="239dp"
+        android:text="PCS: "
+        android:textColor="@color/white"
+        android:textSize="30dp" />
+
+    <TextView
+        android:id="@+id/tvTotPcs"
+        android:layout_width="114dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="445dp"
+        android:layout_marginEnd="51dp"
+        android:layout_marginBottom="238dp"
+        android:hint="0"
+        android:textColor="#f50717"
+        android:textSize="30dp" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btnSave"
+        android:layout_width="195dp"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginEnd="460dp"
-        android:layout_marginBottom="235dp"
-        android:text="Reference #:"
-        android:textColor="@color/white"
-        android:textSize="20dp"
-        android:textStyle="bold" />
+        android:layout_marginStart="0dp"
+        android:layout_marginEnd="33dp"
+        android:layout_marginBottom="158dp"
+        android:background="@drawable/login_button_bg"
+        android:text="Save"
+        android:textColor="@color/black"
+        android:textSize="25dp" />
 
     <EditText
         android:id="@+id/etRefNbr"
@@ -38,16 +96,62 @@
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginEnd="336dp"
-        android:layout_marginBottom="171dp"
+        android:layout_marginEnd="284dp"
+        android:layout_marginBottom="148dp"
         android:background="@drawable/login_input_bg"
+        android:inputType="text"
         android:paddingLeft="20dp"
-        android:paddingRight="20dp"
         android:paddingTop="10dp"
+        android:paddingRight="20dp"
         android:paddingBottom="10dp"
-        android:textColor="@color/white"
-        android:textSize="25dp"
         android:singleLine="true"
-        android:inputType="text"/>
+        android:textColor="@color/white"
+        android:textSize="25dp" />
+
+    <TextView
+        android:layout_width="127dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="43dp"
+        android:layout_marginEnd="420dp"
+        android:layout_marginBottom="208dp"
+        android:text="Reference #:"
+        android:textColor="@color/white"
+        android:textSize="20dp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:layout_width="127dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="413dp"
+        android:layout_marginBottom="104dp"
+        android:text="Remarks"
+        android:textColor="@color/white"
+        android:textSize="20dp"
+        android:textStyle="bold" />
+
+    <EditText
+        android:id="@+id/etRemarks"
+        android:layout_width="545dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="44dp"
+        android:layout_marginEnd="36dp"
+        android:layout_marginBottom="43dp"
+        android:background="@drawable/login_input_bg"
+        android:inputType="text"
+        android:paddingLeft="20dp"
+        android:paddingTop="10dp"
+        android:paddingRight="20dp"
+        android:paddingBottom="10dp"
+        android:singleLine="true"
+        android:textColor="@color/white"
+        android:textSize="25dp" />
 
 </RelativeLayout>

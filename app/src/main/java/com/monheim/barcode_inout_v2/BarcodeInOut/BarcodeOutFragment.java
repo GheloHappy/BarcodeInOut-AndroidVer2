@@ -15,13 +15,13 @@ import android.widget.TextView;
 
 import com.monheim.barcode_inout_v2.R;
 
-public class BarcodeInFragment extends Fragment {
+public class BarcodeOutFragment extends Fragment {
     BarcodeInOutFunctions barInOut = new BarcodeInOutFunctions();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_barcode_in, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_barcode_out, container, false);
 
         EditText etBarcode = rootView.findViewById(R.id.etBarcode);
         EditText etBarcodeQty = rootView.findViewById(R.id.etBarcodeQty);
@@ -47,7 +47,7 @@ public class BarcodeInFragment extends Fragment {
                 Integer qty = Integer.parseInt(etBarcodeQty.getText().toString());
 
                 if (barInOut.GetSapCode(barcode,tvSapCode,tvDesc) == true) {
-                    barInOut.InsertIn(barcode,uom,qty,"IN");
+                    barInOut.InsertIn(barcode,uom,qty * -1,"OUT");
                 }
 
                 if(barInOut.CheckTempBarTranData() == true) {

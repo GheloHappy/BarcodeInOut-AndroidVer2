@@ -12,6 +12,7 @@ import android.view.MenuItem;
 import com.google.android.material.navigation.NavigationView;
 import com.monheim.barcode_inout_v2.BarcodeInOut.BarcodeInFragment;
 import com.monheim.barcode_inout_v2.BarcodeInOut.BarcodeInOutFunctions;
+import com.monheim.barcode_inout_v2.BarcodeInOut.BarcodeOutFragment;
 import com.monheim.barcode_inout_v2.Home.HomeFragment;
 
 public class MainActivity extends AppCompatActivity {
@@ -30,6 +31,7 @@ public class MainActivity extends AppCompatActivity {
 
     HomeFragment homeFragment = new HomeFragment();
     BarcodeInFragment barcodeInFragment = new BarcodeInFragment();
+    BarcodeOutFragment barcodeOutFragment = new BarcodeOutFragment();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,6 +60,10 @@ public class MainActivity extends AppCompatActivity {
                         break;
                     case R.id.barcodeIn:
                         getSupportFragmentManager().beginTransaction().replace(R.id.container,barcodeInFragment).commit();
+                        drawerLayout.closeDrawer(GravityCompat.START);
+                        break;
+                    case R.id.barcodeOut:
+                        getSupportFragmentManager().beginTransaction().replace(R.id.container,barcodeOutFragment).commit();
                         drawerLayout.closeDrawer(GravityCompat.START);
                         break;
                 }
