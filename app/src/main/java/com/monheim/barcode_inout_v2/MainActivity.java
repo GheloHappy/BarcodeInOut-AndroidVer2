@@ -5,20 +5,30 @@ import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.Fragment;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.MenuItem;
 
 import com.google.android.material.navigation.NavigationView;
 import com.monheim.barcode_inout_v2.BarcodeInOut.BarcodeInFragment;
 import com.monheim.barcode_inout_v2.BarcodeInOut.BarcodeInOutFunctions;
 import com.monheim.barcode_inout_v2.BarcodeInOut.BarcodeOutFragment;
+import com.monheim.barcode_inout_v2.DTOut.DtOutFragment;
 import com.monheim.barcode_inout_v2.Home.HomeFragment;
 
+import MssqlCon.PublicVars;
+
 public class MainActivity extends AppCompatActivity {
+    HomeFragment homeFragment = new HomeFragment();
+    BarcodeInFragment barcodeInFragment = new BarcodeInFragment();
+    BarcodeOutFragment barcodeOutFragment = new BarcodeOutFragment();
+    DtOutFragment dtOutFrag = new DtOutFragment();
+    PublicVars pubVars = new PublicVars();
 
     DrawerLayout drawerLayout;
-    NavigationView navigationView;
+    public NavigationView navigationView;
     ActionBarDrawerToggle drawerToggle;
 
     @Override
@@ -28,10 +38,6 @@ public class MainActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
-
-    HomeFragment homeFragment = new HomeFragment();
-    BarcodeInFragment barcodeInFragment = new BarcodeInFragment();
-    BarcodeOutFragment barcodeOutFragment = new BarcodeOutFragment();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,26 +56,33 @@ public class MainActivity extends AppCompatActivity {
         drawerLayout.addDrawerListener(drawerToggle);
         drawerToggle.syncState();
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                switch (item.getItemId()) {
-                    case R.id.home:
-                        getSupportFragmentManager().beginTransaction().replace(R.id.container,homeFragment).commit();
-                        drawerLayout.closeDrawer(GravityCompat.START);
-                        break;
-                    case R.id.barcodeIn:
-                        getSupportFragmentManager().beginTransaction().replace(R.id.container,barcodeInFragment).commit();
-                        drawerLayout.closeDrawer(GravityCompat.START);
-                        break;
-                    case R.id.barcodeOut:
-                        getSupportFragmentManager().beginTransaction().replace(R.id.container,barcodeOutFragment).commit();
-                        drawerLayout.closeDrawer(GravityCompat.START);
-                        break;
-                }
 
-                return false;
+        navigationView.setNavigationItemSelectedListener(item -> {
+            switch (item.getItemId()) {
+                case R.id.home:
+                    getSupportFragmentManager().beginTransaction()
+                            .replace(R.id.container,homeFragment).commit();
+                    drawerLayout.closeDrawer(GravityCompat.START);
+                    break;
+                case R.id.barcodeIn:
+                    getSupportFragmentManager().beginTransaction()
+                            .replace(R.id.container,barcodeInFragment).commit();
+                    drawerLayout.closeDrawer(GravityCompat.START);
+                case R.id.barcodeOut:
+                    getSupportFragmentManager().beginTransaction()
+                            .replace(R.id.container,barcodeOutFragment).commit();
+                    drawerLayout.closeDrawer(GravityCompat.START);
+                    break;
+                case R.id.dtOut:
+                    getSupportFragmentManager().beginTransaction()
+                            .replace(R.id.container,dtOutFrag).commit();
+                    drawerLayout.closeDrawer(GravityCompat.START);
+                    break;
             }
+
+            pubVars.SetMainNav(navigationView); //sending naviagtion view to public variable for disabling/enabling menu items after barcode save
+
+            return false;
         });
     }
 

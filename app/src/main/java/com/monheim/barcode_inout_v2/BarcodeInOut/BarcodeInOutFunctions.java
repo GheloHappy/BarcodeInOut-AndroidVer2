@@ -171,4 +171,16 @@ public class BarcodeInOutFunctions extends SqlCon {
         }
         return true;
     }
+    public void DeleteTempBarcodeItem(int id){
+        con = SQLConnection();
+        try {
+            if (con != null) {
+                String query = "DELETE FROM tempBarcodeTrans WHERE id = '"+ id +"'";
+                Statement st = con.createStatement();
+                st.execute(query);
+            }
+        } catch (Exception e) {
+            Log.e("Error", e.getMessage());
+        }
+    }
 }

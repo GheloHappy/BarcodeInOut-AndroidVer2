@@ -18,9 +18,6 @@ import MssqlCon.Login;
 import MssqlCon.Logs;
 
 public class LoginActivity extends AppCompatActivity {
-    BarcodeInOutFunctions barInOutFunc = new BarcodeInOutFunctions();
-    Logs log = new Logs();
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -34,12 +31,15 @@ public class LoginActivity extends AppCompatActivity {
         EditText etUser = (EditText) findViewById(R.id.edtUserName);
         EditText etPass = (EditText) findViewById(R.id.edtPassword);
 
-        Login login = new Login();
-        barInOutFunc.ClearTempTrans();
-
         btnLogin.setOnClickListener(v -> {
             ConnectivityManager cm =(ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
             NetworkInfo ni = cm.getActiveNetworkInfo();
+
+            BarcodeInOutFunctions barInOutFunc = new BarcodeInOutFunctions();
+            Logs log = new Logs();
+            Login login = new Login();
+
+            barInOutFunc.ClearTempTrans();
 
             if (ni != null && ni.getType() == ConnectivityManager.TYPE_WIFI)
             {

@@ -15,8 +15,11 @@ import android.widget.TextView;
 
 import com.monheim.barcode_inout_v2.R;
 
+import MssqlCon.PublicVars;
+
 public class BarcodeInFragment extends Fragment {
     BarcodeInOutFunctions barInOut = new BarcodeInOutFunctions();
+    PublicVars pubVar = new PublicVars();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -51,6 +54,7 @@ public class BarcodeInFragment extends Fragment {
                 }
 
                 if(barInOut.CheckTempBarTranData() == true) {
+                    PublicVars.GetNav().getMenu().findItem(R.id.barcodeOut).setEnabled(false); //disable Barcode Out in Menu if tempbarcode has data of IN
                     btnSave.setEnabled(true);
                 }
 

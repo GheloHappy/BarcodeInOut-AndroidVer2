@@ -6,14 +6,17 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
-        android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:icon="@mipmap/ic_launcher_mgc_logo"
+        android:label="Warehouse Barcode System"
+        android:roundIcon="@mipmap/ic_launcher_mgc_logo"
         android:supportsRtl="true"
         android:theme="@style/Theme.BarcodeInOutv2">
+
+        <activity android:name=".LoginActivity"/>
         <activity
-            android:name=".LoginActivity"
-            android:exported="true">
+            android:name=".SplashScreen"
+            android:exported="true"
+            android:theme="@style/SplashScreen">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />

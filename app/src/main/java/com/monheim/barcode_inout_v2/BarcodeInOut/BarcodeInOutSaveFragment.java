@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -15,13 +16,16 @@ import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.material.navigation.NavigationView;
 import com.monheim.barcode_inout_v2.Home.HomeFragment;
+import com.monheim.barcode_inout_v2.MainActivity;
 import com.monheim.barcode_inout_v2.R;
 
 import java.util.List;
 import java.util.Map;
 
 import MssqlCon.Logs;
+import MssqlCon.PublicVars;
 
 public class BarcodeInOutSaveFragment extends Fragment {
     SimpleAdapter simAd;
@@ -38,9 +42,28 @@ public class BarcodeInOutSaveFragment extends Fragment {
         Button btnSave = rootView.findViewById(R.id.btnSave);
         TextView tvTotCs = rootView.findViewById(R.id.tvTotCase);
         TextView tvTotPcs= rootView.findViewById(R.id.tvTotPcs);
+        ListView lvTempBarcodeTran = rootView.findViewById(R.id.lvBarcodeTrans);
 
-        ListTempBarcodeTran(rootView);
+        ListTempBarcodeTran(rootView, lvTempBarcodeTran);
         barFunc.GetToTQty(tvTotCs);
+
+        lvTempBarcodeTran.setOnItemLongClickListener((parent, view, position, id) -> {
+            TextView tvID = view.findViewById(R.id.id);
+            int item = Integer.parseInt(tvID.getText().toString());
+
+            new AlertDialog.Builder(getActivity())
+                   .setIcon(android.R.drawable.ic_delete)
+                   .setTitle("Are you sure ?")
+                   .setMessage("Do you want to delete this item")
+                   .setPositiveButton("Yes",(dialog, which) -> {
+                       barFunc.DeleteTempBarcodeItem(item);
+                       barFunc.GetToTQty(tvTotCs);
+                       ListTempBarcodeTran(rootView, lvTempBarcodeTran);
+                   })
+                   .setNegativeButton("No", null)
+                   .show();
+            return true;
+        });
 
         btnSave.setOnClickListener(v -> {
             String refNbr = etRefNbr.getText().toString();
@@ -62,6 +85,7 @@ public class BarcodeInOutSaveFragment extends Fragment {
                         etRefNbr.setText("");
 
                         log.InsertUserLog("BarcodeInOut",refNbr); //logUser
+                        EnableMainNavItem(); //enable Navigation barcode IN and Out
 
                         HomeFragment homeFrag = new HomeFragment();
                         getActivity().getSupportFragmentManager().beginTransaction()
@@ -80,9 +104,12 @@ public class BarcodeInOutSaveFragment extends Fragment {
         return rootView;
     }
 
-    private void ListTempBarcodeTran(View v) {
-        ListView lvTempBarcodeTran = v.findViewById(R.id.lvBarcodeTrans);
+    private void EnableMainNavItem(){
+        PublicVars.GetNav().getMenu().findItem(R.id.barcodeIn).setEnabled(true);
+        PublicVars.GetNav().getMenu().findItem(R.id.barcodeOut).setEnabled(true);
+    }
 
+    private void ListTempBarcodeTran(View v, ListView lvTempBarcodeTran) {
         List<Map<String, String>> dataList;
         BarcodeInOutFunctions barFUnc = new BarcodeInOutFunctions();
         dataList = barFUnc.GetTempBarList();
