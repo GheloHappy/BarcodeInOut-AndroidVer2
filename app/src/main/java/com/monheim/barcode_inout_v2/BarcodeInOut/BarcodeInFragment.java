@@ -19,7 +19,6 @@ import MssqlCon.PublicVars;
 
 public class BarcodeInFragment extends Fragment {
     BarcodeInOutFunctions barInOut = new BarcodeInOutFunctions();
-    PublicVars pubVar = new PublicVars();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,

@@ -24,7 +24,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
             android:layout_marginLeft="20dp"
-            android:hint="ID"
+            android:hint="-"
             android:textColor="#f70521"
             android:textSize="22sp" />
 
@@ -70,7 +70,7 @@
             android:layout_marginLeft="20dp"
             android:layout_marginTop="40dp"
             android:layout_toEndOf="@+id/sapCode"
-            android:hint="UOM"
+            android:hint="-"
             android:textColor="#000"
             android:textSize="22sp" />
 
@@ -83,7 +83,7 @@
             android:layout_marginTop="40dp"
             android:layout_marginEnd="150dp"
             android:layout_toEndOf="@+id/uom"
-            android:hint="QTY"
+            android:hint="0"
             android:textColor="#5793f2"
             android:textSize="22sp" />
 

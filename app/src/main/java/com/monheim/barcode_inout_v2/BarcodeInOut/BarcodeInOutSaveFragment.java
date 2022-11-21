@@ -44,7 +44,7 @@ public class BarcodeInOutSaveFragment extends Fragment {
         TextView tvTotPcs= rootView.findViewById(R.id.tvTotPcs);
         ListView lvTempBarcodeTran = rootView.findViewById(R.id.lvBarcodeTrans);
 
-        ListTempBarcodeTran(rootView, lvTempBarcodeTran);
+        ListTempBarcodeTran(lvTempBarcodeTran);
         barFunc.GetToTQty(tvTotCs);
 
         lvTempBarcodeTran.setOnItemLongClickListener((parent, view, position, id) -> {
@@ -58,7 +58,7 @@ public class BarcodeInOutSaveFragment extends Fragment {
                    .setPositiveButton("Yes",(dialog, which) -> {
                        barFunc.DeleteTempBarcodeItem(item);
                        barFunc.GetToTQty(tvTotCs);
-                       ListTempBarcodeTran(rootView, lvTempBarcodeTran);
+                       ListTempBarcodeTran(lvTempBarcodeTran);
                    })
                    .setNegativeButton("No", null)
                    .show();
@@ -109,7 +109,7 @@ public class BarcodeInOutSaveFragment extends Fragment {
         PublicVars.GetNav().getMenu().findItem(R.id.barcodeOut).setEnabled(true);
     }
 
-    private void ListTempBarcodeTran(View v, ListView lvTempBarcodeTran) {
+    private void ListTempBarcodeTran(ListView lvTempBarcodeTran) {
         List<Map<String, String>> dataList;
         BarcodeInOutFunctions barFUnc = new BarcodeInOutFunctions();
         dataList = barFUnc.GetTempBarList();

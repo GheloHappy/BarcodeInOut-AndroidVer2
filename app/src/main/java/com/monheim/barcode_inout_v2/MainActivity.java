@@ -7,6 +7,7 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.MenuItem;
@@ -21,10 +22,6 @@ import com.monheim.barcode_inout_v2.Home.HomeFragment;
 import MssqlCon.PublicVars;
 
 public class MainActivity extends AppCompatActivity {
-    HomeFragment homeFragment = new HomeFragment();
-    BarcodeInFragment barcodeInFragment = new BarcodeInFragment();
-    BarcodeOutFragment barcodeOutFragment = new BarcodeOutFragment();
-    DtOutFragment dtOutFrag = new DtOutFragment();
     PublicVars pubVars = new PublicVars();
 
     DrawerLayout drawerLayout;
@@ -48,6 +45,11 @@ public class MainActivity extends AppCompatActivity {
         }
         setContentView(R.layout.activity_main);
 
+        HomeFragment homeFragment = new HomeFragment();
+        BarcodeInFragment barcodeInFragment = new BarcodeInFragment();
+        BarcodeOutFragment barcodeOutFragment = new BarcodeOutFragment();
+        DtOutFragment dtOutFrag = new DtOutFragment();
+
         getSupportFragmentManager().beginTransaction().replace(R.id.container,homeFragment).commit();
 
         drawerLayout = findViewById(R.id.drawer_layout);
@@ -60,23 +62,24 @@ public class MainActivity extends AppCompatActivity {
         navigationView.setNavigationItemSelectedListener(item -> {
             switch (item.getItemId()) {
                 case R.id.home:
-                    getSupportFragmentManager().beginTransaction()
-                            .replace(R.id.container,homeFragment).commit();
+                    getSupportFragmentManager().beginTransaction().replace(R.id.container,homeFragment).commit();
                     drawerLayout.closeDrawer(GravityCompat.START);
                     break;
                 case R.id.barcodeIn:
-                    getSupportFragmentManager().beginTransaction()
-                            .replace(R.id.container,barcodeInFragment).commit();
+                    getSupportFragmentManager().beginTransaction().replace(R.id.container,barcodeInFragment).commit();
                     drawerLayout.closeDrawer(GravityCompat.START);
+                    break;
                 case R.id.barcodeOut:
-                    getSupportFragmentManager().beginTransaction()
-                            .replace(R.id.container,barcodeOutFragment).commit();
+                    getSupportFragmentManager().beginTransaction().replace(R.id.container,barcodeOutFragment).commit();
                     drawerLayout.closeDrawer(GravityCompat.START);
                     break;
                 case R.id.dtOut:
-                    getSupportFragmentManager().beginTransaction()
-                            .replace(R.id.container,dtOutFrag).commit();
+                    getSupportFragmentManager().beginTransaction().replace(R.id.container,dtOutFrag).commit();
                     drawerLayout.closeDrawer(GravityCompat.START);
+                    break;
+                case R.id.logOut:
+                    startActivity(new Intent(MainActivity.this, LoginActivity.class));
+                    finish();
                     break;
             }
 
