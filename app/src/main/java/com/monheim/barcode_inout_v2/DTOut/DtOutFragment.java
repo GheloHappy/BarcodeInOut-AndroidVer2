@@ -14,12 +14,14 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.monheim.barcode_inout_v2.R;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import MssqlCon.PublicVars;
 
@@ -39,6 +41,8 @@ public class DtOutFragment extends Fragment {
         ListView lvDTOut = rootView.findViewById(R.id.lvDTOut);
         EditText etDtOutBarcode = rootView.findViewById(R.id.etDtOutBarcode);
         EditText etDtOutQty = rootView.findViewById(R.id.etDtOutQty);
+        TextView tvTotCs = rootView.findViewById(R.id.tvTotCase);
+        TextView tvTotCaseShot = rootView.findViewById(R.id.tvTotCaseShot);
 
         ArrayAdapter adapter = new ArrayAdapter(getActivity(), R.layout.spinner_item, dtOutFunc.GetDTDate());
         adapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
@@ -62,8 +66,9 @@ public class DtOutFragment extends Fragment {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 dt = parent.getItemAtPosition(position).toString();
-                ListBarcodeTran(lvDTOut);
+                ListBarcodeTran(lvDTOut,tvTotCs);
                 etDtOutBarcode.requestFocus();
+                dtOutFunc.GetTotCsOut(dt,dtDate,tvTotCaseShot);
             }
 
             @Override
@@ -78,13 +83,19 @@ public class DtOutFragment extends Fragment {
                 String barcode = etDtOutBarcode.getText().toString();
                 int qty = Integer.parseInt(etDtOutQty.getText().toString());
                 String solomonID = dtOutFunc.GetSolomonID(barcode);
-                if (solomonID != "NA") {
-                    dtOutFunc.UpdateDtItem(dtDate,dt,solomonID,qty);
-                    ListBarcodeTran(lvDTOut);
+                if (!Objects.equals(solomonID, "NA")) {
+                    dtOutFunc.GetLastQty(dtDate,dt,solomonID);
+                    if (dtOutFunc.UpdateDtItem(qty)){
+                        dtOutFunc.GetTotCsOut(dt,dtDate,tvTotCaseShot);
+                        ListBarcodeTran(lvDTOut,tvTotCs);
+                    } else {
+                        Toast.makeText(getActivity(),"You have reached the maximum QTY.", Toast.LENGTH_SHORT).show();
+                    }
                 } else {
                     Toast.makeText(getActivity(),"Item not found.", Toast.LENGTH_SHORT).show();
                 }
                 etDtOutBarcode.setText("");
+                etDtOutQty.setText("1");
                 etDtOutBarcode.post(() -> etDtOutBarcode.requestFocus()); //focus request
                 return true;
             }
@@ -94,9 +105,10 @@ public class DtOutFragment extends Fragment {
         return  rootView;
     }
 
-    private void ListBarcodeTran(ListView lvDTOut) {
+    private void ListBarcodeTran(ListView lvDTOut, TextView tvTotCs) {
         List<Map<String, String>> dataList;
-        dataList = dtOutFunc.GetDTList(dt);
+        dataList = dtOutFunc.GetDTList(dt, dtDate);
+        dtOutFunc.GetTotCs(dt, dtDate, tvTotCs);
 
         String[] from = {"solomonID","uom","qty","qtyOut"};
         int[] to = {R.id.description,R.id.barcode,R.id.sapCode,R.id.qty};

@@ -23,12 +23,10 @@ import MssqlCon.PublicVars;
 import MssqlCon.SqlCon;
 
 public class BarcodeInOutFunctions extends SqlCon {
-    Connection con;
+    Connection con = SQLConnection();
 
     //Barcode In Out Fragment
     public boolean GetSapCode(String barcode, TextView etSap, TextView etDesc) {
-        con = SQLConnection();
-
         try {
             if (con != null) {
                 String query = "SELECT sapCode, description FROM Products WHERE barcode ='" + barcode + "'";
@@ -90,7 +88,6 @@ public class BarcodeInOutFunctions extends SqlCon {
         }
     }
     public boolean CheckTempBarTranData() {
-        con = SQLConnection();
         try {
             if (con != null) {
                 String query = "SELECT * FROM TempBarcodeTranDetail";
@@ -113,7 +110,6 @@ public class BarcodeInOutFunctions extends SqlCon {
     public List<Map<String, String>> GetTempBarList() {
         List<Map<String, String>> data;
         data = new ArrayList<>();
-        con = SQLConnection();
 
         try {
             if (con != null) {
@@ -140,7 +136,6 @@ public class BarcodeInOutFunctions extends SqlCon {
         return data;
     }
     public void GetToTQty(TextView tvTotCase) {
-        con = SQLConnection();
         try {
             if (con != null) {
                 String queryCS = "SELECT SUM(qty) as totCs FROM tempBarcodeTrans WHERE Uom = 'CS'";
@@ -159,7 +154,6 @@ public class BarcodeInOutFunctions extends SqlCon {
     }
     public boolean InsertRefNbr(String refnbr,String remarks) {
         try {
-            con = SQLConnection();
             if (con != null) {
                 String query = "INSERT INTO BarcodeTrans SELECT barcode,uom, qty, date, date_entry,tranType,'"+ refnbr + "','" + remarks + "' FROM tempBarcodeTrans";
                 Statement st = con.createStatement();
@@ -172,7 +166,6 @@ public class BarcodeInOutFunctions extends SqlCon {
         return true;
     }
     public void DeleteTempBarcodeItem(int id){
-        con = SQLConnection();
         try {
             if (con != null) {
                 String query = "DELETE FROM tempBarcodeTrans WHERE id = '"+ id +"'";

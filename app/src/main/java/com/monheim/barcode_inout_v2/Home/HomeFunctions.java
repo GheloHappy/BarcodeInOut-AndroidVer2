@@ -16,11 +16,10 @@ import java.util.Map;
 import MssqlCon.SqlCon;
 
 public class HomeFunctions extends SqlCon {
-    Connection con;
+    Connection con = SQLConnection();
     public List<Map<String, String>> GetBarList(String refNbr) {
         List<Map<String, String>> data;
         data = new ArrayList<>();
-        con = SQLConnection();
 
         try {
             if (con != null) {
@@ -46,7 +45,6 @@ public class HomeFunctions extends SqlCon {
         return data;
     }
     public boolean GetTotCs(TextView tvTotCs, String refNbr) {
-        con = SQLConnection();
         try {
             if (con != null) {
                 String query = "SELECT SUM(qty) as totCs FROM BarcodeTranHistory WHERE refNbr = '"+refNbr+"'";

@@ -20,8 +20,6 @@ public class Login extends SqlCon {
                     pubVar.SetUser(rs.getString(4));
                     return true;
                 }
-
-                System.out.println(query);
             }
         } catch (Exception e) {
             Log.e("Error", e.getMessage());
