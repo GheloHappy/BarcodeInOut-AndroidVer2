@@ -38,9 +38,9 @@ public class BarcodeInOutFunctions extends SqlCon {
                     etDesc.setText(rs.getString(2));
                     etSap.setTextColor(Color.BLACK);
                 } else {
-                    etSap.setText("Item not Found");
+                    etSap.setText("Item not Found!");
                     etSap.setTextColor(Color.RED);
-                    etDesc.setText("...");
+                    etDesc.setText("Please check new barcode tab!");
                     return false;
                 }
             }

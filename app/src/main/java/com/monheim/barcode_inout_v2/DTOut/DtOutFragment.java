@@ -1,5 +1,6 @@
 package com.monheim.barcode_inout_v2.DTOut;
 
+import android.app.AlertDialog;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -89,10 +90,22 @@ public class DtOutFragment extends Fragment {
                         dtOutFunc.GetTotCsOut(dt,dtDate,tvTotCaseShot);
                         ListBarcodeTran(lvDTOut,tvTotCs);
                     } else {
-                        Toast.makeText(getActivity(),"You have reached the maximum QTY.", Toast.LENGTH_SHORT).show();
+                        new AlertDialog.Builder(getActivity())
+                                .setIcon(android.R.drawable.ic_dialog_alert)
+                                .setTitle("WARNING!")
+                                .setMessage("You have reached the maximum QTY.")
+                                .setPositiveButton("OK",(dialog, which) -> {
+                                })
+                                .show();
                     }
                 } else {
-                    Toast.makeText(getActivity(),"Item not found.", Toast.LENGTH_SHORT).show();
+                    new AlertDialog.Builder(getActivity())
+                            .setIcon(android.R.drawable.ic_dialog_alert)
+                            .setTitle("WARNING!")
+                            .setMessage("Item not found.")
+                            .setPositiveButton("OK",(dialog, which) -> {
+                            })
+                            .show();
                 }
                 etDtOutBarcode.setText("");
                 etDtOutQty.setText("1");
@@ -110,8 +123,8 @@ public class DtOutFragment extends Fragment {
         dataList = dtOutFunc.GetDTList(dt, dtDate);
         dtOutFunc.GetTotCs(dt, dtDate, tvTotCs);
 
-        String[] from = {"solomonID","uom","qty","qtyOut"};
-        int[] to = {R.id.description,R.id.barcode,R.id.sapCode,R.id.qty};
+        String[] from = {"timeStamp","solomonID","uom","qty","qtyOut"};
+        int[] to = {R.id.id,R.id.description,R.id.barcode,R.id.sapCode,R.id.qty};
         simAd = new SimpleAdapter(getActivity(),dataList,R.layout.temp_barcode_tran_list_template,from,to);
         lvDTOut.setAdapter(simAd);
     }

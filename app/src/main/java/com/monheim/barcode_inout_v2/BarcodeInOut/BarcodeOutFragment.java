@@ -13,12 +13,14 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.monheim.barcode_inout_v2.NewBarcode.NewBarcodeFunctions;
 import com.monheim.barcode_inout_v2.R;
 
 import MssqlCon.PublicVars;
 
 public class BarcodeOutFragment extends Fragment {
     BarcodeInOutFunctions barInOut = new BarcodeInOutFunctions();
+    NewBarcodeFunctions newBarFunc = new NewBarcodeFunctions();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -50,6 +52,8 @@ public class BarcodeOutFragment extends Fragment {
 
                 if (barInOut.GetSapCode(barcode,tvSapCode,tvDesc) == true) {
                     barInOut.InsertIn(barcode,uom,qty * -1,"OUT");
+                } else {
+                    newBarFunc.CheckUnknownBarcode(barcode);
                 }
 
                 if(barInOut.CheckTempBarTranData() == true) {

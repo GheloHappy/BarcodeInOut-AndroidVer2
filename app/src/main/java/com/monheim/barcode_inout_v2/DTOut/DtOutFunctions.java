@@ -7,9 +7,13 @@ import android.widget.Toast;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import MssqlCon.SqlCon;
@@ -60,7 +64,7 @@ public class DtOutFunctions extends SqlCon {
         data = new ArrayList<>();
         try {
             if (con != null) {
-                String query = "SELECT * FROM DTInventory WHERE dt = '" + dt + "' AND schedDate = '" + schedDate + "'";
+                String query = "SELECT * FROM DTInventory WHERE dt = '" + dt + "' AND schedDate = '" + schedDate + "' ORDER BY timeStamp DESC";
                 Statement st = con.createStatement();
                 ResultSet rs = st.executeQuery(query);
 
@@ -70,6 +74,7 @@ public class DtOutFunctions extends SqlCon {
                     dtTempBarTran.put("uom", rs.getString("uom"));
                     dtTempBarTran.put("qty", rs.getString("qty"));
                     dtTempBarTran.put("qtyOut", rs.getString("qtyOut"));
+                    dtTempBarTran.put("timeStamp", rs.getString("timeStamp"));
                     data.add(dtTempBarTran);
                 }
             }
@@ -130,13 +135,16 @@ public class DtOutFunctions extends SqlCon {
     }
 
     String date, dt, solomonID;
-
     public boolean UpdateDtItem(int qty) {
+        Date c = Calendar.getInstance().getTime();
+        SimpleDateFormat dfTime = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss", Locale.getDefault());
+        String currentDateTime = dfTime.format(c);
+
         int totQty = outQty + qty;
         if (totQty <= maxQty) {
             try {
                 if (con != null) {
-                    String query = "UPDATE DTInventory Set qtyOut = '" + totQty + "' WHERE schedDate ='" + date + "' AND dt = '" + dt + "' AND solomonID ='" + solomonID + "'";
+                    String query = "UPDATE DTInventory Set qtyOut = '" + totQty + "', timeStamp = '" +currentDateTime+ "' WHERE schedDate ='" + date + "' AND dt = '" + dt + "' AND solomonID ='" + solomonID + "'";
                     Statement st = con.createStatement();
                     st.execute(query);
                 }
@@ -151,7 +159,6 @@ public class DtOutFunctions extends SqlCon {
     }
 
     int maxQty, outQty;
-
     public void GetLastQty(String _date, String _dt, String _solomonID) {
         date = _date;
         dt = _dt;
