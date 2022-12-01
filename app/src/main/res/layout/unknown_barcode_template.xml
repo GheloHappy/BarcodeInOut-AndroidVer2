@@ -18,13 +18,14 @@
         app:layout_editor_absoluteX="65dp"
         app:layout_editor_absoluteY="16dp">
 
+
         <TextView
             android:id="@+id/unknownBarcode"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:textAlignment="center"
-            android:paddingTop="5dp"
             android:hint="1234567890"
+            android:paddingTop="5dp"
+            android:textAlignment="center"
             android:textColor="#000"
             android:textSize="25sp"
             android:textStyle="bold" />

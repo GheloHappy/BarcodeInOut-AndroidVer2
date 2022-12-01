@@ -60,9 +60,9 @@ public class BarcodeInFragment extends Fragment {
                     PublicVars.GetNav().getMenu().findItem(R.id.barcodeOut).setEnabled(false); //disable Barcode Out in Menu if tempbarcode has data of IN
                     btnSave.setEnabled(true);
                 }
-
-                etBarcode.setText("");
+                
                 etBarcodeQty.setText("1");
+                etBarcode.setText("");
                 etBarcode.post(() -> etBarcode.requestFocus()); //focus request
                 return true;
             }
