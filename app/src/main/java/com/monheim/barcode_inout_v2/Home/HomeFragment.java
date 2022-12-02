@@ -6,9 +6,11 @@ import androidx.fragment.app.Fragment;
 
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -40,6 +42,13 @@ public class HomeFragment extends Fragment {
         Button btnSearch = rootView.findViewById(R.id.btnSearch);
         TextView tvTotCs = rootView.findViewById(R.id.tvHomeTotCS);
 
+        etSearchRefNbr.setOnEditorActionListener((v, actionId, event) -> {
+            if(actionId == EditorInfo.IME_ACTION_DONE){
+                btnSearch.callOnClick();
+                return true;
+            }
+            return false;
+        });
         btnSearch.setOnClickListener(v -> {
             String refNbr = etSearchRefNbr.getText().toString();
             if(homeFunc.GetTotCs(tvTotCs, refNbr) == true) {

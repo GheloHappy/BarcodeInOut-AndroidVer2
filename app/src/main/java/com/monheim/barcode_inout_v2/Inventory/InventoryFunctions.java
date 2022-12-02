@@ -62,4 +62,47 @@ public class InventoryFunctions extends SqlCon {
         return data;
     }
 
+    public boolean DeleteItem(String barcode, String date) {
+        try {
+            if (con != null) {
+                String query = "DELETE FROM InventoryTrans WHERE barcode = '"+ barcode +"' AND date = '"+ date +"'";
+                Statement st = con.createStatement();
+                st.execute(query);
+            }
+        } catch (Exception e) {
+            Log.e("Error", e.getMessage());
+            return false;
+        }
+        return true;
+    }
+    public boolean UpdateItem(String barcode, int qty, String date) {
+        try {
+            if (con != null) {
+                String query = "Update InventoryTrans SET qty = '" + qty+ "' WHERE barcode = '"+ barcode +"' AND date = '"+ date +"'";
+                Statement st = con.createStatement();
+                st.execute(query);
+            }
+        } catch (Exception e) {
+            Log.e("Error", e.getMessage());
+            return false;
+        }
+        return true;
+    }
+
+    public boolean CheckBarcode(String barcode, String date) {
+        try {
+            if (con != null) {
+                String query = "SELECT barcode FROM InventoryTrans WHERE barcode = '"+barcode+"' AND date = '"+ date +"'";
+                Statement st = con.createStatement();
+                ResultSet rs = st.executeQuery(query);
+
+                if (!rs.next()) {
+                    return false;
+                }
+            }
+        } catch (Exception e) {
+            Log.e("Error", e.getMessage());
+        }
+        return true;
+    }
 }

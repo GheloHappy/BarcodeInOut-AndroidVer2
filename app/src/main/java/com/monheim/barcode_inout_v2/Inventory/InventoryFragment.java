@@ -2,20 +2,28 @@ package com.monheim.barcode_inout_v2.Inventory;
 
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
+import android.text.InputType;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.monheim.barcode_inout_v2.R;
@@ -67,7 +75,11 @@ public class InventoryFragment extends Fragment {
                 if(barcode.matches("")) {
                     Toast.makeText(getActivity(), "Please scan barcode", Toast.LENGTH_SHORT).show();
                 } else {
-                    invtFunc.InsertBarcode(barcode, uom, qty, GetTodaysDate());
+                    if(invtFunc.CheckBarcode(barcode,GetTodaysDate())) {
+                        Toast.makeText(getActivity(), barcode + " is existing!", Toast.LENGTH_SHORT).show();
+                    } else {
+                        invtFunc.InsertBarcode(barcode, uom, qty, GetTodaysDate());
+                    }
                 }
 
 
@@ -79,6 +91,57 @@ public class InventoryFragment extends Fragment {
                 return true;
             }
             return false;
+        });
+        lvInventoryList.setOnItemLongClickListener((parent, view, position, id) -> { //delete item long tap
+            TextView tvID = view.findViewById(R.id.invtBarcode);
+            String item = tvID.getText().toString();
+
+            new AlertDialog.Builder(getActivity())
+                    .setIcon(android.R.drawable.ic_delete)
+                    .setTitle("Are you sure ?")
+                    .setMessage("Do you want to delete this item")
+                    .setPositiveButton("Yes",(dialog, which) -> {
+                        if (invtFunc.DeleteItem(item, GetTodaysDate())) {
+                            Toast.makeText(getActivity(), item + " - Successfully Deleted.", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(getActivity(), "Failed to delete item.", Toast.LENGTH_SHORT).show();
+                        }
+                        BarcodeList(lvInventoryList);
+                    })
+                    .setNegativeButton("No", null)
+                    .show();
+            return true;
+        });
+
+        lvInventoryList.setOnItemClickListener((parent, view, position, id) -> { //update item qty click
+            TextView tvBar = view.findViewById(R.id.invtBarcode);
+            String itemBar = tvBar.getText().toString();
+
+            AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getActivity());
+            dialogBuilder.setTitle("Update " + itemBar + " quantity?");
+
+            final EditText input = new EditText(getActivity());
+            input.setInputType(InputType.TYPE_CLASS_NUMBER);
+            input.setGravity(Gravity.CENTER | Gravity.CENTER_VERTICAL);
+            dialogBuilder.setView(input);
+
+            dialogBuilder.setPositiveButton("UPDATE", (dialog, which) -> {
+                if (input.getText().toString().matches("")) {
+                    Toast.makeText(getActivity(), "Please input qty.", Toast.LENGTH_SHORT).show();
+                } else {
+                    if (invtFunc.UpdateItem(itemBar, Integer.parseInt(input.getText().toString()),GetTodaysDate())) {
+                        Toast.makeText(getActivity(), "Item Updated!", Toast.LENGTH_SHORT).show();
+                        BarcodeList(lvInventoryList);
+                    } else {
+                        Toast.makeText(getActivity(), "Failed to update item!", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
+
+            dialogBuilder.setNegativeButton("CANCEL", (dialog, which) -> {
+               dialog.cancel();
+            });
+            dialogBuilder.show();
         });
 
 
@@ -93,7 +156,6 @@ public class InventoryFragment extends Fragment {
         simAd = new SimpleAdapter(getActivity(),dataList,R.layout.inventory_barcode_template,from,to);
         lv.setAdapter(simAd);
     }
-
     private String GetTodaysDate(){
         Calendar cal = Calendar.getInstance();
         int year = cal.get(Calendar.YEAR);
