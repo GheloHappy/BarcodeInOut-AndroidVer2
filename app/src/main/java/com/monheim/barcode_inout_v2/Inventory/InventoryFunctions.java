@@ -43,7 +43,7 @@ public class InventoryFunctions extends SqlCon {
 
         try {
             if (con != null) {
-                String query = "SELECT * FROM InventoryTrans WHERE date = '" + date + "'";
+                String query = "SELECT * FROM InventoryTrans WHERE date = '" + date + "' ORDER BY date_entry";
                 Statement st = con.createStatement();
                 ResultSet rs = st.executeQuery(query);
                 System.out.println(query);

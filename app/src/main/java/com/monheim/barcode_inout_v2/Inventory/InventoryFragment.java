@@ -84,12 +84,14 @@ public class InventoryFragment extends Fragment {
 
 
                 etInvtQty.setText("1");
+                BarcodeList(lvInventoryList);
                 etInvtBarcode.setText("");
                 etInvtBarcode.post(() -> etInvtBarcode.requestFocus());
-                BarcodeList(lvInventoryList);
 
                 return true;
             }
+
+            etInvtBarcode.post(() -> etInvtBarcode.requestFocus());
             return false;
         });
         lvInventoryList.setOnItemLongClickListener((parent, view, position, id) -> { //delete item long tap
@@ -143,7 +145,6 @@ public class InventoryFragment extends Fragment {
             });
             dialogBuilder.show();
         });
-
 
         return rootView;
     }

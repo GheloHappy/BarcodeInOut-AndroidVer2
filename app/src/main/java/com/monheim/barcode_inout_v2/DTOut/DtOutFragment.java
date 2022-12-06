@@ -109,11 +109,12 @@ public class DtOutFragment extends Fragment {
                             })
                             .show();
                 }
-                etDtOutBarcode.setText("");
                 etDtOutQty.setText("1");
+                etDtOutBarcode.setText("");
                 etDtOutBarcode.post(() -> etDtOutBarcode.requestFocus()); //focus request
                 return true;
             }
+            etDtOutBarcode.post(() -> etDtOutBarcode.requestFocus()); //focus request
             return false;
         });
 

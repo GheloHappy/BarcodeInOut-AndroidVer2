@@ -61,12 +61,13 @@ public class BarcodeOutFragment extends Fragment {
                     btnSave.setEnabled(true);
                 }
 
-                etBarcode.setText("");
                 etBarcodeQty.setText("1");
+                etBarcode.setText("");
                 etBarcode.post(() -> etBarcode.requestFocus()); //focus request
                 return true;
             }
 
+            etBarcode.post(() -> etBarcode.requestFocus()); //focus request
             return false;
         });
 
