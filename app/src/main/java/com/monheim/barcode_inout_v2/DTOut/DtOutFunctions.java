@@ -18,14 +18,14 @@ import java.util.Map;
 
 import MssqlCon.SqlCon;
 
-public class DtOutFunctions extends SqlCon {
-    Connection con = SQLConnection();
-
-    public ArrayList<String> GetDTDate() {
+public class DtOutFunctions {
+    SqlCon sqlCon = new SqlCon();
+    Connection con = sqlCon.SQLConnection();
+    public ArrayList<String> GetDTDate(String dtDate) {
         ArrayList<String> data = new ArrayList<>();
         try {
             if (con != null) {
-                String query = "SELECT DISTINCT schedDate FROM DTInventory";
+                String query = "SELECT DISTINCT schedDate FROM DTInventory WHERE schedDate = '" + dtDate+ "'";
                 Statement st = con.createStatement();
                 ResultSet rs = st.executeQuery(query);
                 while (rs.next()) {
@@ -44,7 +44,7 @@ public class DtOutFunctions extends SqlCon {
         ArrayList<String> data = new ArrayList<>();
         try {
             if (con != null) {
-                String query = "SELECT DISTINCT dt schedDate FROM DTInventory WHERE schedDate = '" + date + "'";
+                String query = "SELECT DISTINCT dt schedDate FROM DTInventory WHERE schedDate = '" + date + "' ORDER BY DT ASC";
                 Statement st = con.createStatement();
                 ResultSet rs = st.executeQuery(query);
                 while (rs.next()) {
@@ -159,7 +159,7 @@ public class DtOutFunctions extends SqlCon {
     }
 
     int maxQty, outQty;
-    public void GetLastQty(String _date, String _dt, String _solomonID) {
+    public boolean GetLastQty(String _date, String _dt, String _solomonID) {
         date = _date;
         dt = _dt;
         solomonID = _solomonID;
@@ -177,10 +177,14 @@ public class DtOutFunctions extends SqlCon {
                         outQty = 0;
                         maxQty = Integer.parseInt(rs.getString(1));
                     }
+                } else {
+                    return false;
                 }
             }
         } catch (Exception e) {
             Log.e("Error", e.getMessage());
+            return false;
         }
+        return true;
     }
 }

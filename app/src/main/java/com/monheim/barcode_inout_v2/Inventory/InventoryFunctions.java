@@ -46,7 +46,6 @@ public class InventoryFunctions extends SqlCon {
                 String query = "SELECT * FROM InventoryTrans WHERE date = '" + date + "' ORDER BY date_entry";
                 Statement st = con.createStatement();
                 ResultSet rs = st.executeQuery(query);
-                System.out.println(query);
                 while(rs.next()) {
                     Map<String, String> dtTempBarTran = new HashMap<>();
                     dtTempBarTran.put("barcode", rs.getString("barcode"));

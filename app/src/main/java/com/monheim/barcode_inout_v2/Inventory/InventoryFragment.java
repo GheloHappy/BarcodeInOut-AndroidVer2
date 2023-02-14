@@ -167,14 +167,11 @@ public class InventoryFragment extends Fragment {
         return makeDateString(month,day,year);
     }
     private void InitDatePicker(){
-        DatePickerDialog.OnDateSetListener dateSetListener = new DatePickerDialog.OnDateSetListener() {
-            @Override
-            public void onDateSet(DatePicker view, int year, int month, int day) {
-                month = month + 1;
-                String date = makeDateString(month, day, year);
-                dateButton.setText(date);
-                //Toast.makeText(getActivity(),dateButton.getText().toString(),Toast.LENGTH_SHORT).show();
-            }
+        DatePickerDialog.OnDateSetListener dateSetListener = (view, year, month, day) -> {
+            month = month + 1;
+            String date = makeDateString(month, day, year);
+            dateButton.setText(date);
+            //Toast.makeText(getActivity(),dateButton.getText().toString(),Toast.LENGTH_SHORT).show();
         };
 
         Calendar cal = Calendar.getInstance();

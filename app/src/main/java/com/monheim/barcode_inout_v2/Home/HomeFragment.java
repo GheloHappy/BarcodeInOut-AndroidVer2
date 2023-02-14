@@ -28,6 +28,8 @@ import com.monheim.barcode_inout_v2.R;
 import java.util.List;
 import java.util.Map;
 
+import MssqlCon.PublicVars;
+
 public class HomeFragment extends Fragment {
     SimpleAdapter simAd;
     HomeFunctions homeFunc = new HomeFunctions();

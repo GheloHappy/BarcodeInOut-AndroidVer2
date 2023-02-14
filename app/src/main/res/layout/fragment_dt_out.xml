@@ -6,29 +6,22 @@
     tools:context=".DTOut.DtOutFragment"
     android:background="@drawable/gradient_color">
 
-    <TextView
-        android:layout_width="92dp"
+    <EditText
+        android:id="@+id/etSearchDtDate"
+        android:layout_width="168dp"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
-        android:layout_marginStart="13dp"
-        android:layout_marginTop="38dp"
-        android:layout_marginEnd="495dp"
-        android:text="DATE :"
-        android:textColor="#FFFFFF"
-        android:textSize="25sp" />
-
-    <Spinner
-        android:id="@+id/spinDtDate"
-        android:layout_width="183dp"
-        android:layout_height="50dp"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginStart="95dp"
+        android:layout_marginStart="41dp"
         android:layout_marginTop="30dp"
-        android:layout_marginEnd="322dp" />
+        android:layout_marginEnd="391dp"
+        android:hint="Search Date"
+        android:inputType="date"
+        android:maxLines="1"
+        android:singleLine="true"
+        android:textAlignment="center"
+        android:textColor="#fff" />
 
     <TextView
         android:layout_width="74dp"
@@ -36,23 +29,23 @@
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
-        android:layout_marginStart="294dp"
+        android:layout_marginStart="289dp"
         android:layout_marginTop="38dp"
-        android:layout_marginEnd="232dp"
+        android:layout_marginEnd="237dp"
         android:text="DT # :"
         android:textColor="#FFFFFF"
         android:textSize="25sp" />
 
     <Spinner
         android:id="@+id/spinDT"
-        android:layout_width="211dp"
-        android:layout_height="50dp"
+        android:layout_width="189dp"
+        android:layout_height="49dp"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
         android:layout_marginStart="364dp"
         android:layout_marginTop="30dp"
-        android:layout_marginEnd="25dp" />
+        android:layout_marginEnd="47dp" />
 
     <ListView
         android:id="@+id/lvDTOut"

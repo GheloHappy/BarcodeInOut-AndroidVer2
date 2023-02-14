@@ -29,10 +29,12 @@ public class BarcodeOutFragment extends Fragment {
 
         EditText etBarcode = rootView.findViewById(R.id.etBarcode);
         EditText etBarcodeQty = rootView.findViewById(R.id.etBarcodeQty);
-        TextView tvSapCode = rootView.findViewById(R.id.tvSapCode);
+        TextView tvBarcode = rootView.findViewById(R.id.tvBarcode);
         TextView tvDesc = rootView.findViewById(R.id.tvDesc);
         Spinner spUom = rootView.findViewById(R.id.spUom);
         Button btnSave = rootView.findViewById(R.id.btnSave);
+
+        etBarcodeQty.setEnabled(false);
 
         etBarcode.requestFocus();
 
@@ -50,7 +52,7 @@ public class BarcodeOutFragment extends Fragment {
                 String uom = spUom.getSelectedItem().toString();
                 Integer qty = Integer.parseInt(etBarcodeQty.getText().toString());
 
-                if (barInOut.GetSapCode(barcode,tvSapCode,tvDesc) == true) {
+                if (barInOut.GetBarcode(barcode,tvBarcode,tvDesc) == true) {
                     barInOut.InsertIn(barcode,uom,qty * -1,"OUT");
                 } else {
                     newBarFunc.CheckUnknownBarcode(barcode);

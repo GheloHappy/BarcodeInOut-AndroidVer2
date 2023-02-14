@@ -5,11 +5,12 @@ import android.util.Log;
 import java.sql.ResultSet;
 import java.sql.Statement;
 
-public class Login extends SqlCon {
+public class Login extends  SqlCon {
     PublicVars pubVar = new PublicVars();
 
     public boolean CheckUser(String usr, String pass) {
         con = SQLConnection();
+        Logs log = new Logs();
         try {
             if (con != null) {
                 String query = "SELECT * FROM Users WHERE username ='" + usr + "' AND password = '" + pass + "'";
@@ -18,6 +19,9 @@ public class Login extends SqlCon {
 
                 if (rs.next()) {
                     pubVar.SetUser(rs.getString(4));
+                    pubVar.SetUserDept(rs.getString(5));
+                    log.InsertUserLog("Login", "");
+                    System.out.println(rs.getString(4));
                     return true;
                 }
             }

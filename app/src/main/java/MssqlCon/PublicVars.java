@@ -4,6 +4,7 @@ import com.google.android.material.navigation.NavigationView;
 
 public class PublicVars {
     private static String _user;
+    private static String _userDept;
     private static NavigationView _mainNav;
 
     public static void SetUser(String User) {
@@ -11,6 +12,11 @@ public class PublicVars {
     }
     public static String GetUser(){
         return _user;
+    }
+
+    public static void SetUserDept(String UserDept) {_userDept = UserDept; }
+    public static String GetUserDept(){
+        return _userDept;
     }
 
     public static void SetMainNav(NavigationView Nav) { _mainNav = Nav;}

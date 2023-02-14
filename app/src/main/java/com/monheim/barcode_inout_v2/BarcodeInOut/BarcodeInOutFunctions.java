@@ -1,11 +1,8 @@
 package com.monheim.barcode_inout_v2.BarcodeInOut;
 
-import android.annotation.SuppressLint;
 import android.graphics.Color;
 import android.util.Log;
 import android.widget.TextView;
-
-import org.w3c.dom.Text;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -19,27 +16,26 @@ import java.util.Locale;
 import java.util.Date;
 import java.util.Map;
 
-import MssqlCon.PublicVars;
 import MssqlCon.SqlCon;
 
 public class BarcodeInOutFunctions extends SqlCon {
     Connection con = SQLConnection();
 
     //Barcode In Out Fragment
-    public boolean GetSapCode(String barcode, TextView etSap, TextView etDesc) {
+    public boolean GetBarcode(String barcode, TextView etBar, TextView etDesc) {
         try {
             if (con != null) {
-                String query = "SELECT sapCode, description FROM Products WHERE barcode ='" + barcode + "'";
+                String query = "SELECT barcode, description FROM Products WHERE barcode ='" + barcode + "'";
                 Statement st = con.createStatement();
                 ResultSet rs = st.executeQuery(query);
 
                 if (rs.next()) {
-                    etSap.setText(rs.getString(1));
+                    etBar.setText(rs.getString(1));
                     etDesc.setText(rs.getString(2));
-                    etSap.setTextColor(Color.BLACK);
+                    etBar.setTextColor(Color.BLACK);
                 } else {
-                    etSap.setText("Item not Found!");
-                    etSap.setTextColor(Color.RED);
+                    etBar.setText("Item not Found!");
+                    etBar.setTextColor(Color.RED);
                     etDesc.setText("Please check new barcode tab!");
                     return false;
                 }

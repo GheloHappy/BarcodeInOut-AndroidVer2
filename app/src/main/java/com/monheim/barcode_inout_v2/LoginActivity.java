@@ -19,6 +19,7 @@ import com.monheim.barcode_inout_v2.BarcodeInOut.BarcodeInOutFunctions;
 
 import MssqlCon.Login;
 import MssqlCon.Logs;
+import MssqlCon.PublicVars;
 
 public class LoginActivity extends AppCompatActivity {
     ConnectionFragment conFrag = new ConnectionFragment();
@@ -43,7 +44,6 @@ public class LoginActivity extends AppCompatActivity {
             NetworkInfo ni = cm.getActiveNetworkInfo();
 
             BarcodeInOutFunctions barInOutFunc = new BarcodeInOutFunctions();
-            Logs log = new Logs();
             Login login = new Login();
 
             barInOutFunc.ClearTempTrans();
@@ -53,7 +53,6 @@ public class LoginActivity extends AppCompatActivity {
                 String pass = etPass.getText().toString();
 
                 if (login.CheckUser(userName, pass)) {
-                    log.InsertUserLog("Login", "");
                     startActivity(new Intent(LoginActivity.this, MainActivity.class));
                 } else {
                     Toast.makeText(LoginActivity.this, "Invalid Username/Password or Saved Connection.", Toast.LENGTH_SHORT).show();

@@ -21,11 +21,12 @@ import com.monheim.barcode_inout_v2.Home.HomeFragment;
 import com.monheim.barcode_inout_v2.Inventory.InventoryFragment;
 import com.monheim.barcode_inout_v2.NewBarcode.NewBarcodeFragment;
 
+import MssqlCon.Logs;
 import MssqlCon.PublicVars;
 
 public class MainActivity extends AppCompatActivity {
     PublicVars pubVars = new PublicVars();
-
+    Logs log = new Logs();
     DrawerLayout drawerLayout;
     public NavigationView navigationView;
     ActionBarDrawerToggle drawerToggle;
@@ -91,11 +92,11 @@ public class MainActivity extends AppCompatActivity {
                     break;
                 case R.id.logOut:
                     startActivity(new Intent(MainActivity.this, LoginActivity.class));
+                    log.InsertUserLog("Logout", "");
                     finish();
                     break;
             }
-
-            pubVars.SetMainNav(navigationView); //sending naviagtion view to public variable for disabling/enabling menu items after barcode save
+            pubVars.SetMainNav(navigationView); //sending naviagtion view to public variable for disabling/enabling menu items after barcode in/out save
 
             return false;
         });

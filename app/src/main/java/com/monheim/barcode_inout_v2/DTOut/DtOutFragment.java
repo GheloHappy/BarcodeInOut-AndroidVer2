@@ -6,6 +6,8 @@ import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,7 +33,7 @@ import MssqlCon.PublicVars;
 public class DtOutFragment extends Fragment {
     SimpleAdapter simAd;
     DtOutFunctions dtOutFunc = new DtOutFunctions();
-    String dtDate ="";
+    String searchDate ="";
     String dt = "";
 
     @Override
@@ -39,7 +41,7 @@ public class DtOutFragment extends Fragment {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_dt_out, container, false);
 
-        Spinner spinDtDate = rootView.findViewById(R.id.spinDtDate);
+        EditText searchDtDate = rootView.findViewById(R.id.etSearchDtDate);
         Spinner spinDt = rootView.findViewById(R.id.spinDT);
         ListView lvDTOut = rootView.findViewById(R.id.lvDTOut);
         EditText etDtOutBarcode = rootView.findViewById(R.id.etDtOutBarcode);
@@ -47,22 +49,58 @@ public class DtOutFragment extends Fragment {
         TextView tvTotCs = rootView.findViewById(R.id.tvTotCase);
         TextView tvTotCaseShot = rootView.findViewById(R.id.tvTotCaseShot);
 
-        ArrayAdapter adapter = new ArrayAdapter(getActivity(), R.layout.spinner_item, dtOutFunc.GetDTDate());
-        adapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
-        spinDtDate.setAdapter(adapter);
-
-        spinDtDate.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        etDtOutQty.setEnabled(false);
+        searchDtDate.addTextChangedListener(new TextWatcher() {
+            private boolean isFormatting;
+            private int inputLength;
             @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                dtDate = parent.getItemAtPosition(position).toString();
-                ArrayAdapter adapter = new ArrayAdapter(getActivity(), R.layout.spinner_item, dtOutFunc.GetDt(dtDate));
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                if (isFormatting) {
+                    return;
+                }
+                inputLength = s.length();
+            }
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (isFormatting) {
+                    return;
+                }
+                int newLength = s.length();
+                String digits = s.toString().replaceAll("[^\\d]", "");
+                if (newLength != inputLength && digits.length() < 8) {
+                    isFormatting = true;
+                    if (digits.length() >= 4) {
+                        if (digits.length() == 4 || digits.charAt(4) != '-') {
+                            searchDtDate.setText(String.format("%s-%s", digits.substring(0, 4), digits.substring(4)));
+                            searchDtDate.setSelection(searchDtDate.getText().length());
+                        }
+                    }
+                    if (digits.length() >= 7) {
+                        if (digits.length() == 7 || digits.charAt(7) != '-') {
+                            searchDtDate.setText(String.format("%s-%s-%s", digits.substring(0, 4), digits.substring(4, 6), digits.substring(6)));
+                            searchDtDate.setSelection(searchDtDate.getText().length());
+                        }
+                    }
+                    isFormatting = false;
+                }
+
+                searchDate = searchDtDate.getText().toString();
+
+                ArrayAdapter adapter = new ArrayAdapter(getActivity(), R.layout.spinner_item, dtOutFunc.GetDt(searchDate));
                 adapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
                 spinDt.setAdapter(adapter);
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
+            public void afterTextChanged(Editable s) {
+                if (isFormatting) {
+                    return;
+                }
+                if (s.length() > 10) {
+                    isFormatting = true;
+                    s.delete(10, s.length());
+                    isFormatting = false;
+                }
             }
         });
         spinDt.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -71,7 +109,7 @@ public class DtOutFragment extends Fragment {
                 dt = parent.getItemAtPosition(position).toString();
                 ListBarcodeTran(lvDTOut,tvTotCs);
                 etDtOutBarcode.requestFocus();
-                dtOutFunc.GetTotCsOut(dt,dtDate,tvTotCaseShot);
+                dtOutFunc.GetTotCsOut(dt,searchDate,tvTotCaseShot);
             }
 
             @Override
@@ -86,16 +124,26 @@ public class DtOutFragment extends Fragment {
                 String barcode = etDtOutBarcode.getText().toString();
                 int qty = Integer.parseInt(etDtOutQty.getText().toString());
                 String solomonID = dtOutFunc.GetSolomonID(barcode);
+
                 if (!Objects.equals(solomonID, "NA")) {
-                    dtOutFunc.GetLastQty(dtDate,dt,solomonID);
-                    if (dtOutFunc.UpdateDtItem(qty)){
-                        dtOutFunc.GetTotCsOut(dt,dtDate,tvTotCaseShot);
-                        ListBarcodeTran(lvDTOut,tvTotCs);
+                    if(dtOutFunc.GetLastQty(searchDate,dt,solomonID)) {
+                        if (dtOutFunc.UpdateDtItem(qty)){
+                            dtOutFunc.GetTotCsOut(dt,searchDate,tvTotCaseShot);
+                            ListBarcodeTran(lvDTOut,tvTotCs);
+                        } else {
+                            new AlertDialog.Builder(getActivity())
+                                    .setIcon(android.R.drawable.ic_dialog_alert)
+                                    .setTitle("WARNING!")
+                                    .setMessage("You have reached the maximum QTY.")
+                                    .setPositiveButton("OK",(dialog, which) -> {
+                                    })
+                                    .show();
+                        }
                     } else {
                         new AlertDialog.Builder(getActivity())
                                 .setIcon(android.R.drawable.ic_dialog_alert)
                                 .setTitle("WARNING!")
-                                .setMessage("You have reached the maximum QTY.")
+                                .setMessage("Item not listed in this DT")
                                 .setPositiveButton("OK",(dialog, which) -> {
                                 })
                                 .show();
@@ -109,15 +157,16 @@ public class DtOutFragment extends Fragment {
                             })
                             .show();
                 }
+
                 etDtOutQty.setText("1");
                 etDtOutBarcode.setText("");
                 etDtOutBarcode.post(() -> etDtOutBarcode.requestFocus()); //focus request
+
                 return true;
             }
             etDtOutBarcode.post(() -> etDtOutBarcode.requestFocus()); //focus request
             return false;
         });
-
         etDtOutQty.setOnKeyListener((v, keyCode, event) -> {
             if ((event.getAction() == KeyEvent.ACTION_DOWN) &&
                     (keyCode == KeyEvent.KEYCODE_ENTER || keyCode == KeyEvent.KEYCODE_NAVIGATE_NEXT)) {
@@ -128,11 +177,10 @@ public class DtOutFragment extends Fragment {
         });
         return  rootView;
     }
-
     private void ListBarcodeTran(ListView lvDTOut, TextView tvTotCs) {
         List<Map<String, String>> dataList;
-        dataList = dtOutFunc.GetDTList(dt, dtDate);
-        dtOutFunc.GetTotCs(dt, dtDate, tvTotCs);
+        dataList = dtOutFunc.GetDTList(dt, searchDate);
+        dtOutFunc.GetTotCs(dt, searchDate, tvTotCs);
 
         String[] from = {"timeStamp","solomonID","uom","qty","qtyOut"};
         int[] to = {R.id.id,R.id.description,R.id.barcode,R.id.sapCode,R.id.qty};
