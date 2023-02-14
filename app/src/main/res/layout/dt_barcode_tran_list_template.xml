@@ -9,7 +9,7 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="70dp"
+        android:layout_height="120dp"
         android:layout_marginTop="4dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -34,8 +34,21 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="14dp"
             android:layout_marginLeft="5dp"
-            android:layout_toEndOf="@+id/id"
+            android:layout_marginTop="30dp"
             android:hint="DESCRIPTION"
+            android:textColor="#000"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/itemDescription"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="14dp"
+            android:layout_marginTop="30dp"
+            android:layout_marginLeft="5dp"
+            android:layout_toEndOf="@+id/description"
+            android:hint="item description not found"
             android:textColor="#000"
             android:textSize="18sp"
             android:textStyle="bold" />
@@ -45,20 +58,20 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="20dp"
-            android:layout_marginTop="40dp"
+            android:layout_marginTop="80dp"
             android:hint="barcode"
             android:textColor="#000"
             android:textSize="22sp" />
 
         <TextView
-            android:id="@+id/tranType"
+            android:id="@+id/maxQty"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="51dp"
             android:layout_marginLeft="20dp"
-            android:layout_marginTop="40dp"
+            android:layout_marginTop="80dp"
             android:layout_toEndOf="@+id/barcode"
-            android:hint="SapCODE"
+            android:hint="Max Qty"
             android:textColor="#000"
             android:textSize="22sp" />
 
@@ -67,20 +80,20 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="34dp"
-            android:layout_marginLeft="20dp"
-            android:layout_marginTop="40dp"
-            android:layout_toEndOf="@+id/tranType"
+            android:layout_marginLeft="80dp"
+            android:layout_marginTop="80dp"
+            android:layout_toEndOf="@+id/maxQty"
             android:hint="-"
             android:textColor="#000"
             android:textSize="22sp" />
 
         <TextView
             android:id="@+id/qty"
-            android:layout_width="100dp"
+            android:layout_width="104dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="52dp"
+            android:layout_marginStart="48dp"
             android:layout_marginLeft="20dp"
-            android:layout_marginTop="40dp"
+            android:layout_marginTop="80dp"
             android:layout_marginEnd="150dp"
             android:layout_toEndOf="@+id/uom"
             android:hint="0"

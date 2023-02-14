@@ -67,7 +67,7 @@ public class HomeFragment extends Fragment {
         dataList = homeFunc.GetBarList(refNbr);
 
         String[] from = {"barcode","solomonID","description","uom","qty"};
-        int[] to = {R.id.barcode,R.id.sapCode,R.id.description,R.id.uom,R.id.qty};
+        int[] to = {R.id.barcode,R.id.tranType,R.id.description,R.id.uom,R.id.qty};
         simAd = new SimpleAdapter(getActivity(),dataList,R.layout.temp_barcode_tran_list_template,from,to);
         lvBarcodeTrans.setAdapter(simAd);
     }

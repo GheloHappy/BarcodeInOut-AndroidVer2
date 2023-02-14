@@ -83,14 +83,14 @@
         android:layout_marginStart="20dp"
         android:layout_marginEnd="449dp"
         android:layout_marginBottom="289dp"
-        android:text="Sap Code :"
+        android:text="Solomon ID :"
         android:textColor="@color/black"
         android:textSize="20dp"
         android:textStyle="bold" />
 
 
     <EditText
-        android:id="@+id/etUSapCode"
+        android:id="@+id/etUSolomonID"
         android:layout_width="254dp"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
@@ -188,39 +188,6 @@
         android:text="Save"
         android:textColor="@color/black"
         android:textSize="25dp" />
-
-    <EditText
-        android:id="@+id/etUSolomonID"
-        android:layout_width="254dp"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginStart="20dp"
-        android:layout_marginEnd="330dp"
-        android:layout_marginBottom="30dp"
-        android:background="@drawable/login_input_bg"
-        android:inputType="text"
-        android:paddingLeft="20dp"
-        android:paddingTop="10dp"
-        android:paddingRight="20dp"
-        android:paddingBottom="10dp"
-        android:singleLine="true"
-        android:textColor="@color/white"
-        android:textSize="25dp" />
-
-    <TextView
-        android:layout_width="127dp"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginStart="20dp"
-        android:layout_marginEnd="449dp"
-        android:layout_marginBottom="92dp"
-        android:text="Solomon ID :"
-        android:textColor="@color/black"
-        android:textSize="20dp"
-        android:textStyle="bold" />
 
     <ListView
         android:id="@+id/lvUnknownBarList"

@@ -35,7 +35,6 @@ public class NewBarcodeFragment extends Fragment {
 
         ListView lvUnknownBarList = rootView.findViewById(R.id.lvUnknownBarList);
         EditText etUBarcode = rootView.findViewById(R.id.etUBarcode);
-        EditText etUSapCode = rootView.findViewById(R.id.etUSapCode);
         EditText etUDesc = rootView.findViewById(R.id.etUDescription);
         EditText etUSolomonID = rootView.findViewById(R.id.etUSolomonID);
         EditText etUUOM = rootView.findViewById(R.id.etUUOM);
@@ -70,24 +69,22 @@ public class NewBarcodeFragment extends Fragment {
 
         btnUSave.setOnClickListener(v -> {
             String barcode = etUBarcode.getText().toString();
-            String sapCode = etUSapCode.getText().toString();
             String desc = etUDesc.getText().toString();
             String solomonId = etUSolomonID.getText().toString();
             String uom = etUUOM.getText().toString();
             String csPkg = etUCsPkg.getText().toString();
 
-            if(barcode.matches("") || sapCode.matches("") || desc.matches("") ||
+            if(barcode.matches("") || desc.matches("") ||
                     solomonId.matches("") || uom.matches("") || csPkg.matches("")) {
                 Toast.makeText(getActivity(), "PLEASE FILL ALL FIELDS.", Toast.LENGTH_SHORT).show();
             } else {
-                if (!newBarFunc.InsertToProducts(barcode, sapCode, desc, solomonId,uom, Integer.parseInt(csPkg))) {
+                if (!newBarFunc.InsertToProducts(barcode, desc, solomonId,uom, Integer.parseInt(csPkg))) {
                     Toast.makeText(getActivity(), "UPDATE BARCODE FAILED.", Toast.LENGTH_SHORT).show();
                 } else {
                     newBarFunc.DeleteUnknownBarcode(barcode);
                     log.InsertUserLog("ADD new Barcode",barcode); //logUser
                     Toast.makeText(getActivity(), "NEW BARCODE ADDED!.", Toast.LENGTH_SHORT).show();
                     etUBarcode.getText().clear();
-                    etUSapCode.getText().clear();
                     etUDesc.getText().clear();
                     etUSolomonID.getText().clear();
                     etUUOM.getText().clear();

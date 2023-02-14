@@ -118,7 +118,6 @@ public class BarcodeInOutFunctions extends SqlCon {
                     dtTempBarTran.put("id", rs.getString("id"));
                     dtTempBarTran.put("tranType", rs.getString("tranType"));
                     dtTempBarTran.put("barcode", rs.getString("barcode"));
-                    //dtTempBarTran.put("sapCode", rs.getString("sapCode"));
                     dtTempBarTran.put("description", rs.getString("description"));
                     dtTempBarTran.put("uom", rs.getString("uom"));
                     dtTempBarTran.put("qty", rs.getString("qty"));

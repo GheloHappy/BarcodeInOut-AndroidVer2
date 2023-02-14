@@ -115,7 +115,7 @@ public class BarcodeInOutSaveFragment extends Fragment {
         dataList = barFUnc.GetTempBarList();
 
         String[] from = {"id","barcode","tranType","description","uom","qty"};
-        int[] to = {R.id.id,R.id.barcode,R.id.sapCode,R.id.description,R.id.uom,R.id.qty};
+        int[] to = {R.id.id,R.id.barcode,R.id.tranType,R.id.description,R.id.uom,R.id.qty};
         simAd = new SimpleAdapter(getActivity(),dataList,R.layout.temp_barcode_tran_list_template,from,to);
         lvTempBarcodeTran.setAdapter(simAd);
     }

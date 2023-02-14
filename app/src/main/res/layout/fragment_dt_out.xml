@@ -17,6 +17,7 @@
         android:layout_marginTop="30dp"
         android:layout_marginEnd="391dp"
         android:hint="Search Date"
+        android:textSize="20dp"
         android:inputType="date"
         android:maxLines="1"
         android:singleLine="true"
@@ -74,7 +75,9 @@
         android:layout_marginBottom="113dp"
         android:inputType="text"
         android:textColor="#fff"
-        android:textAlignment="center"/>
+        android:textAlignment="center"
+        android:textSize="20dp"
+        android:hint="tap here"/>
 
     <EditText
         android:id="@+id/etDtOutQty"

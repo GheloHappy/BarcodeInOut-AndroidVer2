@@ -71,10 +71,10 @@ public class NewBarcodeFunctions extends SqlCon {
         return data;
     }
 
-    public boolean InsertToProducts(String barcode, String sapCode, String desc, String solomonId, String uom, int csKpg) {
+    public boolean InsertToProducts(String barcode, String desc, String solomonId, String uom, int csKpg) {
         try {
             if (con != null) {
-                String query = "INSERT INTO Products VALUES ('"+barcode+"','"+sapCode+"','"+desc+"','"+solomonId+"','"+uom+"','"+csKpg+"')";
+                String query = "INSERT INTO Products VALUES ('"+barcode+"','"+desc+"','"+solomonId+"','"+uom+"','"+csKpg+"')";
                 Statement st = con.createStatement();
                 st.execute(query);
 

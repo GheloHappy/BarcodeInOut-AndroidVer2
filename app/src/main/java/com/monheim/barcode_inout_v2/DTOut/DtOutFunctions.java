@@ -21,24 +21,24 @@ import MssqlCon.SqlCon;
 public class DtOutFunctions {
     SqlCon sqlCon = new SqlCon();
     Connection con = sqlCon.SQLConnection();
-    public ArrayList<String> GetDTDate(String dtDate) {
-        ArrayList<String> data = new ArrayList<>();
-        try {
-            if (con != null) {
-                String query = "SELECT DISTINCT schedDate FROM DTInventory WHERE schedDate = '" + dtDate+ "'";
-                Statement st = con.createStatement();
-                ResultSet rs = st.executeQuery(query);
-                while (rs.next()) {
-                    String date = rs.getString(1);
-                    data.add(date);
-                }
-            }
-        } catch (Exception e) {
-            Log.e("Error", e.getMessage());
-        }
-
-        return data;
-    }
+//    public ArrayList<String> GetDTDate(String dtDate) {
+//        ArrayList<String> data = new ArrayList<>();
+//        try {
+//            if (con != null) {
+//                String query = "SELECT DISTINCT schedDate FROM DTInventory WHERE schedDate = '" + dtDate+ "'";
+//                Statement st = con.createStatement();
+//                ResultSet rs = st.executeQuery(query);
+//                while (rs.next()) {
+//                    String date = rs.getString(1);
+//                    data.add(date);
+//                }
+//            }
+//        } catch (Exception e) {
+//            Log.e("Error", e.getMessage());
+//        }
+//
+//        return data;
+//    }
 
     public ArrayList<String> GetDt(String date) {
         ArrayList<String> data = new ArrayList<>();
@@ -64,13 +64,14 @@ public class DtOutFunctions {
         data = new ArrayList<>();
         try {
             if (con != null) {
-                String query = "SELECT * FROM DTInventory WHERE dt = '" + dt + "' AND schedDate = '" + schedDate + "' ORDER BY timeStamp DESC";
+                String query = "SELECT * FROM DTInventory_Desc WHERE dt = '" + dt + "' AND schedDate = '" + schedDate + "' ORDER BY timeStamp DESC";
                 Statement st = con.createStatement();
                 ResultSet rs = st.executeQuery(query);
 
                 while (rs.next()) {
                     Map<String, String> dtTempBarTran = new HashMap<>();
                     dtTempBarTran.put("solomonID", rs.getString("solomonID"));
+                    dtTempBarTran.put("description", rs.getString("description"));
                     dtTempBarTran.put("uom", rs.getString("uom"));
                     dtTempBarTran.put("qty", rs.getString("qty"));
                     dtTempBarTran.put("qtyOut", rs.getString("qtyOut"));

@@ -22,6 +22,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.monheim.barcode_inout_v2.NewBarcode.NewBarcodeFunctions;
 import com.monheim.barcode_inout_v2.R;
 
 import java.util.List;
@@ -33,6 +34,7 @@ import MssqlCon.PublicVars;
 public class DtOutFragment extends Fragment {
     SimpleAdapter simAd;
     DtOutFunctions dtOutFunc = new DtOutFunctions();
+    NewBarcodeFunctions newBarFunc = new NewBarcodeFunctions();
     String searchDate ="";
     String dt = "";
 
@@ -152,10 +154,11 @@ public class DtOutFragment extends Fragment {
                     new AlertDialog.Builder(getActivity())
                             .setIcon(android.R.drawable.ic_dialog_alert)
                             .setTitle("WARNING!")
-                            .setMessage("Item not found.")
+                            .setMessage("Item not found! Item barcode is added in New Barcode tab")
                             .setPositiveButton("OK",(dialog, which) -> {
                             })
                             .show();
+                    newBarFunc.CheckUnknownBarcode(barcode);
                 }
 
                 etDtOutQty.setText("1");
@@ -182,9 +185,9 @@ public class DtOutFragment extends Fragment {
         dataList = dtOutFunc.GetDTList(dt, searchDate);
         dtOutFunc.GetTotCs(dt, searchDate, tvTotCs);
 
-        String[] from = {"timeStamp","solomonID","uom","qty","qtyOut"};
-        int[] to = {R.id.id,R.id.description,R.id.barcode,R.id.sapCode,R.id.qty};
-        simAd = new SimpleAdapter(getActivity(),dataList,R.layout.temp_barcode_tran_list_template,from,to);
+        String[] from = {"timeStamp","solomonID","description","uom","qty","qtyOut"};
+        int[] to = {R.id.id,R.id.description,R.id.itemDescription,R.id.barcode,R.id.maxQty,R.id.qty};
+        simAd = new SimpleAdapter(getActivity(),dataList,R.layout.dt_barcode_tran_list_template,from,to);
         lvDTOut.setAdapter(simAd);
     }
 }
