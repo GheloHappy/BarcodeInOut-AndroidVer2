@@ -84,6 +84,7 @@
             android:layout_marginEnd="150dp"
             android:layout_toEndOf="@+id/uom"
             android:hint="0"
+            android:inputType="number"
             android:textColor="#5793f2"
             android:textSize="22sp" />
 

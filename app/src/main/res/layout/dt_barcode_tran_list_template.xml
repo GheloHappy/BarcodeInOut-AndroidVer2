@@ -72,6 +72,7 @@
             android:layout_marginTop="80dp"
             android:layout_toEndOf="@+id/barcode"
             android:hint="Max Qty"
+            android:inputType="number"
             android:textColor="#000"
             android:textSize="22sp" />
 
@@ -97,6 +98,7 @@
             android:layout_marginEnd="150dp"
             android:layout_toEndOf="@+id/uom"
             android:hint="0"
+            android:inputType="number"
             android:textColor="#5793f2"
             android:textSize="22sp" />
 

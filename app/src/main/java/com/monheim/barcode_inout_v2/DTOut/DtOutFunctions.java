@@ -16,35 +16,18 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import MssqlCon.PublicVars;
 import MssqlCon.SqlCon;
 
 public class DtOutFunctions {
     SqlCon sqlCon = new SqlCon();
+    PublicVars pubVars = new PublicVars();
     Connection con = sqlCon.SQLConnection();
-//    public ArrayList<String> GetDTDate(String dtDate) {
-//        ArrayList<String> data = new ArrayList<>();
-//        try {
-//            if (con != null) {
-//                String query = "SELECT DISTINCT schedDate FROM DTInventory WHERE schedDate = '" + dtDate+ "'";
-//                Statement st = con.createStatement();
-//                ResultSet rs = st.executeQuery(query);
-//                while (rs.next()) {
-//                    String date = rs.getString(1);
-//                    data.add(date);
-//                }
-//            }
-//        } catch (Exception e) {
-//            Log.e("Error", e.getMessage());
-//        }
-//
-//        return data;
-//    }
-
     public ArrayList<String> GetDt(String date) {
         ArrayList<String> data = new ArrayList<>();
         try {
             if (con != null) {
-                String query = "SELECT DISTINCT dt schedDate FROM DTInventory WHERE schedDate = '" + date + "' ORDER BY DT ASC";
+                String query = "SELECT DISTINCT dt schedDate FROM barcodesys_DTInventory WHERE schedDate = '" + date + "' ORDER BY DT ASC";
                 Statement st = con.createStatement();
                 ResultSet rs = st.executeQuery(query);
                 while (rs.next()) {
@@ -53,7 +36,7 @@ public class DtOutFunctions {
                 }
             }
         } catch (Exception e) {
-            Log.e("Error", e.getMessage());
+            System.out.println(e.getMessage());
         }
 
         return data;
@@ -64,7 +47,7 @@ public class DtOutFunctions {
         data = new ArrayList<>();
         try {
             if (con != null) {
-                String query = "SELECT * FROM DTInventory_Desc WHERE dt = '" + dt + "' AND schedDate = '" + schedDate + "' ORDER BY timeStamp DESC";
+                String query = "SELECT * FROM barcodesys_DTInventory_Desc WHERE dt = '" + dt + "' AND schedDate = '" + schedDate + "' ORDER BY timeStamp DESC";
                 Statement st = con.createStatement();
                 ResultSet rs = st.executeQuery(query);
 
@@ -83,13 +66,14 @@ public class DtOutFunctions {
             Log.e("Error", e.getMessage());
         }
 
+        SyncDT(dt, schedDate); //Insert data to DTInventory like the process of api
         return data;
     }
 
     public void GetTotCs(String dt, String schedDate,TextView tvTotCs) {
         try {
             if (con != null) {
-                String query = "SELECT SUM(qty) as qty FROM DTInventory WHERE schedDate ='" + schedDate + "' AND dt = '" + dt + "'";
+                String query = "SELECT SUM(qty) as qty FROM barcodesys_DTInventory WHERE schedDate ='" + schedDate + "' AND dt = '" + dt + "'";
                 Statement st = con.createStatement();
                 ResultSet rs = st.executeQuery(query);
 
@@ -98,13 +82,13 @@ public class DtOutFunctions {
                 }
             }
         } catch (Exception e) {
-            Log.e("Error", e.getMessage());
+            System.out.println(e.getMessage());
         }
     }
     public void GetTotCsOut(String dt, String schedDate,TextView tvTotCsOut) {
         try {
             if (con != null) {
-                String query = "SELECT SUM(qtyOut) as qty FROM DTInventory WHERE schedDate ='" + schedDate + "' AND dt = '" + dt + "'";
+                String query = "SELECT SUM(qtyOut) as qty FROM barcodesys_DTInventory WHERE schedDate ='" + schedDate + "' AND dt = '" + dt + "'";
                 Statement st = con.createStatement();
                 ResultSet rs = st.executeQuery(query);
 
@@ -113,14 +97,14 @@ public class DtOutFunctions {
                 }
             }
         } catch (Exception e) {
-            Log.e("Error", e.getMessage());
+            System.out.println(e.getMessage());
         }
     }
 
     public String GetSolomonID(String val) {
         try {
             if (con != null) {
-                String query = "SELECT solomonID FROM Products WHERE barcode = '" + val + "'";
+                String query = "SELECT solomonID FROM barcodesys_Products WHERE barcode = '" + val + "'";
                 Statement st = con.createStatement();
                 ResultSet rs = st.executeQuery(query);
                 if (rs.next()) {
@@ -130,12 +114,13 @@ public class DtOutFunctions {
                 }
             }
         } catch (Exception e) {
-            Log.e("Error", e.getMessage());
+            System.out.println(e.getMessage());
         }
         return val;
     }
 
     String date, dt, solomonID;
+    String warehouse = pubVars.GetWarehouse();
     public boolean UpdateDtItem(int qty) {
         Date c = Calendar.getInstance().getTime();
         SimpleDateFormat dfTime = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss", Locale.getDefault());
@@ -145,12 +130,17 @@ public class DtOutFunctions {
         if (totQty <= maxQty) {
             try {
                 if (con != null) {
-                    String query = "UPDATE DTInventory Set qtyOut = '" + totQty + "', timeStamp = '" +currentDateTime+ "' WHERE schedDate ='" + date + "' AND dt = '" + dt + "' AND solomonID ='" + solomonID + "'";
+                    String query;
+                    if(warehouse.equals("Cabrera")) {
+                        query = "UPDATE barcodesys_DTInventory Set qtyOut = '" + totQty + "', timeStamp = '" +currentDateTime+ "' WHERE schedDate ='" + date + "' AND dt = '" + dt + "' AND solomonID ='" + solomonID + "'";
+                    } else {
+                        query = "UPDATE DTInventory SET qtyOut = '" + totQty + "', timeStamp = '" +currentDateTime+ "' WHERE schedDate ='" + date + "' AND dt = '" + dt + "' AND solomonID ='" + solomonID + "'";
+                    }
                     Statement st = con.createStatement();
                     st.execute(query);
                 }
             } catch (Exception e) {
-                Log.e("Error", e.getMessage());
+                System.out.println(e.getMessage());
                 return false;
             }
         } else {
@@ -166,10 +156,10 @@ public class DtOutFunctions {
         solomonID = _solomonID;
         try {
             if (con != null) {
-                String query = "SELECT qty,qtyOut FROM DTInventory  WHERE schedDate ='" + date + "' AND dt = '" + dt + "' AND solomonID ='" + solomonID + "'";
+                String query;
+                query = "SELECT qty,qtyOut FROM barcodesys_DTInventory  WHERE schedDate ='" + date + "' AND dt = '" + dt + "' AND solomonID ='" + solomonID + "'";
                 Statement st = con.createStatement();
                 ResultSet rs = st.executeQuery(query);
-
                 if (rs.next()) {
                     if (rs.getString(2) != null) {
                         maxQty = Integer.parseInt(rs.getString(1));
@@ -183,9 +173,26 @@ public class DtOutFunctions {
                 }
             }
         } catch (Exception e) {
-            Log.e("Error", e.getMessage());
+            System.out.println(e.getMessage());
             return false;
         }
         return true;
+    }
+    private void SyncDT(String dt, String date){
+        try {
+            if (con != null) {
+                String checkDtQuery = "SELECT DISTINCT dt FROM DTInventory  WHERE schedDate ='" + date + "' AND dt = '" + dt + "'";
+                Statement stCheck = con.createStatement();
+                ResultSet rs = stCheck.executeQuery(checkDtQuery);
+                if (!rs.next()) {
+                    String query;
+                    query = "INSERT INTO DTInventory (schedDate,dt,solomonID,qtyOut) SELECT OrdDate, ShipviaID,InvtID,0 FROM barcodesys_summary_of_delivery_api WHERE OrdDate ='" + date + "' AND ShipviaID = '" + dt + "'";
+                    Statement st = con.createStatement();
+                    st.execute(query);
+                }
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
     }
 }

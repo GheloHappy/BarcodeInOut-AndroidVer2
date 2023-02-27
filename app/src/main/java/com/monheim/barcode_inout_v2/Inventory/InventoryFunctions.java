@@ -28,7 +28,7 @@ public class InventoryFunctions extends SqlCon {
 
         try {
             if (con != null) {
-                String query = "INSERT INTO InventoryTrans VALUES ('"+barcode+ "','" + uom +"','" + qty + "','" + date + "','" + currentTime + "','" + pubVar.GetUser() + "')";
+                String query = "INSERT INTO barcodesys_InventoryTrans VALUES ('"+barcode+ "','" + uom +"','" + qty + "','" + date + "','" + currentTime + "','" + pubVar.GetUser() + "')";
                 Statement st = con.createStatement();
                 st.execute(query);
             }
@@ -43,7 +43,7 @@ public class InventoryFunctions extends SqlCon {
 
         try {
             if (con != null) {
-                String query = "SELECT * FROM InventoryTrans WHERE date = '" + date + "' ORDER BY date_entry";
+                String query = "SELECT * FROM barcodesys_InventoryTrans WHERE date = '" + date + "' ORDER BY date_entry";
                 Statement st = con.createStatement();
                 ResultSet rs = st.executeQuery(query);
                 while(rs.next()) {
@@ -64,7 +64,7 @@ public class InventoryFunctions extends SqlCon {
     public boolean DeleteItem(String barcode, String date) {
         try {
             if (con != null) {
-                String query = "DELETE FROM InventoryTrans WHERE barcode = '"+ barcode +"' AND date = '"+ date +"'";
+                String query = "DELETE FROM barcodesys_InventoryTrans WHERE barcode = '"+ barcode +"' AND date = '"+ date +"'";
                 Statement st = con.createStatement();
                 st.execute(query);
             }
@@ -77,7 +77,7 @@ public class InventoryFunctions extends SqlCon {
     public boolean UpdateItem(String barcode, int qty, String date) {
         try {
             if (con != null) {
-                String query = "Update InventoryTrans SET qty = '" + qty+ "' WHERE barcode = '"+ barcode +"' AND date = '"+ date +"'";
+                String query = "Update barcodesys_InventoryTrans SET qty = '" + qty+ "' WHERE barcode = '"+ barcode +"' AND date = '"+ date +"'";
                 Statement st = con.createStatement();
                 st.execute(query);
             }
@@ -91,7 +91,7 @@ public class InventoryFunctions extends SqlCon {
     public boolean CheckBarcode(String barcode, String date) {
         try {
             if (con != null) {
-                String query = "SELECT barcode FROM InventoryTrans WHERE barcode = '"+barcode+"' AND date = '"+ date +"'";
+                String query = "SELECT barcode FROM barcodesys_InventoryTrans WHERE barcode = '"+barcode+"' AND date = '"+ date +"'";
                 Statement st = con.createStatement();
                 ResultSet rs = st.executeQuery(query);
 

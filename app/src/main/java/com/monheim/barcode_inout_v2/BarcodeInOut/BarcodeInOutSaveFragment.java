@@ -49,6 +49,7 @@ public class BarcodeInOutSaveFragment extends Fragment {
 
         lvTempBarcodeTran.setOnItemLongClickListener((parent, view, position, id) -> {
             TextView tvID = view.findViewById(R.id.id);
+            TextView tvBarcode = view.findViewById(R.id.barcode);
             int item = Integer.parseInt(tvID.getText().toString());
 
             new AlertDialog.Builder(getActivity())
@@ -59,6 +60,7 @@ public class BarcodeInOutSaveFragment extends Fragment {
                        barFunc.DeleteTempBarcodeItem(item);
                        barFunc.GetToTQty(tvTotCs);
                        ListTempBarcodeTran(lvTempBarcodeTran);
+                       log.InsertUserLog("Delete Barcode upon Saving Ref",tvBarcode.getText().toString()); //logUser
                    })
                    .setNegativeButton("No", null)
                    .show();

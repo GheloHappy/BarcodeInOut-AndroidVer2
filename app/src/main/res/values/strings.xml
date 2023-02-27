@@ -10,4 +10,10 @@
         <item>PCS</item>
     </string-array>
 
+    <string-array name="spWarehouses">
+        <item>Cabrera</item>
+        <item>Monheim</item>
+        <item>Maryland</item>
+    </string-array>
+
 </resources>

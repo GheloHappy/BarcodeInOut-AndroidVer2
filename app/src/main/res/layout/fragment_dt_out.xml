@@ -110,14 +110,14 @@
         android:textSize="30sp" />
 
     <TextView
-        android:layout_width="196dp"
+        android:layout_width="179dp"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
         android:layout_marginStart="9dp"
-        android:layout_marginEnd="395dp"
-        android:layout_marginBottom="49dp"
+        android:layout_marginEnd="412dp"
+        android:layout_marginBottom="48dp"
         android:text="TOTAL CS :"
         android:textAlignment="center"
         android:textColor="#fff"
@@ -125,14 +125,15 @@
 
     <TextView
         android:id="@+id/tvTotCase"
-        android:layout_width="81dp"
+        android:layout_width="123dp"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginStart="183dp"
-        android:layout_marginEnd="336dp"
-        android:layout_marginBottom="49dp"
+        android:layout_marginStart="156dp"
+        android:layout_marginEnd="321dp"
+        android:layout_marginBottom="47dp"
+        android:inputType="number"
         android:hint="0"
         android:textAlignment="center"
         android:textColor="#00FF22"

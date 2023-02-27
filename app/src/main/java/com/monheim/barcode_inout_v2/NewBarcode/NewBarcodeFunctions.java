@@ -19,7 +19,7 @@ public class NewBarcodeFunctions extends SqlCon {
     public void CheckUnknownBarcode(String barcode){
         try {
             if (con != null) {
-                String query = "SELECT barcode FROM UnknownBarcodes WHERE barcode = '"+barcode+"'";
+                String query = "SELECT barcode FROM barcodesys_UnknownBarcodes WHERE barcode = '"+barcode+"'";
                 Statement st = con.createStatement();
                 ResultSet rs = st.executeQuery(query);
 
@@ -34,12 +34,12 @@ public class NewBarcodeFunctions extends SqlCon {
     public void InsertUnknownBarcode(String barcode) {
         try {
             if (con != null) {
-                String query = "INSERT INTO UnknownBarcodes VALUES ('"+barcode+"', NULL,NULL,NULL,NULL,NULL)";
+                String query = "INSERT INTO barcodesys_UnknownBarcodes VALUES ('"+barcode+"', NULL,NULL,NULL,NULL)";
                 Statement st = con.createStatement();
                 st.execute(query);
             }
         } catch (Exception e) {
-            Log.e("Error", e.getMessage());
+            System.out.println(e.getMessage());
         }
     }
 
@@ -49,7 +49,7 @@ public class NewBarcodeFunctions extends SqlCon {
 
         try {
             if (con != null) {
-                String query = "SELECT * FROM UnknownBarcodes";
+                String query = "SELECT * FROM barcodesys_UnknownBarcodes";
                 Statement st = con.createStatement();
                 ResultSet rs = st.executeQuery(query);
 
@@ -74,7 +74,7 @@ public class NewBarcodeFunctions extends SqlCon {
     public boolean InsertToProducts(String barcode, String desc, String solomonId, String uom, int csKpg) {
         try {
             if (con != null) {
-                String query = "INSERT INTO Products VALUES ('"+barcode+"','"+desc+"','"+solomonId+"','"+uom+"','"+csKpg+"')";
+                String query = "INSERT INTO barcodesys_Products VALUES ('"+barcode+"','"+desc+"','"+solomonId+"','"+uom+"','"+csKpg+"')";
                 Statement st = con.createStatement();
                 st.execute(query);
 
@@ -89,12 +89,24 @@ public class NewBarcodeFunctions extends SqlCon {
     public void DeleteUnknownBarcode(String barcode) {
         try {
             if (con != null) {
-                String query = "DELETE FROM UnknownBarcodes WHERE barcode = '"+barcode+"'";
+                String query = "DELETE FROM barcodesys_UnknownBarcodes WHERE barcode = '"+barcode+"'";
                 Statement st = con.createStatement();
                 st.execute(query);
             }
         } catch (Exception e) {
             Log.e("Error", e.getMessage());
+        }
+    }
+
+    public void clearUnknownBarcode() {
+        try {
+            if (con != null) {
+                String query = "DELETE FROM barcodesys_UnknownBarcodes";
+                Statement st = con.createStatement();
+                st.execute(query);
+            }
+        } catch (Exception e) {
+           System.out.println(e.getMessage());
         }
     }
 }

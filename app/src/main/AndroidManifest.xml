@@ -6,9 +6,9 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher_mgc_logo"
+        android:icon="@mipmap/mgc_logo"
         android:label="Warehouse Barcode System"
-        android:roundIcon="@mipmap/ic_launcher_mgc_logo"
+        android:roundIcon="@mipmap/mgc_logo"
         android:supportsRtl="true"
         android:theme="@style/Theme.BarcodeInOutv2">
 

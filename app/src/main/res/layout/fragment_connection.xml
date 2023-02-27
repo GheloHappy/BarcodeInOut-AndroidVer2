@@ -99,6 +99,41 @@
         app:layout_constraintTop_toBottomOf="@+id/textv"
         app:layout_constraintVertical_bias="0.032" />
 
+    <TextView
+        android:id="@+id/textWarehouse"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Warehouse : "
+        android:textColor="#fff"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/etPort"
+        app:layout_constraintVertical_bias="0.057" />
+
+    <Spinner
+        android:id="@+id/spinWarehouse"
+        android:layout_width="417dp"
+        android:layout_height="53dp"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/login_input_bg"
+        android:drawablePadding="10dp"
+        android:inputType="number"
+        android:paddingLeft="20dp"
+        android:paddingTop="5sp"
+        android:paddingRight="10dp"
+        android:paddingBottom="5sp"
+        android:textSize="30sp"
+        android:backgroundTint="#fff"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.519"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textWarehouse"
+        app:layout_constraintVertical_bias="0.032"
+        android:entries="@array/spWarehouses"/>
+
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btnConSave"
         android:layout_width="148dp"
@@ -109,7 +144,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/etPort"
-        app:layout_constraintVertical_bias="0.153" />
+        app:layout_constraintTop_toBottomOf="@+id/spinWarehouse"
+        app:layout_constraintVertical_bias="0.339" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -19,7 +19,7 @@ public class Logs extends SqlCon {
         try {
             con = SQLConnection();
             if (con != null) {
-                String query = "INSERT INTO logs VALUES('"+user+ "','" + currentDateTime + "','"+ trans +"','"+ remarks + "')";
+                String query = "INSERT INTO barcodesys_logs VALUES('"+user+ "','" + currentDateTime + "','"+ trans +"','"+ remarks + "')";
                 Statement st = con.createStatement();
                 st.execute(query);
             }

@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import MssqlCon.Login;
@@ -30,6 +31,7 @@ public class ConnectionFragment extends Fragment {
         EditText etServerIp = rootView.findViewById(R.id.etServerIp);
         EditText etPort = rootView.findViewById(R.id.etPort);
         Button btnConSave = rootView.findViewById(R.id.btnConSave);
+        Spinner spinWarehouse = rootView.findViewById(R.id.spinWarehouse);
 
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(getActivity());
         etServerIp.setText(settings.getString("ip", "0")); //retrieve ip and port
@@ -41,6 +43,7 @@ public class ConnectionFragment extends Fragment {
         btnConSave.setOnClickListener(v -> {
             String ip = etServerIp.getText().toString();
             String port = etPort.getText().toString();
+            String warehouse = spinWarehouse.getSelectedItem().toString();
 
             if (ni != null && ni.getType() == ConnectivityManager.TYPE_WIFI) {
                 Login login = new Login();
@@ -48,11 +51,13 @@ public class ConnectionFragment extends Fragment {
                 SharedPreferences.Editor editor = settings.edit(); //saved ip and port
                 editor.putString("ip", ip);
                 editor.putString("port", port);
+                editor.putString("warehouse", warehouse);
                 editor.commit();
 
                 PublicVars pubVars = new PublicVars();
                 pubVars.SetIp(ip);
                 pubVars.SetPort(port);
+                pubVars.SetWarehouse(warehouse);
 
                 if (login.CheckUser("admin", "adminx") == false) { //test Login
                     Toast.makeText(getActivity(), "Failed to Connect in "+ ip + " - "+ port, Toast.LENGTH_SHORT).show();

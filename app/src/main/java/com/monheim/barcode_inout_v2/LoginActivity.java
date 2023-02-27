@@ -16,6 +16,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.monheim.barcode_inout_v2.BarcodeInOut.BarcodeInOutFunctions;
+import com.monheim.barcode_inout_v2.NewBarcode.NewBarcodeFunctions;
 
 import MssqlCon.Login;
 import MssqlCon.Logs;
@@ -45,8 +46,10 @@ public class LoginActivity extends AppCompatActivity {
 
             BarcodeInOutFunctions barInOutFunc = new BarcodeInOutFunctions();
             Login login = new Login();
+            NewBarcodeFunctions newBarFunc = new NewBarcodeFunctions();
 
             barInOutFunc.ClearTempTrans();
+            newBarFunc.clearUnknownBarcode();
 
             if (ni != null && ni.getType() == ConnectivityManager.TYPE_WIFI) {
                 String userName = etUser.getText().toString();

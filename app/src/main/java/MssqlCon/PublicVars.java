@@ -29,4 +29,9 @@ public class PublicVars {
     private static String _port;
     public static void SetPort(String Port) { _port = Port; }
     public static String GetPort() { return _port; }
+
+    private static String _warehouse;
+
+    public static void SetWarehouse(String warehouse) { _warehouse = warehouse; }
+    public static String GetWarehouse() {return  _warehouse; }
 }

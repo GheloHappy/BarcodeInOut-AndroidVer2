@@ -25,7 +25,7 @@ public class BarcodeInOutFunctions extends SqlCon {
     public boolean GetBarcode(String barcode, TextView etBar, TextView etDesc) {
         try {
             if (con != null) {
-                String query = "SELECT barcode, description FROM Products WHERE barcode ='" + barcode + "'";
+                String query = "SELECT barcode, description FROM barcodesys_Products WHERE barcode ='" + barcode + "'";
                 Statement st = con.createStatement();
                 ResultSet rs = st.executeQuery(query);
 
@@ -61,7 +61,7 @@ public class BarcodeInOutFunctions extends SqlCon {
 
         try {
             if (con != null) {
-                String query = "INSERT INTO tempBarcodeTrans VALUES ('"+ id + "','"+ barcode+ "','" + uom + "','" + qty + "','" + currentDate + "','"+ currentTime + "','"+ tranType +"')";
+                String query = "INSERT INTO barcodesys_tempBarcodeTrans VALUES ('"+ id + "','"+ barcode+ "','" + uom + "','" + qty + "','" + currentDate + "','"+ currentTime + "','"+ tranType +"')";
                 Statement st = con.createStatement();
                 st.execute(query);
             }
@@ -75,7 +75,7 @@ public class BarcodeInOutFunctions extends SqlCon {
         con = SQLConnection();
         try {
             if (con != null) {
-                String query = "DELETE FROM tempBarcodeTrans";
+                String query = "DELETE FROM barcodesys_tempBarcodeTrans";
                 Statement st = con.createStatement();
                 st.execute(query);
             }
@@ -86,7 +86,7 @@ public class BarcodeInOutFunctions extends SqlCon {
     public boolean CheckTempBarTranData() {
         try {
             if (con != null) {
-                String query = "SELECT * FROM TempBarcodeTranDetail";
+                String query = "SELECT * FROM barcodesys_TempBarcodeTranDetail";
                 Statement st = con.createStatement();
                 ResultSet rs = st.executeQuery(query);
 
@@ -109,7 +109,7 @@ public class BarcodeInOutFunctions extends SqlCon {
 
         try {
             if (con != null) {
-                String query = "SELECT * FROM TempBarcodeTranDetail ORDER BY id ASC";
+                String query = "SELECT * FROM barcodesys_TempBarcodeTranDetail ORDER BY id ASC";
                 Statement st = con.createStatement();
                 ResultSet rs = st.executeQuery(query);
 
@@ -133,7 +133,7 @@ public class BarcodeInOutFunctions extends SqlCon {
     public void GetToTQty(TextView tvTotCase) {
         try {
             if (con != null) {
-                String queryCS = "SELECT SUM(qty) as totCs FROM tempBarcodeTrans WHERE Uom = 'CS'";
+                String queryCS = "SELECT SUM(qty) as totCs FROM barcodesys_tempBarcodeTrans WHERE Uom = 'CS'";
                 Statement st = con.createStatement();
                 ResultSet rsCS = st.executeQuery(queryCS);
 
@@ -150,12 +150,12 @@ public class BarcodeInOutFunctions extends SqlCon {
     public boolean InsertRefNbr(String refnbr,String remarks) {
         try {
             if (con != null) {
-                String query = "INSERT INTO BarcodeTrans SELECT barcode,uom, qty, date, date_entry,tranType,'"+ refnbr + "','" + remarks + "' FROM tempBarcodeTrans";
+                String query = "INSERT INTO barcodesys_BarcodeTrans SELECT barcode,uom, qty, date, date_entry,tranType,'"+ refnbr + "','" + remarks + "' FROM barcodesys_tempBarcodeTrans";
                 Statement st = con.createStatement();
                 st.execute(query);
             }
         } catch (Exception e) {
-            Log.e("Error", e.getMessage());
+            System.out.println(e.getMessage());
             return false;
         }
         return true;
@@ -163,7 +163,7 @@ public class BarcodeInOutFunctions extends SqlCon {
     public void DeleteTempBarcodeItem(int id){
         try {
             if (con != null) {
-                String query = "DELETE FROM tempBarcodeTrans WHERE id = '"+ id +"'";
+                String query = "DELETE FROM barcodesys_tempBarcodeTrans WHERE id = '"+ id +"'";
                 Statement st = con.createStatement();
                 st.execute(query);
             }

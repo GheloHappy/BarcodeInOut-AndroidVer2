@@ -23,7 +23,7 @@ public class HomeFunctions extends SqlCon {
 
         try {
             if (con != null) {
-                String query = "SELECT * FROM BarcodeTranHistory WHERE refNbr = '"+refNbr+"'";
+                String query = "SELECT * FROM barcodesys_BarcodeTranHistory WHERE refNbr = '"+refNbr+"'";
                 Statement st = con.createStatement();
                 ResultSet rs = st.executeQuery(query);
 
@@ -31,7 +31,6 @@ public class HomeFunctions extends SqlCon {
                     Map<String, String> dtTempBarTran = new HashMap<>();
                     dtTempBarTran.put("solomonID", rs.getString("solomonID"));
                     dtTempBarTran.put("barcode", rs.getString("barcode"));
-                    //dtTempBarTran.put("sapCode", rs.getString("sapCode"));
                     dtTempBarTran.put("description", rs.getString("description"));
                     dtTempBarTran.put("uom", rs.getString("uom"));
                     dtTempBarTran.put("qty", rs.getString("qty"));
@@ -47,7 +46,7 @@ public class HomeFunctions extends SqlCon {
     public boolean GetTotCs(TextView tvTotCs, String refNbr) {
         try {
             if (con != null) {
-                String query = "SELECT SUM(qty) as totCs FROM BarcodeTranHistory WHERE refNbr = '"+refNbr+"'";
+                String query = "SELECT SUM(qty) as totCs FROM barcodesys_BarcodeTranHistory WHERE refNbr = '"+refNbr+"'";
                 Statement st = con.createStatement();
                 ResultSet rs = st.executeQuery(query);
 

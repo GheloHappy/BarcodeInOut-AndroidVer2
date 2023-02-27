@@ -13,7 +13,7 @@ public class Login extends  SqlCon {
         Logs log = new Logs();
         try {
             if (con != null) {
-                String query = "SELECT * FROM Users WHERE username ='" + usr + "' AND password = '" + pass + "'";
+                String query = "SELECT * FROM barcodesys_Users WHERE username ='" + usr + "' AND password = '" + pass + "'";
                 Statement st = con.createStatement();
                 ResultSet rs = st.executeQuery(query);
 
