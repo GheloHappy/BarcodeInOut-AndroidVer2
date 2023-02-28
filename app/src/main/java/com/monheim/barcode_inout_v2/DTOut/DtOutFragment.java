@@ -33,6 +33,7 @@ import MssqlCon.PublicVars;
 
 public class DtOutFragment extends Fragment {
     SimpleAdapter simAd;
+    TextView tvTotCs, tvTotCaseShot, tvTotPcs, tvTotPcsShot;
     DtOutFunctions dtOutFunc = new DtOutFunctions();
     NewBarcodeFunctions newBarFunc = new NewBarcodeFunctions();
     String searchDate ="";
@@ -48,8 +49,10 @@ public class DtOutFragment extends Fragment {
         ListView lvDTOut = rootView.findViewById(R.id.lvDTOut);
         EditText etDtOutBarcode = rootView.findViewById(R.id.etDtOutBarcode);
         EditText etDtOutQty = rootView.findViewById(R.id.etDtOutQty);
-        TextView tvTotCs = rootView.findViewById(R.id.tvTotCase);
-        TextView tvTotCaseShot = rootView.findViewById(R.id.tvTotCaseShot);
+        tvTotCs = rootView.findViewById(R.id.tvTotCase);
+        tvTotCaseShot = rootView.findViewById(R.id.tvTotCaseShot);
+        tvTotPcs = rootView.findViewById(R.id.tvTotPcs);
+        tvTotPcsShot = rootView.findViewById(R.id.tvTotPcsShot);
 
         etDtOutQty.setEnabled(false);
         searchDtDate.addTextChangedListener(new TextWatcher() {
@@ -109,9 +112,9 @@ public class DtOutFragment extends Fragment {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 dt = parent.getItemAtPosition(position).toString();
-                ListBarcodeTran(lvDTOut,tvTotCs);
+                ListBarcodeTran(lvDTOut);
                 etDtOutBarcode.requestFocus();
-                dtOutFunc.GetTotCsOut(dt,searchDate,tvTotCaseShot);
+                DisplayTotCs();
             }
 
             @Override
@@ -130,8 +133,8 @@ public class DtOutFragment extends Fragment {
                 if (!Objects.equals(solomonID, "NA")) {
                     if(dtOutFunc.GetLastQty(searchDate,dt,solomonID)) {
                         if (dtOutFunc.UpdateDtItem(qty)){
-                            dtOutFunc.GetTotCsOut(dt,searchDate,tvTotCaseShot);
-                            ListBarcodeTran(lvDTOut,tvTotCs);
+                            DisplayTotCs();
+                            ListBarcodeTran(lvDTOut);
                         } else {
                             new AlertDialog.Builder(getActivity())
                                     .setIcon(android.R.drawable.ic_dialog_alert)
@@ -180,14 +183,19 @@ public class DtOutFragment extends Fragment {
         });
         return  rootView;
     }
-    private void ListBarcodeTran(ListView lvDTOut, TextView tvTotCs) {
+    private void ListBarcodeTran(ListView lvDTOut) {
         List<Map<String, String>> dataList;
         dataList = dtOutFunc.GetDTList(dt, searchDate);
-        dtOutFunc.GetTotCs(dt, searchDate, tvTotCs);
+        DisplayTotCs();
 
-        String[] from = {"timeStamp","solomonID","description","uom","qty","qtyOut"};
-        int[] to = {R.id.id,R.id.description,R.id.itemDescription,R.id.barcode,R.id.maxQty,R.id.qty};
+        String[] from = {"timeStamp","solomonID","description","barcode","qty","uom","qtyOut"};
+        int[] to = {R.id.id,R.id.description,R.id.itemDescription,R.id.barcode,R.id.maxQty,R.id.uom,R.id.qty};
         simAd = new SimpleAdapter(getActivity(),dataList,R.layout.dt_barcode_tran_list_template,from,to);
         lvDTOut.setAdapter(simAd);
+    }
+
+    private void DisplayTotCs(){
+        dtOutFunc.GetTotCs(dt, searchDate, tvTotCs,tvTotCaseShot);
+        dtOutFunc.GetTotPcs(dt, searchDate, tvTotPcs,tvTotPcsShot);
     }
 }
