@@ -11,6 +11,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.google.android.material.navigation.NavigationView;
 import com.monheim.barcode_inout_v2.BarcodeInOut.BarcodeInFragment;
@@ -23,8 +26,10 @@ import com.monheim.barcode_inout_v2.NewBarcode.NewBarcodeFragment;
 
 import MssqlCon.Logs;
 import MssqlCon.PublicVars;
+import MssqlCon.SqlCon;
 
 public class MainActivity extends AppCompatActivity {
+    SqlCon sqlCon = new SqlCon();
     PublicVars pubVars = new PublicVars();
     Logs log = new Logs();
     DrawerLayout drawerLayout;
@@ -64,7 +69,11 @@ public class MainActivity extends AppCompatActivity {
         drawerToggle.syncState();
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        TextView tvWarehouse = navigationView.getHeaderView(0).findViewById(R.id.tvWarehouse);
+        tvWarehouse.setText("Warehouse Barcode System : " + pubVars.GetWarehouse() + " : " +pubVars.GetUser()); //set text to view database using
+
         navigationView.setNavigationItemSelectedListener(item -> {
+            sqlCon.Reconnect();
             switch (item.getItemId()) {
                 case R.id.home:
                     getSupportFragmentManager().beginTransaction().replace(R.id.container,homeFragment).commit();

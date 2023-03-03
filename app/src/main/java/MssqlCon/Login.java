@@ -21,7 +21,6 @@ public class Login extends  SqlCon {
                     pubVar.SetUser(rs.getString(4));
                     pubVar.SetUserDept(rs.getString(5));
                     log.InsertUserLog("Login", "");
-                    System.out.println(rs.getString(4));
                     return true;
                 }
             }

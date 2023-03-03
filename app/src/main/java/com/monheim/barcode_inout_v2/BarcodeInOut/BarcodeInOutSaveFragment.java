@@ -31,6 +31,8 @@ public class BarcodeInOutSaveFragment extends Fragment {
     SimpleAdapter simAd;
     BarcodeInOutFunctions barFunc = new BarcodeInOutFunctions();
     Logs log = new Logs();
+    PublicVars pubVars = new PublicVars();
+    String user;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -44,8 +46,11 @@ public class BarcodeInOutSaveFragment extends Fragment {
         TextView tvTotPcs= rootView.findViewById(R.id.tvTotPcs);
         ListView lvTempBarcodeTran = rootView.findViewById(R.id.lvBarcodeTrans);
 
+        user = pubVars.GetUser();
+
         ListTempBarcodeTran(lvTempBarcodeTran);
-        barFunc.GetToTQty(tvTotCs);
+        barFunc.GetToTQtyCs(tvTotCs, user);
+        barFunc.GetToTQtyPcs(tvTotPcs, user);
 
         lvTempBarcodeTran.setOnItemLongClickListener((parent, view, position, id) -> {
             TextView tvID = view.findViewById(R.id.id);
@@ -57,8 +62,9 @@ public class BarcodeInOutSaveFragment extends Fragment {
                    .setTitle("Are you sure ?")
                    .setMessage("Do you want to delete this item")
                    .setPositiveButton("Yes",(dialog, which) -> {
-                       barFunc.DeleteTempBarcodeItem(item);
-                       barFunc.GetToTQty(tvTotCs);
+                       barFunc.DeleteTempBarcodeItem(item, user);
+                       barFunc.GetToTQtyCs(tvTotCs,user);
+                       barFunc.GetToTQtyPcs(tvTotPcs,user);
                        ListTempBarcodeTran(lvTempBarcodeTran);
                        log.InsertUserLog("Delete Barcode upon Saving Ref",tvBarcode.getText().toString()); //logUser
                    })
@@ -83,7 +89,7 @@ public class BarcodeInOutSaveFragment extends Fragment {
                         Toast.makeText(getActivity(),"Insert Fail please contact IT!", Toast.LENGTH_SHORT).show();
                     } else {
                         Toast.makeText(getActivity(),"Reference saved successfully.", Toast.LENGTH_SHORT).show();
-                        barFunc.ClearTempTrans();
+                        barFunc.ClearTempTrans(user);
                         etRefNbr.setText("");
 
                         log.InsertUserLog("BarcodeInOut",refNbr); //logUser
@@ -114,9 +120,9 @@ public class BarcodeInOutSaveFragment extends Fragment {
     private void ListTempBarcodeTran(ListView lvTempBarcodeTran) {
         List<Map<String, String>> dataList;
         BarcodeInOutFunctions barFUnc = new BarcodeInOutFunctions();
-        dataList = barFUnc.GetTempBarList();
+        dataList = barFUnc.GetTempBarList(user);
 
-        String[] from = {"id","barcode","tranType","description","uom","qty"};
+        String[] from = {"id","barcode","solomonID","description","uom","qty"};
         int[] to = {R.id.id,R.id.barcode,R.id.tranType,R.id.description,R.id.uom,R.id.qty};
         simAd = new SimpleAdapter(getActivity(),dataList,R.layout.temp_barcode_tran_list_template,from,to);
         lvTempBarcodeTran.setAdapter(simAd);

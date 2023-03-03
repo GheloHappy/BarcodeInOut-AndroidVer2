@@ -22,7 +22,7 @@ public class BarcodeInOutFunctions extends SqlCon {
     Connection con = SQLConnection();
 
     //Barcode In Out Fragment
-    public boolean GetBarcode(String barcode, TextView etBar, TextView etDesc) {
+    public boolean GetBarcode(String barcode, TextView tvBar, TextView tvDesc) {
         try {
             if (con != null) {
                 String query = "SELECT barcode, description FROM barcodesys_Products WHERE barcode ='" + barcode + "'";
@@ -30,13 +30,13 @@ public class BarcodeInOutFunctions extends SqlCon {
                 ResultSet rs = st.executeQuery(query);
 
                 if (rs.next()) {
-                    etBar.setText(rs.getString(1));
-                    etDesc.setText(rs.getString(2));
-                    etBar.setTextColor(Color.BLACK);
+                    tvBar.setText(rs.getString(1));
+                    tvDesc.setText(rs.getString(2));
+                    tvBar.setTextColor(Color.BLACK);
                 } else {
-                    etBar.setText("Item not Found!");
-                    etBar.setTextColor(Color.RED);
-                    etDesc.setText("Please check new barcode tab!");
+                    tvBar.setText("Item not Found!");
+                    tvBar.setTextColor(Color.RED);
+                    tvDesc.setText("Please check new barcode tab!");
                     return false;
                 }
             }
@@ -48,20 +48,21 @@ public class BarcodeInOutFunctions extends SqlCon {
         return true;
     }
     int id = 1;
-    public void InsertIn(String barcode, String uom, int qty, String tranType){
+    public void InsertIn(String barcode,String uom, int qty, String tranType, String user, String itemDesc, String solomonID){
         Date c = Calendar.getInstance().getTime();
         SimpleDateFormat dfDate = new SimpleDateFormat("MM/dd/yyyy", Locale.getDefault());
         SimpleDateFormat dfTime = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss", Locale.getDefault());
         String currentDate = dfDate.format(c);
         String currentTime = dfTime.format(c);
 
-        if (CheckTempBarTranData() == false) {
+        if (CheckTempBarTranData(user) == false) {
             id = 1;
         }
 
         try {
             if (con != null) {
-                String query = "INSERT INTO barcodesys_tempBarcodeTrans VALUES ('"+ id + "','"+ barcode+ "','" + uom + "','" + qty + "','" + currentDate + "','"+ currentTime + "','"+ tranType +"')";
+                String query = "INSERT INTO barcodesys_tempBarcodeTrans VALUES ('"+ id + "','"+ barcode+ "','" + itemDesc + "','" + solomonID + "','" + uom + "','"
+                        + qty + "','" + currentDate + "','"+ currentTime + "','"+ tranType +"','"+user+"')";
                 Statement st = con.createStatement();
                 st.execute(query);
             }
@@ -71,22 +72,10 @@ public class BarcodeInOutFunctions extends SqlCon {
 
         id++;
     }
-    public void ClearTempTrans(){
-        con = SQLConnection();
+    public boolean CheckTempBarTranData(String user) {
         try {
             if (con != null) {
-                String query = "DELETE FROM barcodesys_tempBarcodeTrans";
-                Statement st = con.createStatement();
-                st.execute(query);
-            }
-        } catch (Exception e) {
-            Log.e("Error", e.getMessage());
-        }
-    }
-    public boolean CheckTempBarTranData() {
-        try {
-            if (con != null) {
-                String query = "SELECT * FROM barcodesys_TempBarcodeTranDetail";
+                String query = "SELECT * FROM barcodesys_tempBarcodeTrans WHERE username = '"+user+"'";
                 Statement st = con.createStatement();
                 ResultSet rs = st.executeQuery(query);
 
@@ -101,22 +90,65 @@ public class BarcodeInOutFunctions extends SqlCon {
 
         return true;
     }
+    public boolean CheckMultiBarcode(String barcode) {
+        try {
+            if (con != null) {
+                String query = "SELECT COUNT(*) AS count FROM barcodesys_Products WHERE barcode = '"+barcode+"'";
+                Statement st = con.createStatement();
+                ResultSet rs = st.executeQuery(query);
 
-    //Barcode In Out Save Fragment
-    public List<Map<String, String>> GetTempBarList() {
+                if (rs.next()) {
+                    int count = rs.getInt("count");
+                    if (count > 1) {
+                        return true; // return true if count is greater than 1
+                    }
+                }
+            }
+        } catch (Exception e) {
+            Log.e("Error", e.getMessage());
+        }
+        return false;
+    }
+    public List<Map<String, String>> GetMultiBarcode(String barcode) {
         List<Map<String, String>> data;
         data = new ArrayList<>();
 
         try {
             if (con != null) {
-                String query = "SELECT * FROM barcodesys_TempBarcodeTranDetail ORDER BY id ASC";
+                String query = "SELECT * FROM barcodesys_products WHERE barcode = '"+ barcode +"' ORDER BY solomonId ASC";
+                Statement st = con.createStatement();
+                ResultSet rs = st.executeQuery(query);
+
+                while(rs.next()) {
+                    Map<String, String> dtMultiBarcode = new HashMap<>();
+                    dtMultiBarcode.put("barcode", rs.getString("barcode"));
+                    dtMultiBarcode.put("description", rs.getString("description"));
+                    dtMultiBarcode.put("solomonID", rs.getString("solomonID"));
+                    data.add(dtMultiBarcode);
+                }
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage() + ": GetMultiBarcode");
+        }
+
+        return data;
+    }
+
+    //Barcode In Out Save Fragment
+    public List<Map<String, String>> GetTempBarList(String user) {
+        List<Map<String, String>> data;
+        data = new ArrayList<>();
+
+        try {
+            if (con != null) {
+                String query = "SELECT * FROM barcodesys_tempBarcodeTrans WHERE username = '"+ user +"' ORDER BY id ASC";
                 Statement st = con.createStatement();
                 ResultSet rs = st.executeQuery(query);
 
                 while(rs.next()) {
                     Map<String, String> dtTempBarTran = new HashMap<>();
                     dtTempBarTran.put("id", rs.getString("id"));
-                    dtTempBarTran.put("tranType", rs.getString("tranType"));
+                    dtTempBarTran.put("solomonID", rs.getString("solomonID"));
                     dtTempBarTran.put("barcode", rs.getString("barcode"));
                     dtTempBarTran.put("description", rs.getString("description"));
                     dtTempBarTran.put("uom", rs.getString("uom"));
@@ -130,10 +162,27 @@ public class BarcodeInOutFunctions extends SqlCon {
 
         return data;
     }
-    public void GetToTQty(TextView tvTotCase) {
+    public void GetToTQtyCs(TextView tvTotCase, String user) {
         try {
             if (con != null) {
-                String queryCS = "SELECT SUM(qty) as totCs FROM barcodesys_tempBarcodeTrans WHERE Uom = 'CS'";
+                String queryCS = "SELECT SUM(qty) as totCs FROM barcodesys_tempBarcodeTrans WHERE Uom = 'CS' AND username = '"+user+"'";
+                Statement st = con.createStatement();
+                ResultSet rsCS = st.executeQuery(queryCS);
+
+                if (rsCS.next()) {
+                    tvTotCase.setText(rsCS.getString(1));
+                } else {
+                    tvTotCase.setText("n/a");
+                }
+            }
+        } catch (Exception e) {
+            Log.e("Error", e.getMessage());
+        }
+    }
+    public void GetToTQtyPcs(TextView tvTotCase, String user) {
+        try {
+            if (con != null) {
+                String queryCS = "SELECT SUM(qty) as totCs FROM barcodesys_tempBarcodeTrans WHERE Uom = 'PCS' AND username = '"+user+"'";
                 Statement st = con.createStatement();
                 ResultSet rsCS = st.executeQuery(queryCS);
 
@@ -155,20 +204,32 @@ public class BarcodeInOutFunctions extends SqlCon {
                 st.execute(query);
             }
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            System.out.println(e.getMessage() + " InsertRefNbr");
             return false;
         }
         return true;
     }
-    public void DeleteTempBarcodeItem(int id){
+    public void DeleteTempBarcodeItem(int id, String user){
         try {
             if (con != null) {
-                String query = "DELETE FROM barcodesys_tempBarcodeTrans WHERE id = '"+ id +"'";
+                String query = "DELETE FROM barcodesys_tempBarcodeTrans WHERE id = '"+ id +"' AND username = '"+ user +"'";
                 Statement st = con.createStatement();
                 st.execute(query);
             }
         } catch (Exception e) {
-            Log.e("Error", e.getMessage());
+            System.out.println(e.getMessage() + " DeleteTempBarcodeItem");
+        }
+    }
+    public void ClearTempTrans(String user){
+        try {
+            if (con != null) {
+                String query = "DELETE FROM barcodesys_tempBarcodeTrans WHERE username = '"+user+"'";
+                Statement st = con.createStatement();
+                st.execute(query);
+                System.out.println(query);
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage() + "ClearTempTrans");
         }
     }
 }

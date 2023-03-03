@@ -39,6 +39,9 @@ public class DtOutFragment extends Fragment {
     String searchDate ="";
     String dt = "";
 
+    PublicVars pubVars = new PublicVars();
+    String user;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -55,6 +58,7 @@ public class DtOutFragment extends Fragment {
         tvTotPcsShot = rootView.findViewById(R.id.tvTotPcsShot);
 
         etDtOutQty.setEnabled(false);
+        user = pubVars.GetUser();
         searchDtDate.addTextChangedListener(new TextWatcher() {
             private boolean isFormatting;
             private int inputLength;
@@ -161,7 +165,7 @@ public class DtOutFragment extends Fragment {
                             .setPositiveButton("OK",(dialog, which) -> {
                             })
                             .show();
-                    newBarFunc.CheckUnknownBarcode(barcode);
+                    newBarFunc.CheckUnknownBarcode(barcode, user);
                 }
 
                 etDtOutQty.setText("1");

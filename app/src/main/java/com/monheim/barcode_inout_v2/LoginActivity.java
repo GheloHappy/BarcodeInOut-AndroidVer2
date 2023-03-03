@@ -44,18 +44,20 @@ public class LoginActivity extends AppCompatActivity {
             ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
             NetworkInfo ni = cm.getActiveNetworkInfo();
 
-            BarcodeInOutFunctions barInOutFunc = new BarcodeInOutFunctions();
             Login login = new Login();
-            NewBarcodeFunctions newBarFunc = new NewBarcodeFunctions();
-
-            barInOutFunc.ClearTempTrans();
-            newBarFunc.clearUnknownBarcode();
 
             if (ni != null && ni.getType() == ConnectivityManager.TYPE_WIFI) {
                 String userName = etUser.getText().toString();
                 String pass = etPass.getText().toString();
 
                 if (login.CheckUser(userName, pass)) {
+
+                    BarcodeInOutFunctions barInOutFunc = new BarcodeInOutFunctions();
+                    NewBarcodeFunctions newBarFunc = new NewBarcodeFunctions();
+
+                    barInOutFunc.ClearTempTrans(userName);
+                    newBarFunc.clearUnknownBarcode(userName);
+
                     startActivity(new Intent(LoginActivity.this, MainActivity.class));
                 } else {
                     Toast.makeText(LoginActivity.this, "Invalid Username/Password or Saved Connection.", Toast.LENGTH_SHORT).show();

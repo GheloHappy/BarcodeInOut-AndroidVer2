@@ -38,4 +38,16 @@ public class SqlCon {
 
         return con;
     }
+
+    public void Reconnect() {
+        try {
+            if (con != null && !con.isClosed()) {
+                con.close();
+            }
+            con = SQLConnection();
+            //System.out.println("RECONNECT");
+        } catch (Exception e) {
+            Log.e("ERROR", e.getMessage());
+        }
+    }
 }

@@ -168,7 +168,6 @@ public class DtOutFunctions {
                 String query;
                 query = "SELECT qty,qtyOut FROM barcodesys_DTInventory  WHERE schedDate ='" + date + "' AND dt = '" + dt +
                         "' AND solomonID ='" + solomonID + "' AND uom ='" + itemUom + "'";
-                System.out.println(query);
                 Statement st = con.createStatement();
                 ResultSet rs = st.executeQuery(query);
                 if (rs.next()) {

@@ -22,11 +22,14 @@ import java.util.List;
 import java.util.Map;
 
 import MssqlCon.Logs;
+import MssqlCon.PublicVars;
 
 public class NewBarcodeFragment extends Fragment {
     SimpleAdapter simAd;
     NewBarcodeFunctions newBarFunc = new NewBarcodeFunctions();
     Logs log = new Logs();
+    PublicVars pubVars = new PublicVars();
+    String user;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -41,8 +44,8 @@ public class NewBarcodeFragment extends Fragment {
         EditText etUCsPkg = rootView.findViewById(R.id.etUCsPkg);
         Button btnUSave = rootView.findViewById(R.id.btnUSave);
 
+        user = pubVars.GetUser();
         UnknownBarcodeList(lvUnknownBarList);
-
 
         lvUnknownBarList.setOnItemClickListener((parent, view, position, id) -> {
             TextView tvUBar = view.findViewById(R.id.unknownBarcode);
@@ -99,7 +102,7 @@ public class NewBarcodeFragment extends Fragment {
 
     private void UnknownBarcodeList(ListView lvUnknownBarList) {
         List<Map<String, String>> dataList;
-        dataList = newBarFunc.GetUnknownBarList();
+        dataList = newBarFunc.GetUnknownBarList(user);
 
         String[] from = {"barcode"};
         int[] to = {R.id.unknownBarcode};
