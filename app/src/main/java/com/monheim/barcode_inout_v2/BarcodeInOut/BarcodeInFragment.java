@@ -1,21 +1,13 @@
 package com.monheim.barcode_inout_v2.BarcodeInOut;
 
 import android.app.AlertDialog;
-import android.content.DialogInterface;
+import android.graphics.Color;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -34,13 +26,10 @@ import MssqlCon.PublicVars;
 public class BarcodeInFragment extends Fragment {
     BarcodeInOutFunctions barInOut = new BarcodeInOutFunctions();
     NewBarcodeFunctions newBarFunc = new NewBarcodeFunctions();
-
     PublicVars publVars = new PublicVars();
     String user, itemDesc,solomonId;
 
     SimpleAdapter simAd;
-
-    private boolean isDialogShown = false;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -88,6 +77,8 @@ public class BarcodeInFragment extends Fragment {
                         });
                         builder.setPositiveButton("Save", (dialog, which) -> {
                             barInOut.InsertIn(barcode,uom,qty,"IN", user, itemDesc, solomonId);
+                            PublicVars.GetNav().getMenu().findItem(R.id.barcodeOut).setEnabled(false); //disable Barcode Out in Menu if tempbarcode has data of IN
+                            btnSave.setEnabled(true);
                         });
 
                         ListView listView = new ListView(getContext());
@@ -103,11 +94,21 @@ public class BarcodeInFragment extends Fragment {
                         final AlertDialog dialog = builder.create();
 
                         listView.setOnItemClickListener((parent, view, position, id) -> {
-                            TextView tvItemDesc = view.findViewById(R.id.description);
-                            TextView tvSolomonID = view.findViewById(R.id.qty);
+                            for (int i = 0; i < parent.getChildCount(); i++) {
+                                TextView tvItemDesc = parent.getChildAt(i).findViewById(R.id.description);
+                                TextView tvSolomonID = parent.getChildAt(i).findViewById(R.id.qty);
 
-                            itemDesc = tvItemDesc.getText().toString();
-                            solomonId = tvSolomonID.getText().toString();
+                                if (i == position) {
+                                    tvItemDesc.setTextColor(Color.RED);
+                                    tvSolomonID.setTextColor(Color.RED);
+
+                                    itemDesc = tvItemDesc.getText().toString();
+                                    solomonId = tvSolomonID.getText().toString();
+                                } else {
+                                    tvItemDesc.setTextColor(Color.BLACK);
+                                    tvSolomonID.setTextColor(Color.BLACK);
+                                }
+                            }
                         });
 
                         dialog.show();

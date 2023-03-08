@@ -29,7 +29,6 @@
         android:layout_marginEnd="332dp"
         android:layout_marginBottom="334dp"
         android:background="@drawable/login_input_bg"
-        android:enabled="false"
         android:paddingLeft="20dp"
         android:paddingTop="10dp"
         android:paddingRight="20dp"

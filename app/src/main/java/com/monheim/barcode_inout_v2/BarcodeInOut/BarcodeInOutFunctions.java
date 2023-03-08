@@ -79,9 +79,10 @@ public class BarcodeInOutFunctions extends SqlCon {
                 Statement st = con.createStatement();
                 ResultSet rs = st.executeQuery(query);
 
-                if (!rs.next()) {
-                    return false; //return false if no data
+                if (rs.next()) {
+                    return true;
                 }
+                return false; //return false if no data
             }
         } catch (Exception e) {
             Log.e("Error", e.getMessage());
@@ -141,13 +142,13 @@ public class BarcodeInOutFunctions extends SqlCon {
 
         try {
             if (con != null) {
-                String query = "SELECT * FROM barcodesys_tempBarcodeTrans WHERE username = '"+ user +"' ORDER BY id ASC";
+                String query = "SELECT * FROM barcodesys_TempBarcodeTransDetail WHERE username = '"+ user +"' ORDER BY description ASC";
                 Statement st = con.createStatement();
                 ResultSet rs = st.executeQuery(query);
 
                 while(rs.next()) {
                     Map<String, String> dtTempBarTran = new HashMap<>();
-                    dtTempBarTran.put("id", rs.getString("id"));
+                    //dtTempBarTran.put("id", rs.getString("id"));
                     dtTempBarTran.put("solomonID", rs.getString("solomonID"));
                     dtTempBarTran.put("barcode", rs.getString("barcode"));
                     dtTempBarTran.put("description", rs.getString("description"));
@@ -199,7 +200,7 @@ public class BarcodeInOutFunctions extends SqlCon {
     public boolean InsertRefNbr(String refnbr,String remarks) {
         try {
             if (con != null) {
-                String query = "INSERT INTO barcodesys_BarcodeTrans SELECT barcode,uom, qty, date, date_entry,tranType,'"+ refnbr + "','" + remarks + "' FROM barcodesys_tempBarcodeTrans";
+                String query = "INSERT INTO barcodesys_BarcodeTrans SELECT barcode,description,solomonID,uom, qty, date, date_entry,tranType,'"+ refnbr + "','" + remarks + "',username FROM barcodesys_tempBarcodeTrans";
                 Statement st = con.createStatement();
                 st.execute(query);
             }

@@ -1,10 +1,9 @@
 package com.monheim.barcode_inout_v2.BarcodeInOut;
 
 import android.app.AlertDialog;
+import android.graphics.Color;
 import android.os.Bundle;
-
 import androidx.fragment.app.Fragment;
-
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,9 +26,8 @@ import MssqlCon.PublicVars;
 public class BarcodeOutFragment extends Fragment {
     BarcodeInOutFunctions barInOut = new BarcodeInOutFunctions();
     NewBarcodeFunctions newBarFunc = new NewBarcodeFunctions();
-
     PublicVars publVars = new PublicVars();
-    String user;
+    String user, itemDesc,solomonId;
 
     SimpleAdapter simAd;
 
@@ -73,7 +71,15 @@ public class BarcodeOutFragment extends Fragment {
                         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
                         builder.setTitle("Detected multiple solomon ID");
                         builder.setMessage("Please select appropriate solomon ID");
-                        builder.setNegativeButton("CANCEL", null);
+                        builder.setCancelable(false);
+                        builder.setNegativeButton("Cancel", (dialog, which) -> {
+                            dialog.dismiss();
+                        });
+                        builder.setPositiveButton("Save", (dialog, which) -> {
+                            barInOut.InsertIn(barcode,uom,qty * -1,"OUT", user, itemDesc, solomonId);
+                            PublicVars.GetNav().getMenu().findItem(R.id.barcodeIn).setEnabled(false); //disable Barcode Out in Menu if tempbarcode has data of IN
+                            btnSave.setEnabled(true);
+                        });
 
                         ListView listView = new ListView(getContext());
 
@@ -82,17 +88,27 @@ public class BarcodeOutFragment extends Fragment {
                         simAd = new SimpleAdapter(getActivity(),dataList,R.layout.temp_barcode_tran_list_template,from,to);
                         listView.setAdapter(simAd);
 
+                        listView.setChoiceMode(ListView.CHOICE_MODE_NONE);
                         builder.setView(listView);
 
                         final AlertDialog dialog = builder.create();
 
                         listView.setOnItemClickListener((parent, view, position, id) -> {
-                            TextView tvItemDesc = view.findViewById(R.id.description);
-                            TextView tvSolomonID = view.findViewById(R.id.qty);
+                            for (int i = 0; i < parent.getChildCount(); i++) {
+                                TextView tvItemDesc = parent.getChildAt(i).findViewById(R.id.description);
+                                TextView tvSolomonID = parent.getChildAt(i).findViewById(R.id.qty);
 
-                            barInOut.InsertIn(barcode,uom,qty * -1,"OUT", user, tvItemDesc.getText().toString(), tvSolomonID.getText().toString());
+                                if (i == position) {
+                                    tvItemDesc.setTextColor(Color.RED);
+                                    tvSolomonID.setTextColor(Color.RED);
 
-                            dialog.dismiss();
+                                    itemDesc = tvItemDesc.getText().toString();
+                                    solomonId = tvSolomonID.getText().toString();
+                                } else {
+                                    tvItemDesc.setTextColor(Color.BLACK);
+                                    tvSolomonID.setTextColor(Color.BLACK);
+                                }
+                            }
                         });
 
                         dialog.show();
@@ -107,7 +123,6 @@ public class BarcodeOutFragment extends Fragment {
 
                         barInOut.InsertIn(barcode,uom,qty * -1,"OUT", user, itemDesc, solomonID);
                     }
-                    //barInOut.InsertIn(barcode,uom,qty * -1,"OUT", user);
                 } else {
                     newBarFunc.CheckUnknownBarcode(barcode,user);
                 }

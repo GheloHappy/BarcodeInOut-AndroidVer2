@@ -81,6 +81,7 @@ public class NewBarcodeFunctions extends SqlCon {
 
         return true;
     }
+
     public void DeleteUnknownBarcode(String barcode) {
         try {
             if (con != null) {

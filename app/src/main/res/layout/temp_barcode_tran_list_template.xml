@@ -9,7 +9,7 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="70dp"
+        android:layout_height="match_parent"
         android:layout_marginTop="4dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -76,17 +76,16 @@
 
         <TextView
             android:id="@+id/qty"
-            android:layout_width="100dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="52dp"
             android:layout_marginLeft="20dp"
             android:layout_marginTop="40dp"
-            android:layout_marginEnd="150dp"
             android:layout_toEndOf="@+id/uom"
             android:hint="0"
             android:inputType="number"
             android:textColor="#5793f2"
-            android:textSize="22sp" />
+            android:textSize="28sp" />
 
     </RelativeLayout>
 

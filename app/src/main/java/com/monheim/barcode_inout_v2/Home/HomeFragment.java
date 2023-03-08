@@ -43,6 +43,7 @@ public class HomeFragment extends Fragment {
         ListView lvBarcodeTrans = rootView.findViewById(R.id.lvHomeBarcodeTrans);
         Button btnSearch = rootView.findViewById(R.id.btnSearch);
         TextView tvTotCs = rootView.findViewById(R.id.tvHomeTotCS);
+        TextView tvTotPcs = rootView.findViewById(R.id.tvHomeTotPcs);
 
         etSearchRefNbr.setOnEditorActionListener((v, actionId, event) -> {
             if(actionId == EditorInfo.IME_ACTION_DONE){
@@ -53,7 +54,7 @@ public class HomeFragment extends Fragment {
         });
         btnSearch.setOnClickListener(v -> {
             String refNbr = etSearchRefNbr.getText().toString();
-            if(homeFunc.GetTotCs(tvTotCs, refNbr) == true) {
+            if(homeFunc.GetTotCs(tvTotCs, tvTotPcs, refNbr) == true) {
                 ListBarcodeTran(lvBarcodeTrans, refNbr);
             } else {
                 Toast.makeText(getActivity(), "Reference number not found.", Toast.LENGTH_SHORT).show();

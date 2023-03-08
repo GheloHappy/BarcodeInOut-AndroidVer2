@@ -23,7 +23,7 @@ public class HomeFunctions extends SqlCon {
 
         try {
             if (con != null) {
-                String query = "SELECT * FROM barcodesys_BarcodeTranHistory WHERE refNbr = '"+refNbr+"'";
+                String query = "SELECT * FROM barcodesys_BarcodeTransDetail WHERE refNbr = '"+refNbr+"'";
                 Statement st = con.createStatement();
                 ResultSet rs = st.executeQuery(query);
 
@@ -43,16 +43,20 @@ public class HomeFunctions extends SqlCon {
 
         return data;
     }
-    public boolean GetTotCs(TextView tvTotCs, String refNbr) {
+    public boolean GetTotCs(TextView tvTotCs,TextView tvTotPcs, String refNbr) {
         try {
             if (con != null) {
-                String query = "SELECT SUM(qty) as totCs FROM barcodesys_BarcodeTranHistory WHERE refNbr = '"+refNbr+"'";
+                String query = "SELECT " +
+                        " SUM(CASE WHEN uom = 'CS' THEN qty ELSE 0 END) as totCs," +
+                        " SUM(CASE WHEN uom = 'PCS' THEN qty ELSE 0 END) as totPcs FROM barcodesys_BarcodeTransDetail" +
+                        " WHERE refNbr = '"+refNbr+"'";
                 Statement st = con.createStatement();
                 ResultSet rs = st.executeQuery(query);
 
                 if (rs.next()) {
                     if (rs.getString(1) != null){
                         tvTotCs.setText(rs.getString(1));
+                        tvTotPcs.setText(rs.getString(2));
                     }else{
                         return false;
                     }
