@@ -18,7 +18,7 @@ public class Login extends  SqlCon {
                 ResultSet rs = st.executeQuery(query);
 
                 if (rs.next()) {
-                    pubVar.SetUser(rs.getString(4));
+                    pubVar.SetUser(rs.getString(2));
                     pubVar.SetUserDept(rs.getString(5));
                     log.InsertUserLog("Login", "");
                     return true;

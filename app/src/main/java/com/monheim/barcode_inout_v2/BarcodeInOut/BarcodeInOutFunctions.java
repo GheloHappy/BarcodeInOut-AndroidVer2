@@ -16,10 +16,14 @@ import java.util.Locale;
 import java.util.Date;
 import java.util.Map;
 
+import MssqlCon.PublicVars;
 import MssqlCon.SqlCon;
 
 public class BarcodeInOutFunctions extends SqlCon {
     Connection con = SQLConnection();
+
+    PublicVars pubVar = new PublicVars();
+    String user = pubVar.GetUser();
 
     //Barcode In Out Fragment
     public boolean GetBarcode(String barcode, TextView tvBar, TextView tvDesc) {
@@ -198,9 +202,16 @@ public class BarcodeInOutFunctions extends SqlCon {
         }
     }
     public boolean InsertRefNbr(String refnbr,String remarks) {
+        Date c = Calendar.getInstance().getTime();
+        SimpleDateFormat dfDate = new SimpleDateFormat("MM/dd/yyyy", Locale.getDefault());
+        SimpleDateFormat dfTime = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss", Locale.getDefault());
+        String currentDate = dfDate.format(c);
+        String currentTime = dfTime.format(c);
+
         try {
             if (con != null) {
-                String query = "INSERT INTO barcodesys_BarcodeTrans SELECT barcode,description,solomonID,uom, qty, date, date_entry,tranType,'"+ refnbr + "','" + remarks + "',username FROM barcodesys_tempBarcodeTrans";
+                String query = "INSERT INTO barcodesys_BarcodeTrans SELECT barcode,description,solomonID,uom, qty,'" +
+                        currentDate + "','"+ currentTime + "',tranType,'"+ refnbr + "','" + remarks + "',username FROM barcodesys_TempBarcodeTransDetail WHERE username = '"+user+"'";
                 Statement st = con.createStatement();
                 st.execute(query);
             }
@@ -227,7 +238,6 @@ public class BarcodeInOutFunctions extends SqlCon {
                 String query = "DELETE FROM barcodesys_tempBarcodeTrans WHERE username = '"+user+"'";
                 Statement st = con.createStatement();
                 st.execute(query);
-                System.out.println(query);
             }
         } catch (Exception e) {
             System.out.println(e.getMessage() + "ClearTempTrans");

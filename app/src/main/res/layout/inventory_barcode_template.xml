@@ -8,8 +8,8 @@
 
 
     <RelativeLayout
-        android:layout_width="598dp"
-        android:layout_height="51dp"
+        android:layout_width="match_parent"
+        android:layout_height="90dp"
         android:layout_marginTop="4dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -26,12 +26,12 @@
             android:layout_alignParentStart="true"
             android:layout_alignParentEnd="true"
             android:layout_alignParentBottom="true"
-            android:layout_marginStart="15dp"
+            android:layout_marginStart="14dp"
             android:layout_marginLeft="5dp"
-            android:layout_marginEnd="339dp"
-            android:layout_marginBottom="7dp"
+            android:layout_marginEnd="340dp"
+            android:layout_marginBottom="59dp"
             android:hint="BARCODE"
-            android:textColor="#5793f2"
+            android:textColor="#F41018"
             android:textSize="22sp"
             android:textStyle="bold" />
 
@@ -42,9 +42,9 @@
             android:layout_alignParentStart="true"
             android:layout_alignParentEnd="true"
             android:layout_alignParentBottom="true"
-            android:layout_marginStart="315dp"
-            android:layout_marginEnd="199dp"
-            android:layout_marginBottom="6dp"
+            android:layout_marginStart="348dp"
+            android:layout_marginEnd="166dp"
+            android:layout_marginBottom="59dp"
             android:hint="UOM"
             android:textColor="#000"
             android:textSize="22sp" />
@@ -56,13 +56,43 @@
             android:layout_alignParentStart="true"
             android:layout_alignParentEnd="true"
             android:layout_alignParentBottom="true"
-            android:layout_marginStart="461dp"
-            android:layout_marginEnd="46dp"
-            android:layout_marginBottom="8dp"
+            android:layout_marginStart="487dp"
+            android:layout_marginEnd="20dp"
+            android:layout_marginBottom="58dp"
             android:hint="QTY"
             android:inputType="number"
+            android:textColor="#08ACED"
+            android:textSize="22sp" />
+
+        <TextView
+            android:id="@+id/tvSolomonId"
+            android:layout_width="155dp"
+            android:layout_height="40dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginStart="18dp"
+            android:layout_marginTop="7dp"
+            android:layout_marginEnd="427dp"
+            android:layout_marginBottom="-1dp"
+            android:hint="Sol ID"
             android:textColor="#000"
             android:textSize="22sp" />
+
+        <TextView
+            android:id="@+id/tvDesc"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginStart="166dp"
+            android:layout_marginEnd="22dp"
+            android:layout_marginBottom="6dp"
+            android:hint="Description"
+            android:textColor="#000"
+            android:textSize="18sp" />
+
     </RelativeLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

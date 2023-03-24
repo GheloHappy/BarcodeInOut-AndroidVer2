@@ -22,6 +22,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.monheim.barcode_inout_v2.BarcodeInOut.BarcodeInOutFunctions;
 import com.monheim.barcode_inout_v2.NewBarcode.NewBarcodeFunctions;
 import com.monheim.barcode_inout_v2.R;
 
@@ -29,17 +30,19 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import MssqlCon.Logs;
 import MssqlCon.PublicVars;
 
 public class DtOutFragment extends Fragment {
     SimpleAdapter simAd;
     TextView tvTotCs, tvTotCaseShot, tvTotPcs, tvTotPcsShot;
     DtOutFunctions dtOutFunc = new DtOutFunctions();
-    NewBarcodeFunctions newBarFunc = new NewBarcodeFunctions();
     String searchDate ="";
-    String dt = "";
-
+    String dt = "", uom;
+    NewBarcodeFunctions newBarFunc = new NewBarcodeFunctions();
+    BarcodeInOutFunctions barInOut = new BarcodeInOutFunctions();
     PublicVars pubVars = new PublicVars();
+    Logs log = new Logs();
     String user;
 
     @Override
@@ -56,9 +59,25 @@ public class DtOutFragment extends Fragment {
         tvTotCaseShot = rootView.findViewById(R.id.tvTotCaseShot);
         tvTotPcs = rootView.findViewById(R.id.tvTotPcs);
         tvTotPcsShot = rootView.findViewById(R.id.tvTotPcsShot);
+        Spinner spInvtUom = rootView.findViewById(R.id.spInvtUom);
 
         etDtOutQty.setEnabled(false);
         user = pubVars.GetUser();
+
+        spInvtUom.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if (parent.getItemAtPosition(position).toString().equals("PCS")) {
+                    etDtOutQty.setEnabled(true);
+                } else {
+                    etDtOutQty.setText("1");
+                    etDtOutQty.setEnabled(false);
+                }
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
         searchDtDate.addTextChangedListener(new TextWatcher() {
             private boolean isFormatting;
             private int inputLength;
@@ -95,9 +114,11 @@ public class DtOutFragment extends Fragment {
 
                 searchDate = searchDtDate.getText().toString();
 
-                ArrayAdapter adapter = new ArrayAdapter(getActivity(), R.layout.spinner_item, dtOutFunc.GetDt(searchDate));
-                adapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
-                spinDt.setAdapter(adapter);
+                if (searchDate.length() == 10) {
+                    ArrayAdapter adapter = new ArrayAdapter(getActivity(), R.layout.spinner_item, dtOutFunc.GetDt(searchDate));
+                    adapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
+                    spinDt.setAdapter(adapter);
+                }
             }
 
             @Override
@@ -132,13 +153,32 @@ public class DtOutFragment extends Fragment {
 
                 String barcode = etDtOutBarcode.getText().toString();
                 int qty = Integer.parseInt(etDtOutQty.getText().toString());
-                String solomonID = dtOutFunc.GetSolomonID(barcode);
+                uom = spInvtUom.getSelectedItem().toString();
+                String solomonID = dtOutFunc.GetSolomonID(barcode, dt, uom);
 
-                if (!Objects.equals(solomonID, "NA")) {
+                if (Objects.equals(solomonID, "NA")) {
+                    new AlertDialog.Builder(getActivity())
+                            .setIcon(android.R.drawable.ic_dialog_alert)
+                            .setTitle("WARNING!")
+                            .setMessage("Please select correct UOM")
+                            .setPositiveButton("OK",(dialog, which) -> {
+                            })
+                            .show();
+                } else if (Objects.equals(solomonID, "NAUOM")){
+                    new AlertDialog.Builder(getActivity())
+                            .setIcon(android.R.drawable.ic_dialog_alert)
+                            .setTitle("WARNING!")
+                            .setMessage("Item not found! Item barcode is added in New Barcode tab")
+                            .setPositiveButton("OK",(dialog, which) -> {
+                            })
+                            .show();
+                    newBarFunc.CheckUnknownBarcode(barcode, user);
+                } else {
                     if(dtOutFunc.GetLastQty(searchDate,dt,solomonID)) {
                         if (dtOutFunc.UpdateDtItem(qty)){
                             DisplayTotCs();
                             ListBarcodeTran(lvDTOut);
+                            log.InsertUserLog("DT-OUT","Update :" + solomonID + " : " + spInvtUom.getSelectedItem().toString() + " : " + qty + " : " + dt);
                         } else {
                             new AlertDialog.Builder(getActivity())
                                     .setIcon(android.R.drawable.ic_dialog_alert)
@@ -157,15 +197,6 @@ public class DtOutFragment extends Fragment {
                                 })
                                 .show();
                     }
-                } else {
-                    new AlertDialog.Builder(getActivity())
-                            .setIcon(android.R.drawable.ic_dialog_alert)
-                            .setTitle("WARNING!")
-                            .setMessage("Item not found! Item barcode is added in New Barcode tab")
-                            .setPositiveButton("OK",(dialog, which) -> {
-                            })
-                            .show();
-                    newBarFunc.CheckUnknownBarcode(barcode, user);
                 }
 
                 etDtOutQty.setText("1");
@@ -192,7 +223,7 @@ public class DtOutFragment extends Fragment {
         dataList = dtOutFunc.GetDTList(dt, searchDate);
         DisplayTotCs();
 
-        String[] from = {"timeStamp","solomonID","description","barcode","qty","uom","qtyOut"};
+        String[] from = {"timeStamp","solomonID","description","barcode","qtyOg","uomOg","qtyOut"};
         int[] to = {R.id.id,R.id.description,R.id.itemDescription,R.id.barcode,R.id.maxQty,R.id.uom,R.id.qty};
         simAd = new SimpleAdapter(getActivity(),dataList,R.layout.dt_barcode_tran_list_template,from,to);
         lvDTOut.setAdapter(simAd);

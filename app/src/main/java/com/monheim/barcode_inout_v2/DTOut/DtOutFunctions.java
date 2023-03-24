@@ -33,7 +33,6 @@ public class DtOutFunctions {
                 if (con != null) {
                     String query;
                     query = "SELECT DISTINCT dt FROM barcodesys_DTInventory WHERE schedDate = '" + date + "' ORDER BY DT ASC";
-
                     Statement st = con.createStatement();
                     ResultSet rs = st.executeQuery(query);
                     if (!rs.isBeforeFirst()) {
@@ -48,7 +47,7 @@ public class DtOutFunctions {
                     }
                 }
             } catch (Exception e) {
-                System.out.println(e.getMessage() + "GET DT");
+                System.out.println(e.getMessage() + " - GET DT");
             }
         }
         return data;
@@ -67,8 +66,8 @@ public class DtOutFunctions {
                     Map<String, String> dtTempBarTran = new HashMap<>();
                     dtTempBarTran.put("solomonID", rs.getString("solomonID"));
                     dtTempBarTran.put("description", rs.getString("description"));
-                    dtTempBarTran.put("uom", rs.getString("uom"));
-                    dtTempBarTran.put("qty", rs.getString("qty"));
+                    dtTempBarTran.put("uomOg", rs.getString("uomOg"));
+                    dtTempBarTran.put("qtyOg", rs.getString("qtyOg"));
                     dtTempBarTran.put("qtyOut", rs.getString("qtyOut"));
                     dtTempBarTran.put("timeStamp", rs.getString("timeStamp"));
                     dtTempBarTran.put("barcode", rs.getString("barcode"));
@@ -84,7 +83,8 @@ public class DtOutFunctions {
     public void GetTotCs(String dt, String schedDate,TextView tvTotCs,TextView tvTotCsOut) {
         try {
             if (con != null) {
-                String query = "SELECT SUM(qty) as qty, SUM(qtyOut) as qty FROM barcodesys_DTInventory WHERE schedDate ='" + schedDate + "' AND dt = '" + dt + "' AND uom = 'CS'";
+                String query = "SELECT SUM(qtyOg) as qty, SUM(qtyOut) as qtyOut FROM barcodesys_DTInventory WHERE schedDate ='" + schedDate + "' AND dt = '" + dt +
+                        "' AND uomOg = 'CS'";
                 Statement st = con.createStatement();
                 ResultSet rs = st.executeQuery(query);
 
@@ -100,7 +100,8 @@ public class DtOutFunctions {
     public void GetTotPcs(String dt, String schedDate,TextView tvTotPcs,TextView tvTotPcsOut) {
         try {
             if (con != null) {
-                String query = "SELECT SUM(qty) as qty, SUM(qtyOut) as qty FROM barcodesys_DTInventory WHERE schedDate ='" + schedDate + "' AND dt = '" + dt + "' AND uom = 'PCS'";
+                String query = "SELECT SUM(qtyOg) as qty, SUM(qtyOut) as qtyOut FROM barcodesys_DTInventory WHERE schedDate ='" + schedDate + "' AND dt = '" + dt +
+                        "' AND uomOg = 'PCS'";
                 Statement st = con.createStatement();
                 ResultSet rs = st.executeQuery(query);
 
@@ -114,17 +115,26 @@ public class DtOutFunctions {
         }
     }
 
-    public String GetSolomonID(String val) {
+    public String GetSolomonID(String val, String dt, String uom) {
         try {
             if (con != null) {
-                String query = "SELECT solomonID,uom FROM barcodesys_Products WHERE barcode = '" + val + "'";
+                String query = "SELECT DISTINCT solomonID,uom FROM barcodesys_Products WHERE barcode = '" + val + "' AND uom = '" + uom + "'";
+                System.out.println(query);
                 Statement st = con.createStatement();
                 ResultSet rs = st.executeQuery(query);
                 if (rs.next()) {
-                    val = rs.getString(1);
-                    itemUom = rs.getString(2); //get item UOM for specific verification of barcode in out
+                    String queryDt = "SELECT DISTINCT solomonID,uomOg FROM barcodesys_DTInventory_products WHERE barcode = '" + val + "' AND dt = '" + dt + "'";
+                    System.out.println(query);
+                    Statement stDt = con.createStatement();
+                    ResultSet rsDt = stDt.executeQuery(queryDt);
+                    if (rsDt.next()) {
+                        val = rsDt.getString(1);
+                        itemUom = rsDt.getString(2); //get item UOM for specific verification of barcode in out
+                    } else {
+                        val = "NA";
+                    }
                 } else {
-                    val = "NA";
+                    val = "NAUOM";
                 }
             }
         } catch (Exception e) {
@@ -144,7 +154,8 @@ public class DtOutFunctions {
             try {
                 if (con != null) {
                     String query;
-                    query = "UPDATE barcodesys_DTInventory Set qtyOut = '" + totQty + "', timeStamp = '" +currentDateTime+ "' WHERE schedDate ='" + date + "' AND dt = '" + dt + "' AND solomonID ='" + solomonID + "'";
+                    query = "UPDATE barcodesys_DTInventory Set qtyOut = '" + totQty + "', timeStamp = '" +currentDateTime+ "' WHERE schedDate ='" + date + "' AND dt = '" + dt +
+                            "' AND solomonID ='" + solomonID + "' AND uomOg = '" + itemUom +"'";
                     Statement st = con.createStatement();
                     st.execute(query);
                 }
@@ -167,7 +178,8 @@ public class DtOutFunctions {
             if (con != null) {
                 String query;
                 query = "SELECT qty,qtyOut FROM barcodesys_DTInventory  WHERE schedDate ='" + date + "' AND dt = '" + dt +
-                        "' AND solomonID ='" + solomonID + "' AND uom ='" + itemUom + "'";
+                        "' AND solomonID ='" + solomonID + "' AND uomOg ='" + itemUom + "'";
+                System.out.println(query);
                 Statement st = con.createStatement();
                 ResultSet rs = st.executeQuery(query);
                 if (rs.next()) {
@@ -198,7 +210,7 @@ public class DtOutFunctions {
                     ResultSet rs = stCheck.executeQuery(checkDtQuery);
                     if (!rs.next()) {
                         String query;
-                        query = "INSERT INTO barcodesys_DTInventory (schedDate,dt,solomonID,uom,qty,qtyOut,CnvFact) SELECT OrdDate, ShipviaID,InvtID,UnitDesc,QtyShip,0,CnvFact FROM barcodesys_summary_of_delivery_api WHERE OrdDate ='" + date + "'";
+                        query = "INSERT INTO barcodesys_DTInventory (schedDate,dt,solomonID,uom,qty,CnvFact,uomOg,qtyOg) SELECT * FROM barcodesys_CutDt_api WHERE OrdDate ='" + date + "'";
                         Statement st = con.createStatement();
                         st.execute(query);
                     }

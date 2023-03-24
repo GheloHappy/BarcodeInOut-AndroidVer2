@@ -16,6 +16,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.monheim.barcode_inout_v2.BarcodeInOut.BarcodeInOutFunctions;
+import com.monheim.barcode_inout_v2.Inventory.InventoryFunctions;
 import com.monheim.barcode_inout_v2.NewBarcode.NewBarcodeFunctions;
 
 import MssqlCon.Login;
@@ -54,9 +55,11 @@ public class LoginActivity extends AppCompatActivity {
 
                     BarcodeInOutFunctions barInOutFunc = new BarcodeInOutFunctions();
                     NewBarcodeFunctions newBarFunc = new NewBarcodeFunctions();
+                    InventoryFunctions invtFunc = new InventoryFunctions();
 
                     barInOutFunc.ClearTempTrans(userName);
                     newBarFunc.clearUnknownBarcode(userName);
+                    invtFunc.ClearTempInventory();
 
                     startActivity(new Intent(LoginActivity.this, MainActivity.class));
                 } else {
