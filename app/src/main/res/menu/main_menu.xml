@@ -13,6 +13,9 @@
         <item android:id="@+id/dtOut"
             android:icon="@drawable/ic_baseline_drive_eta_24"
             android:title="DT Out"/>
+        <item android:id="@+id/vanOut"
+            android:icon="@drawable/ic_baseline_drive_eta_24"
+            android:title="Van Out"/>
         <item android:id="@+id/newBarcode"
             android:icon="@drawable/ic_baseline_fiber_new_24"
             android:title="New Barcode"/>

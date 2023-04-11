@@ -8,6 +8,8 @@
     <string-array name="spUomItems">
         <item>CS</item>
         <item>PCS</item>
+        <item>SW</item>
+        <item>SET</item>
     </string-array>
 
     <string-array name="spWarehouses">

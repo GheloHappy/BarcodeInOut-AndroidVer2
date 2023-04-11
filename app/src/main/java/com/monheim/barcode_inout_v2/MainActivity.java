@@ -23,6 +23,7 @@ import com.monheim.barcode_inout_v2.DTOut.DtOutFragment;
 import com.monheim.barcode_inout_v2.Home.HomeFragment;
 import com.monheim.barcode_inout_v2.Inventory.InventoryFragment;
 import com.monheim.barcode_inout_v2.NewBarcode.NewBarcodeFragment;
+import com.monheim.barcode_inout_v2.Van.VanFragment;
 
 import MssqlCon.Logs;
 import MssqlCon.PublicVars;
@@ -57,6 +58,7 @@ public class MainActivity extends AppCompatActivity {
         BarcodeInFragment barcodeInFragment = new BarcodeInFragment();
         BarcodeOutFragment barcodeOutFragment = new BarcodeOutFragment();
         DtOutFragment dtOutFrag = new DtOutFragment();
+        VanFragment vanFrag = new VanFragment();
         NewBarcodeFragment nbarFrag = new NewBarcodeFragment();
         InventoryFragment invtFrag = new InventoryFragment();
 
@@ -89,6 +91,10 @@ public class MainActivity extends AppCompatActivity {
                     break;
                 case R.id.dtOut:
                     getSupportFragmentManager().beginTransaction().replace(R.id.container,dtOutFrag).commit();
+                    drawerLayout.closeDrawer(GravityCompat.START);
+                    break;
+                case R.id.vanOut:
+                    getSupportFragmentManager().beginTransaction().replace(R.id.container,vanFrag).commit();
                     drawerLayout.closeDrawer(GravityCompat.START);
                     break;
                 case R.id.newBarcode:

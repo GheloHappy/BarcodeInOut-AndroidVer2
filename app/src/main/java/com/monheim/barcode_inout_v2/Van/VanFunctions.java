@@ -1,8 +1,6 @@
-package com.monheim.barcode_inout_v2.DTOut;
+package com.monheim.barcode_inout_v2.Van;
 
-import android.util.Log;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -20,19 +18,20 @@ import java.util.Map;
 import MssqlCon.PublicVars;
 import MssqlCon.SqlCon;
 
-public class DtOutFunctions {
+public class VanFunctions extends SqlCon {
     SqlCon sqlCon = new SqlCon();
     PublicVars pubVars = new PublicVars();
     Connection con = sqlCon.SQLConnection();
     String warehouse = pubVars.GetWarehouse();
-    public ArrayList<String> GetDt(String date) {
+
+    public ArrayList<String> GetVan(String date) {
         ArrayList<String> data = new ArrayList<>();
-        if(SyncDT(date)) //Insert data to DTInventory like the process of api
+        if(SyncVan(date)) //Insert data to DTInventory like the process of api
         {
             try {
                 if (con != null) {
                     String query;
-                    query = "SELECT DISTINCT dt FROM barcodesys_DTInventory WHERE schedDate = '" + date + "' ORDER BY DT ASC";
+                    query = "SELECT DISTINCT RefNbr FROM barcodesys_VaNInventory WHERE TranDate = '" + date + "' ORDER BY RefNbr ASC";
                     Statement st = con.createStatement();
                     ResultSet rs = st.executeQuery(query);
                     if (!rs.isBeforeFirst()) {
@@ -41,33 +40,32 @@ public class DtOutFunctions {
                     } else {
                         // If the result set is not empty, loop through the rows and add them to the list
                         while (rs.next()) {
-                            String dt = rs.getString(1);
-                            data.add(dt);
+                            String refNbr = rs.getString(1);
+                            data.add(refNbr);
                         }
                     }
                 }
             } catch (Exception e) {
-                System.out.println(e.getMessage() + " - GET DT");
+                System.out.println(e.getMessage() + " - GetVan");
             }
         }
         return data;
     }
-
-    public List<Map<String, String>> GetDTList(String dt, String schedDate) {
+    public List<Map<String, String>> GetVanList(String refNbr, String tranDate) {
         List<Map<String, String>> data;
         data = new ArrayList<>();
         try {
             if (con != null) {
-                String query = "SELECT * FROM barcodesys_DTInventory_Desc WHERE dt = '" + dt + "' AND schedDate = '" + schedDate + "' ORDER BY timeStamp DESC";
+                String query = "SELECT * FROM barcodesys_VaNInventory_Desc WHERE RefNbr = '" + refNbr + "' AND TranDate = '" + tranDate + "' ORDER BY timeStamp DESC";
                 Statement st = con.createStatement();
                 ResultSet rs = st.executeQuery(query);
 
                 while (rs.next()) {
                     Map<String, String> dtTempBarTran = new HashMap<>();
-                    dtTempBarTran.put("solomonID", rs.getString("solomonID"));
-                    dtTempBarTran.put("description", rs.getString("description"));
-                    dtTempBarTran.put("uomOg", rs.getString("uomOg"));
-                    dtTempBarTran.put("qtyOg", rs.getString("qtyOg"));
+                    dtTempBarTran.put("solomonID", rs.getString("InvtID"));
+                    dtTempBarTran.put("description", rs.getString("Descr"));
+                    dtTempBarTran.put("uomOg", rs.getString("UnitDesc"));
+                    dtTempBarTran.put("qtyOg", rs.getString("Qty"));
                     dtTempBarTran.put("qtyOut", rs.getString("qtyOut"));
                     dtTempBarTran.put("timeStamp", rs.getString("timeStamp"));
                     dtTempBarTran.put("barcode", rs.getString("barcode"));
@@ -75,16 +73,37 @@ public class DtOutFunctions {
                 }
             }
         } catch (Exception e) {
-            System.out.println(e.getMessage() + "GET DT LIST");
+            System.out.println(e.getMessage() + "GetVanList");
         }
         return data;
     }
-
-    public void GetTotCs(String dt, String schedDate,TextView tvTotCs,TextView tvTotCsOut) {
+    private boolean SyncVan(String tranDate){
+        if(warehouse.equals("Monheim"))
+        {
+            try {
+                if (con != null) {
+                    String checkDtQuery = "SELECT DISTINCT RefNbr FROM barcodesys_VaNInventory  WHERE TranDate ='" + tranDate + "'";
+                    Statement stCheck = con.createStatement();
+                    ResultSet rs = stCheck.executeQuery(checkDtQuery);
+                    if (!rs.next()) {
+                        String query;
+                        query = "INSERT INTO barcodesys_VaNInventory (TranDate,RefNbr,InvtID,Descr,UnitDesc,Qty,PriceClass,ToSiteID) SELECT * FROM a_mldi_transfer WHERE TranDate ='" + tranDate + "'";
+                        Statement st = con.createStatement();
+                        st.execute(query);
+                    }
+                }
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+                return  false;
+            }
+        }
+        return  true;
+    }
+    public void GetTotCs(String RefNbr, String tranDate, TextView tvTotCs, TextView tvTotCsOut) {
         try {
             if (con != null) {
-                String query = "SELECT SUM(qtyOg) as qty, SUM(qtyOut) as qtyOut FROM barcodesys_DTInventory WHERE schedDate ='" + schedDate + "' AND dt = '" + dt +
-                        "' AND uomOg = 'CS'";
+                String query = "SELECT SUM(Qty) as qty, SUM(qtyOut) as qtyOut FROM barcodesys_VaNInventory WHERE TranDate ='" + tranDate + "' AND RefNbr = '" + RefNbr +
+                        "' AND UnitDesc = 'CS'";
                 Statement st = con.createStatement();
                 ResultSet rs = st.executeQuery(query);
 
@@ -97,11 +116,11 @@ public class DtOutFunctions {
             System.out.println(e.getMessage() + "GetTotCs");
         }
     }
-    public void GetTotPcs(String dt, String schedDate,TextView tvTotPcs,TextView tvTotPcsOut) {
+    public void GetTotPcs(String RefNbr, String tranDate,TextView tvTotPcs,TextView tvTotPcsOut) {
         try {
             if (con != null) {
-                String query = "SELECT SUM(qtyOg) as qty, SUM(qtyOut) as qtyOut FROM barcodesys_DTInventory WHERE schedDate ='" + schedDate + "' AND dt = '" + dt +
-                        "' AND uomOg = 'PCS'";
+                String query = "SELECT SUM(Qty) as qty, SUM(qtyOut) as qtyOut FROM barcodesys_VaNInventory WHERE TranDate ='" + tranDate + "' AND RefNbr = '" + RefNbr +
+                        "' AND UnitDesc = 'PCS'";
                 Statement st = con.createStatement();
                 ResultSet rs = st.executeQuery(query);
 
@@ -114,16 +133,15 @@ public class DtOutFunctions {
             System.out.println(e.getMessage() + "GetTotCs");
         }
     }
-
-    public String GetSolomonID(String barcode, String dt, String uom) {
+    public String GetSolomonID(String barcode, String refnbr, String uom) {
         String solomonId = "";
         try {
             if (con != null) {
                 if (CheckSolomonID(barcode)) {
-                    String queryDt = "SELECT DISTINCT solomonID, uomOg FROM barcodesys_DTInventory_products WHERE barcode = ? AND dt = ? AND uomOg = ?";
+                    String queryDt = "SELECT DISTINCT InvtId, UnitDesc FROM barcodesys_VaNInventory_Desc WHERE barcode = ? AND RefNbr = ? AND UnitDesc = ?";
                     PreparedStatement stDt = con.prepareStatement(queryDt);
                     stDt.setString(1, barcode);
-                    stDt.setString(2, dt);
+                    stDt.setString(2, refnbr);
                     stDt.setString(3, uom);
                     ResultSet rsDt = stDt.executeQuery();
 
@@ -155,7 +173,6 @@ public class DtOutFunctions {
         }
         return solomonId;
     }
-
     private boolean CheckSolomonID(String barcode){
         try{
             if(con != null) {
@@ -173,43 +190,17 @@ public class DtOutFunctions {
         }
         return false;
     }
-
-    String date, dt, solomonID;
-    public boolean UpdateDtItem(int qty, String uomOg) {
-        Date c = Calendar.getInstance().getTime();
-        SimpleDateFormat dfTime = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss", Locale.getDefault());
-        String currentDateTime = dfTime.format(c);
-
-        int totQty = outQty + qty;
-        if (totQty <= maxQty) {
-            try {
-                if (con != null) {
-                    String query;
-                    query = "UPDATE barcodesys_DTInventory Set qtyOut = '" + totQty + "', timeStamp = '" +currentDateTime+ "' WHERE schedDate ='" + date + "' AND dt = '" + dt +
-                            "' AND solomonID ='" + solomonID + "' AND uomOg = '" + uomOg +"'";
-                    Statement st = con.createStatement();
-                    st.execute(query);
-                }
-            } catch (Exception e) {
-                System.out.println(e.getMessage());
-                return false;
-            }
-        } else {
-            return false;
-        }
-        return true;
-    }
-
+    String date, refNbr, solomonID;
     int maxQty, outQty;
-    public boolean GetLastQty(String _date, String _dt, String _solomonID, String uomOg) {
+    public boolean GetLastQty(String _date, String _refNbr, String _solomonID, String uom) {
         date = _date;
-        dt = _dt;
+        refNbr = _refNbr;
         solomonID = _solomonID;
         try {
             if (con != null) {
                 String query;
-                query = "SELECT qtyOg,qtyOut FROM barcodesys_DTInventory  WHERE schedDate ='" + date + "' AND dt = '" + dt +
-                        "' AND solomonID ='" + solomonID + "' AND uomOg ='" + uomOg + "'";
+                query = "SELECT Qty,qtyOut FROM barcodesys_VanInventory  WHERE tranDate ='" + date + "' AND RefNbr = '" + refNbr +
+                        "' AND InvtID ='" + solomonID + "' AND UnitDesc ='" + uom + "'";
                 Statement st = con.createStatement();
                 ResultSet rs = st.executeQuery(query);
                 if (rs.next()) {
@@ -230,26 +221,28 @@ public class DtOutFunctions {
         }
         return true;
     }
-    private boolean SyncDT(String date){
-        if(warehouse.equals("Monheim"))
-        {
+    public boolean UpdateVanItem(int qty, String uomOg) {
+        Date c = Calendar.getInstance().getTime();
+        SimpleDateFormat dfTime = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss", Locale.getDefault());
+        String currentDateTime = dfTime.format(c);
+
+        int totQty = outQty + qty;
+        if (totQty <= maxQty) {
             try {
                 if (con != null) {
-                    String checkDtQuery = "SELECT DISTINCT dt FROM barcodesys_DTInventory  WHERE schedDate ='" + date + "'";
-                    Statement stCheck = con.createStatement();
-                    ResultSet rs = stCheck.executeQuery(checkDtQuery);
-                    if (!rs.next()) {
-                        String query;
-                        query = "INSERT INTO barcodesys_DTInventory (schedDate,dt,solomonID,uom,qty,CnvFact,uomOg,qtyOg) SELECT * FROM barcodesys_CutDt_api WHERE OrdDate ='" + date + "'";
-                        Statement st = con.createStatement();
-                        st.execute(query);
-                    }
+                    String query;
+                    query = "UPDATE barcodesys_VanInventory Set qtyOut = '" + totQty + "', timeStamp = '" +currentDateTime+ "' WHERE tranDate ='" + date + "' AND RefNbr = '" + refNbr +
+                            "' AND InvtId ='" + solomonID + "' AND UnitDesc = '" + uomOg +"'";
+                    Statement st = con.createStatement();
+                    st.execute(query);
                 }
             } catch (Exception e) {
-                System.out.println(e.getMessage());
-                return  false;
+                System.out.println(e.getMessage() + " UpdateVanItem");
+                return false;
             }
+        } else {
+            return false;
         }
-        return  true;
+        return true;
     }
 }

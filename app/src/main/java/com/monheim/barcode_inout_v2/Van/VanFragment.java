@@ -1,4 +1,4 @@
-package com.monheim.barcode_inout_v2.DTOut;
+package com.monheim.barcode_inout_v2.Van;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -21,7 +21,6 @@ import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.monheim.barcode_inout_v2.BarcodeInOut.BarcodeInOutFunctions;
 import com.monheim.barcode_inout_v2.NewBarcode.NewBarcodeFunctions;
@@ -34,54 +33,57 @@ import java.util.Objects;
 import MssqlCon.Logs;
 import MssqlCon.PublicVars;
 
-public class DtOutFragment extends Fragment {
-    SimpleAdapter simAd;
-    TextView tvTotCs, tvTotCaseShot, tvTotPcs, tvTotPcsShot;
-    DtOutFunctions dtOutFunc = new DtOutFunctions();
-    String dt = "", uom, solomonID,user ,searchDate ="";
-    int qty;
+public class VanFragment extends Fragment {
+    VanFunctions vanFunc = new VanFunctions();
+    PublicVars pubVars = new PublicVars();
     NewBarcodeFunctions newBarFunc = new NewBarcodeFunctions();
     BarcodeInOutFunctions barInOut = new BarcodeInOutFunctions();
-    PublicVars pubVars = new PublicVars();
-    Spinner spInvtUom;
-    ListView lvDTOut;
+    SimpleAdapter simAd;
+    String user, refNbr, searchDate, solomonID, uom;
+    int qty;
+    ListView lvVanOut;
+    TextView tvTotCs,tvTotCaseShot,tvTotPcs,tvTotPcsShot;
+    Spinner spinUom;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_dt_out, container, false);
+        View view = inflater.inflate(R.layout.fragment_van, container, false);
 
-        EditText searchDtDate = rootView.findViewById(R.id.etSearchDtDate);
-        Spinner spinDt = rootView.findViewById(R.id.spinDT);
-        lvDTOut = rootView.findViewById(R.id.lvDTOut);
-        EditText etDtOutBarcode = rootView.findViewById(R.id.etDtOutBarcode);
-        EditText etDtOutQty = rootView.findViewById(R.id.etDtOutQty);
-        tvTotCs = rootView.findViewById(R.id.tvTotCase);
-        tvTotCaseShot = rootView.findViewById(R.id.tvTotCaseShot);
-        tvTotPcs = rootView.findViewById(R.id.tvTotPcs);
-        tvTotPcsShot = rootView.findViewById(R.id.tvTotPcsShot);
-        spInvtUom = rootView.findViewById(R.id.spInvtUom);
+        EditText etSearchDate = view.findViewById(R.id.etSearchVanDate);
+        EditText etVanOutQty = view.findViewById(R.id.etVanOutQty);
+        EditText etVanOutBarcode = view.findViewById(R.id.etVanOutBarcode);
+        Spinner spinRefNbr = view.findViewById(R.id.spinRefNbr);
+        spinUom = view.findViewById(R.id.spInvtUom);
+        lvVanOut = view.findViewById(R.id.lvVanOut);
 
-        etDtOutQty.setEnabled(false);
+        tvTotCs = view.findViewById(R.id.tvTotCase);
+        tvTotCaseShot = view.findViewById(R.id.tvTotCaseShot);
+        tvTotPcs = view.findViewById(R.id.tvTotPcs);
+        tvTotPcsShot = view.findViewById(R.id.tvTotPcsShot);
+
+        etVanOutQty.setEnabled(false);
         user = pubVars.GetUser();
 
-        spInvtUom.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        spinUom.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if (parent.getItemAtPosition(position).toString().equals("PCS")) {
-                    etDtOutQty.setEnabled(true);
+                    etVanOutQty.setEnabled(true);
                 } else {
-                    etDtOutQty.setText("1");
-                    etDtOutQty.setEnabled(false);
+                    etVanOutQty.setText("1");
+                    etVanOutQty.setEnabled(false);
                 }
             }
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
             }
         });
-        searchDtDate.addTextChangedListener(new TextWatcher() {
+
+        etSearchDate.addTextChangedListener(new TextWatcher() {
             private boolean isFormatting;
             private int inputLength;
+
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
                 if (isFormatting) {
@@ -89,6 +91,7 @@ public class DtOutFragment extends Fragment {
                 }
                 inputLength = s.length();
             }
+
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if (isFormatting) {
@@ -100,28 +103,27 @@ public class DtOutFragment extends Fragment {
                     isFormatting = true;
                     if (digits.length() >= 4) {
                         if (digits.length() == 4 || digits.charAt(4) != '-') {
-                            searchDtDate.setText(String.format("%s-%s", digits.substring(0, 4), digits.substring(4)));
-                            searchDtDate.setSelection(searchDtDate.getText().length());
+                            etSearchDate.setText(String.format("%s-%s", digits.substring(0, 4), digits.substring(4)));
+                            etSearchDate.setSelection(etSearchDate.getText().length());
                         }
                     }
                     if (digits.length() >= 7) {
                         if (digits.length() == 7 || digits.charAt(7) != '-') {
-                            searchDtDate.setText(String.format("%s-%s-%s", digits.substring(0, 4), digits.substring(4, 6), digits.substring(6)));
-                            searchDtDate.setSelection(searchDtDate.getText().length());
+                            etSearchDate.setText(String.format("%s-%s-%s", digits.substring(0, 4), digits.substring(4, 6), digits.substring(6)));
+                            etSearchDate.setSelection(etSearchDate.getText().length());
                         }
                     }
                     isFormatting = false;
                 }
 
-                searchDate = searchDtDate.getText().toString();
+                searchDate = etSearchDate.getText().toString();
 
-                if (searchDate.length() == 10) {
-                    ArrayAdapter adapter = new ArrayAdapter(getActivity(), R.layout.spinner_item, dtOutFunc.GetDt(searchDate));
+                if (etSearchDate.length() == 10) {
+                    ArrayAdapter adapter = new ArrayAdapter(getActivity(), R.layout.spinner_item, vanFunc.GetVan(searchDate));
                     adapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
-                    spinDt.setAdapter(adapter);
+                    spinRefNbr.setAdapter(adapter);
                 }
             }
-
             @Override
             public void afterTextChanged(Editable s) {
                 if (isFormatting) {
@@ -134,12 +136,13 @@ public class DtOutFragment extends Fragment {
                 }
             }
         });
-        spinDt.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+
+        spinRefNbr.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                dt = parent.getItemAtPosition(position).toString();
-                ListBarcodeTran(lvDTOut);
-                etDtOutBarcode.requestFocus();
+                refNbr = parent.getItemAtPosition(position).toString();
+                ListBarcodeTran(lvVanOut);
+                etVanOutBarcode.requestFocus();
                 DisplayTotCs();
             }
 
@@ -149,14 +152,24 @@ public class DtOutFragment extends Fragment {
             }
         });
 
-        etDtOutBarcode.setOnKeyListener((v, keyCode, event) -> {
+        etVanOutQty.setOnKeyListener((v, keyCode, event) -> {
+            if ((event.getAction() == KeyEvent.ACTION_DOWN) &&
+                    (keyCode == KeyEvent.KEYCODE_ENTER || keyCode == KeyEvent.KEYCODE_NAVIGATE_NEXT)) {
+                InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(), 0); // close keyboard
+            }
+            return false;
+        });
+
+        etVanOutBarcode.setOnKeyListener((v, keyCode, event) -> {
             if ((event.getAction() == KeyEvent.ACTION_DOWN) &&
                     (keyCode == KeyEvent.KEYCODE_ENTER)) {
 
-                String barcode = etDtOutBarcode.getText().toString();
-                qty = Integer.parseInt(etDtOutQty.getText().toString());
-                uom = spInvtUom.getSelectedItem().toString();
-                solomonID = dtOutFunc.GetSolomonID(barcode, dt, uom);
+                String barcode = etVanOutBarcode.getText().toString();
+                uom = spinUom.getSelectedItem().toString();
+                qty = Integer.parseInt(etVanOutQty.getText().toString());
+
+                solomonID = vanFunc.GetSolomonID(barcode, refNbr, uom);
 
                 if (Objects.equals(solomonID, "NA")) {
                     new AlertDialog.Builder(getActivity())
@@ -202,7 +215,7 @@ public class DtOutFragment extends Fragment {
 
                     final AlertDialog dialog = builder.create();
 
-                    listView.setOnItemClickListener((parent, view, position, id) -> {
+                    listView.setOnItemClickListener((parent, customView, position, id) -> {
                         for (int i = 0; i < parent.getChildCount(); i++) {
                             TextView tvItemDesc = parent.getChildAt(i).findViewById(R.id.description);
                             TextView tvSolomonID = parent.getChildAt(i).findViewById(R.id.qty);
@@ -224,32 +237,24 @@ public class DtOutFragment extends Fragment {
                     UpdateDt();
                 }
 
-                etDtOutQty.setText("1");
-                etDtOutBarcode.setText("");
-                etDtOutBarcode.post(() -> etDtOutBarcode.requestFocus()); //focus request
+            }
 
-                return true;
-            }
-            etDtOutBarcode.post(() -> etDtOutBarcode.requestFocus()); //focus request
-            return false;
+            etVanOutQty.setText("1");
+            etVanOutBarcode.setText("");
+            etVanOutBarcode.post(() -> etVanOutBarcode.requestFocus()); //focus request
+
+            return true;
         });
-        etDtOutQty.setOnKeyListener((v, keyCode, event) -> {
-            if ((event.getAction() == KeyEvent.ACTION_DOWN) &&
-                    (keyCode == KeyEvent.KEYCODE_ENTER || keyCode == KeyEvent.KEYCODE_NAVIGATE_NEXT)) {
-                InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-                imm.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(), 0); // close keyboard
-            }
-            return false;
-        });
-        return  rootView;
+
+        return view;
     }
 
     private void UpdateDt(){
-        if(dtOutFunc.GetLastQty(searchDate,dt,solomonID,uom)) {
-            if (dtOutFunc.UpdateDtItem(qty, uom)){
+        if(vanFunc.GetLastQty(searchDate,refNbr,solomonID,uom)) {
+            if (vanFunc.UpdateVanItem(qty, uom)){
                 DisplayTotCs();
-                ListBarcodeTran(lvDTOut);
-                //log.InsertUserLog("DT-OUT","Update :" + solomonID + " : " + spInvtUom.getSelectedItem().toString() + " : " + qty + " : " + dt);
+                ListBarcodeTran(lvVanOut);
+                //log.InsertUserLog("DT-OUT","Update :" + solomonID + " : " + spinUom.getSelectedItem().toString() + " : " + qty + " : " + refNbr);
             } else {
                 new AlertDialog.Builder(getActivity())
                         .setIcon(android.R.drawable.ic_dialog_alert)
@@ -270,19 +275,19 @@ public class DtOutFragment extends Fragment {
         }
     }
 
-    private void ListBarcodeTran(ListView lvDTOut) {
+    private void ListBarcodeTran(ListView lvVanOut) {
         List<Map<String, String>> dataList;
-        dataList = dtOutFunc.GetDTList(dt, searchDate);
+        dataList = vanFunc.GetVanList(refNbr, searchDate);
         DisplayTotCs();
 
         String[] from = {"timeStamp","solomonID","description","barcode","qtyOg","uomOg","qtyOut"};
         int[] to = {R.id.id,R.id.description,R.id.itemDescription,R.id.barcode,R.id.maxQty,R.id.uom,R.id.qty};
         simAd = new SimpleAdapter(getActivity(),dataList,R.layout.dt_barcode_tran_list_template,from,to);
-        lvDTOut.setAdapter(simAd);
+        lvVanOut.setAdapter(simAd);
     }
 
     private void DisplayTotCs(){
-        dtOutFunc.GetTotCs(dt, searchDate, tvTotCs,tvTotCaseShot);
-        dtOutFunc.GetTotPcs(dt, searchDate, tvTotPcs,tvTotPcsShot);
+        vanFunc.GetTotCs(refNbr, searchDate, tvTotCs,tvTotCaseShot);
+        vanFunc.GetTotPcs(refNbr, searchDate, tvTotPcs,tvTotPcsShot);
     }
 }
