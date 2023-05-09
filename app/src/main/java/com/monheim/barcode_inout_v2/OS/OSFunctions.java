@@ -1,4 +1,4 @@
-package com.monheim.barcode_inout_v2.Van;
+package com.monheim.barcode_inout_v2.OS;
 
 import android.widget.TextView;
 
@@ -18,20 +18,21 @@ import java.util.Map;
 import MssqlCon.PublicVars;
 import MssqlCon.SqlCon;
 
-public class VanFunctions extends SqlCon {
+public class OSFunctions extends SqlCon {
+
     SqlCon sqlCon = new SqlCon();
     PublicVars pubVars = new PublicVars();
     Connection con = sqlCon.SQLConnection();
     String warehouse = pubVars.GetWarehouse();
 
-    public ArrayList<String> GetVan(String date) {
+    public ArrayList<String> GetOs(String date) {
         ArrayList<String> data = new ArrayList<>();
-        if(SyncVan(date)) //Insert data to DTInventory like the process of api
+        if(SyncOs(date)) //Insert data to DTInventory like the process of api
         {
             try {
                 if (con != null) {
                     String query;
-                    query = "SELECT DISTINCT RefNbr FROM barcodesys_VaNInventory WHERE TranDate = '" + date + "' ORDER BY RefNbr ASC";
+                    query = "SELECT DISTINCT InvcNbr FROM barcodesys_OsInventory WHERE InvcDate = '" + date + "' ORDER BY InvcNbr ASC";
                     Statement st = con.createStatement();
                     ResultSet rs = st.executeQuery(query);
                     if (!rs.isBeforeFirst()) {
@@ -40,8 +41,8 @@ public class VanFunctions extends SqlCon {
                     } else {
                         // If the result set is not empty, loop through the rows and add them to the list
                         while (rs.next()) {
-                            String refNbr = rs.getString(1);
-                            data.add(refNbr);
+                            String InvcNbr = rs.getString(1);
+                            data.add(InvcNbr);
                         }
                     }
                 }
@@ -51,12 +52,13 @@ public class VanFunctions extends SqlCon {
         }
         return data;
     }
-    public List<Map<String, String>> GetVanList(String refNbr, String tranDate) {
+
+    public List<Map<String, String>> GetOsList(String InvcNbr, String InvcDate) {
         List<Map<String, String>> data;
         data = new ArrayList<>();
         try {
             if (con != null) {
-                String query = "SELECT * FROM barcodesys_VaNInventory_Desc WHERE RefNbr = '" + refNbr + "' AND TranDate = '" + tranDate + "' ORDER BY timeStamp DESC";
+                String query = "SELECT * FROM barcodesys_OsInventory_Desc WHERE InvcNbr = '" + InvcNbr + "' AND InvcDate = '" + InvcDate + "' ORDER BY timeStamp DESC";
                 Statement st = con.createStatement();
                 ResultSet rs = st.executeQuery(query);
 
@@ -65,7 +67,7 @@ public class VanFunctions extends SqlCon {
                     dtTempBarTran.put("solomonID", rs.getString("InvtID"));
                     dtTempBarTran.put("description", rs.getString("Descr"));
                     dtTempBarTran.put("uomOg", rs.getString("UnitDesc"));
-                    dtTempBarTran.put("qtyOg", rs.getString("Qty"));
+                    dtTempBarTran.put("qtyOg", rs.getString("QtyShip" ));
                     dtTempBarTran.put("qtyOut", rs.getString("qtyOut"));
                     dtTempBarTran.put("timeStamp", rs.getString("timeStamp"));
                     dtTempBarTran.put("barcode", rs.getString("barcode"));
@@ -77,17 +79,17 @@ public class VanFunctions extends SqlCon {
         }
         return data;
     }
-    private boolean SyncVan(String tranDate){
+    private boolean SyncOs(String tranDate){
         if(warehouse.equals("Monheim"))
         {
             try {
                 if (con != null) {
-                    String checkDtQuery = "SELECT DISTINCT RefNbr FROM barcodesys_VaNInventory  WHERE TranDate ='" + tranDate + "'";
+                    String checkDtQuery = "SELECT DISTINCT InvcNbr FROM barcodesys_OsInventory  WHERE InvcDate ='" + tranDate + "'";
                     Statement stCheck = con.createStatement();
                     ResultSet rs = stCheck.executeQuery(checkDtQuery);
                     if (!rs.next()) {
                         String query;
-                        query = "INSERT INTO barcodesys_VaNInventory (TranDate,RefNbr,InvtID,Descr,UnitDesc,Qty,PriceClass,ToSiteID) SELECT TranDate,RefNbr,InvtID,Descr,UnitDesc,Qty,PriceClass,ToSiteID FROM a_mldi_transfer WHERE TranDate ='" + tranDate + "'";
+                        query = "INSERT INTO barcodesys_OsInventory (InvcDate,InvcNbr,InvtID,Descr,UnitDesc,QtyShip) SELECT InvcDate,InvcNbr,InvtID,Descr,UnitDesc,QtyShip FROM barcodesys_summary_of_os_api WHERE InvcDate ='" + tranDate + "'";
                         Statement st = con.createStatement();
                         st.execute(query);
                     }
@@ -99,10 +101,11 @@ public class VanFunctions extends SqlCon {
         }
         return  true;
     }
+
     public void GetTotCs(String RefNbr, String tranDate, TextView tvTotCs, TextView tvTotCsOut) {
         try {
             if (con != null) {
-                String query = "SELECT SUM(Qty) as qty, SUM(qtyOut) as qtyOut FROM barcodesys_VaNInventory WHERE TranDate ='" + tranDate + "' AND RefNbr = '" + RefNbr +
+                String query = "SELECT SUM(QtyShip) as qty, SUM(qtyOut) as qtyOut FROM barcodesys_OsInventory WHERE InvcDate ='" + tranDate + "' AND InvcNbr = '" + RefNbr +
                         "' AND UnitDesc = 'CS'";
                 Statement st = con.createStatement();
                 ResultSet rs = st.executeQuery(query);
@@ -119,7 +122,7 @@ public class VanFunctions extends SqlCon {
     public void GetTotPcs(String RefNbr, String tranDate,TextView tvTotPcs,TextView tvTotPcsOut) {
         try {
             if (con != null) {
-                String query = "SELECT SUM(Qty) as qty, SUM(qtyOut) as qtyOut FROM barcodesys_VaNInventory WHERE TranDate ='" + tranDate + "' AND RefNbr = '" + RefNbr +
+                String query = "SELECT SUM(QtyShip) as qty, SUM(qtyOut) as qtyOut FROM barcodesys_OsInventory WHERE InvcDate ='" + tranDate + "' AND InvcNbr = '" + RefNbr +
                         "' AND UnitDesc = 'PCS'";
                 Statement st = con.createStatement();
                 ResultSet rs = st.executeQuery(query);
@@ -130,15 +133,16 @@ public class VanFunctions extends SqlCon {
                 }
             }
         } catch (Exception e) {
-            System.out.println(e.getMessage() + "GetTotCs");
+            System.out.println(e.getMessage() + "GetTotPCs");
         }
     }
+
     public String GetSolomonID(String barcode, String refnbr, String uom) {
         String solomonId = "";
         try {
             if (con != null) {
                 if (CheckSolomonID(barcode)) {
-                    String queryDt = "SELECT DISTINCT InvtId, UnitDesc FROM barcodesys_VaNInventory_Desc WHERE barcode = ? AND RefNbr = ? AND UnitDesc = ?";
+                    String queryDt = "SELECT DISTINCT InvtId, UnitDesc FROM barcodesys_OsInventory_Desc WHERE barcode = ? AND InvcNbr = ? AND UnitDesc = ?";
                     PreparedStatement stDt = con.prepareStatement(queryDt);
                     stDt.setString(1, barcode);
                     stDt.setString(2, refnbr);
@@ -199,7 +203,7 @@ public class VanFunctions extends SqlCon {
         try {
             if (con != null) {
                 String query;
-                query = "SELECT Qty,qtyOut FROM barcodesys_VanInventory  WHERE tranDate ='" + date + "' AND RefNbr = '" + refNbr +
+                query = "SELECT Qty,qtyOut FROM barcodesys_OsnInventory  WHERE InvcDate ='" + date + "' AND InvcNbr = '" + refNbr +
                         "' AND InvtID ='" + solomonID + "' AND UnitDesc ='" + uom + "'";
                 Statement st = con.createStatement();
                 ResultSet rs = st.executeQuery(query);
@@ -221,7 +225,7 @@ public class VanFunctions extends SqlCon {
         }
         return true;
     }
-    public boolean UpdateVanItem(int qty, String uomOg) {
+    public boolean UpdateOsItem(int qty, String uomOg) {
         Date c = Calendar.getInstance().getTime();
         SimpleDateFormat dfTime = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss", Locale.getDefault());
         String currentDateTime = dfTime.format(c);
@@ -231,7 +235,7 @@ public class VanFunctions extends SqlCon {
             try {
                 if (con != null) {
                     String query;
-                    query = "UPDATE barcodesys_VanInventory Set qtyOut = '" + totQty + "', timeStamp = '" +currentDateTime+ "' WHERE tranDate ='" + date + "' AND RefNbr = '" + refNbr +
+                    query = "UPDATE barcodesys_OsInventory Set qtyOut = '" + totQty + "', timeStamp = '" +currentDateTime+ "' WHERE InvcDate ='" + date + "' AND InvcNbr = '" + refNbr +
                             "' AND InvtId ='" + solomonID + "' AND UnitDesc = '" + uomOg +"'";
                     Statement st = con.createStatement();
                     st.execute(query);
