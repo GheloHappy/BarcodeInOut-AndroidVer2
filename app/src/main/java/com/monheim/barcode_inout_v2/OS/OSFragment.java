@@ -235,14 +235,13 @@ public class OSFragment extends Fragment {
                 } else {
                     UpdateDt();
                 }
-
+                etOsOutQty.setText("1");
+                etOsOutBarcode.setText("");
+                etOsOutBarcode.post(() -> etOsOutBarcode.requestFocus()); //focus request
+                return true;
             }
-
-            etOsOutQty.setText("1");
-            etOsOutBarcode.setText("");
             etOsOutBarcode.post(() -> etOsOutBarcode.requestFocus()); //focus request
-
-            return true;
+            return false;
         });
 
 

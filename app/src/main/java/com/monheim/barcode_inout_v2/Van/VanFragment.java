@@ -166,9 +166,8 @@ public class VanFragment extends Fragment {
                     (keyCode == KeyEvent.KEYCODE_ENTER)) {
 
                 String barcode = etVanOutBarcode.getText().toString();
-                uom = spinUom.getSelectedItem().toString();
                 qty = Integer.parseInt(etVanOutQty.getText().toString());
-
+                uom = spinUom.getSelectedItem().toString();
                 solomonID = vanFunc.GetSolomonID(barcode, refNbr, uom);
 
                 if (Objects.equals(solomonID, "NA")) {
@@ -237,13 +236,14 @@ public class VanFragment extends Fragment {
                     UpdateDt();
                 }
 
+                etVanOutQty.setText("1");
+                etVanOutBarcode.setText("");
+                etVanOutBarcode.post(() -> etVanOutBarcode.requestFocus()); //focus request
+
+                return true;
             }
-
-            etVanOutQty.setText("1");
-            etVanOutBarcode.setText("");
             etVanOutBarcode.post(() -> etVanOutBarcode.requestFocus()); //focus request
-
-            return true;
+            return false;
         });
 
         return view;
