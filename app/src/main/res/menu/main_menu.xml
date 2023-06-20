@@ -19,6 +19,9 @@
         <item android:id="@+id/osOut"
             android:icon="@drawable/baseline_shopping_bag_24"
             android:title="OS Out"/>
+        <item android:id="@+id/issuingOut"
+            android:icon="@drawable/baseline_shopping_bag_24"
+            android:title="Issuing Out"/>
         <item android:id="@+id/newBarcode"
             android:icon="@drawable/ic_baseline_fiber_new_24"
             android:title="New Barcode"/>
