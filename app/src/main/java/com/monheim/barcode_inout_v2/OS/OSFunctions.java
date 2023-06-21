@@ -203,7 +203,7 @@ public class OSFunctions extends SqlCon {
         try {
             if (con != null) {
                 String query;
-                query = "SELECT Qty,qtyOut FROM barcodesys_OsnInventory  WHERE InvcDate ='" + date + "' AND InvcNbr = '" + refNbr +
+                query = "SELECT Qty,qtyOut FROM barcodesys_OsnInventory_Desc  WHERE InvcDate ='" + date + "' AND InvcNbr = '" + refNbr +
                         "' AND InvtID ='" + solomonID + "' AND UnitDesc ='" + uom + "'";
                 Statement st = con.createStatement();
                 ResultSet rs = st.executeQuery(query);

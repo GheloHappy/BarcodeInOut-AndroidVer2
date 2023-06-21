@@ -199,7 +199,7 @@ public class VanFunctions extends SqlCon {
         try {
             if (con != null) {
                 String query;
-                query = "SELECT Qty,qtyOut FROM barcodesys_VanInventory  WHERE tranDate ='" + date + "' AND RefNbr = '" + refNbr +
+                query = "SELECT Qty,qtyOut FROM barcodesys_VanInventory_Desc  WHERE tranDate ='" + date + "' AND RefNbr = '" + refNbr +
                         "' AND InvtID ='" + solomonID + "' AND UnitDesc ='" + uom + "'";
                 Statement st = con.createStatement();
                 ResultSet rs = st.executeQuery(query);

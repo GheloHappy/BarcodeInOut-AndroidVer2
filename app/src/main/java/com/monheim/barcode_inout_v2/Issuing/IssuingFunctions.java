@@ -204,7 +204,7 @@ public class IssuingFunctions extends  SqlCon{
         try {
             if (con != null) {
                 String query;
-                query = "SELECT Qty,qtyOut FROM barcodesys_IssueInventory  WHERE TranDate ='" + date + "' AND RefNbr = '" + refNbr +
+                query = "SELECT Qty,qtyOut FROM barcodesys_IssueInventory_Desc  WHERE TranDate ='" + date + "' AND RefNbr = '" + refNbr +
                         "' AND InvtID ='" + solomonID + "' AND UnitDesc ='" + uom + "'";
                 Statement st = con.createStatement();
                 ResultSet rs = st.executeQuery(query);

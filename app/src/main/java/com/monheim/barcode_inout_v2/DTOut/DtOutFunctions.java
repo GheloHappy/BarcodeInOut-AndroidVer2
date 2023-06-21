@@ -83,7 +83,7 @@ public class DtOutFunctions {
     public void GetTotCs(String dt, String schedDate,TextView tvTotCs,TextView tvTotCsOut) {
         try {
             if (con != null) {
-                String query = "SELECT SUM(qtyOg) as qty, SUM(qtyOut) as qtyOut FROM barcodesys_DTInventory WHERE schedDate ='" + schedDate + "' AND dt = '" + dt +
+                String query = "SELECT SUM(qtyOg) as qty, SUM(qtyOut) as qtyOut FROM barcodesys_DTInventory_Desc WHERE schedDate ='" + schedDate + "' AND dt = '" + dt +
                         "' AND uomOg = 'CS'";
                 Statement st = con.createStatement();
                 ResultSet rs = st.executeQuery(query);
@@ -100,7 +100,7 @@ public class DtOutFunctions {
     public void GetTotPcs(String dt, String schedDate,TextView tvTotPcs,TextView tvTotPcsOut) {
         try {
             if (con != null) {
-                String query = "SELECT SUM(qtyOg) as qty, SUM(qtyOut) as qtyOut FROM barcodesys_DTInventory WHERE schedDate ='" + schedDate + "' AND dt = '" + dt +
+                String query = "SELECT SUM(qtyOg) as qty, SUM(qtyOut) as qtyOut FROM barcodesys_DTInventory_Desc WHERE schedDate ='" + schedDate + "' AND dt = '" + dt +
                         "' AND uomOg = 'PCS'";
                 Statement st = con.createStatement();
                 ResultSet rs = st.executeQuery(query);
@@ -208,7 +208,7 @@ public class DtOutFunctions {
         try {
             if (con != null) {
                 String query;
-                query = "SELECT qtyOg,qtyOut FROM barcodesys_DTInventory  WHERE schedDate ='" + date + "' AND dt = '" + dt +
+                query = "SELECT qtyOg,qtyOut FROM barcodesys_DTInventory_Desc  WHERE schedDate ='" + date + "' AND dt = '" + dt +
                         "' AND solomonID ='" + solomonID + "' AND uomOg ='" + uomOg + "'";
                 Statement st = con.createStatement();
                 ResultSet rs = st.executeQuery(query);
