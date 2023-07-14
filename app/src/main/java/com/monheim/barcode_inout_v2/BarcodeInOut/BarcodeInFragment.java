@@ -43,6 +43,7 @@ public class BarcodeInFragment extends Fragment {
         TextView tvDesc = rootView.findViewById(R.id.tvDesc);
         Spinner spUom = rootView.findViewById(R.id.spUom);
         Button btnSave = rootView.findViewById(R.id.btnSave);
+        TextView tvItemCount = rootView.findViewById(R.id.tvItemCount);
 
         etBarcodeQty.setEnabled(false);
 
@@ -140,10 +141,10 @@ public class BarcodeInFragment extends Fragment {
 
                         barInOut.InsertIn(barcode,uom,qty,"IN", user,itemDesc,solomonID);
                     }
+                    tvItemCount.setText(String.valueOf(barInOut.GetItemCount(barcode)));
                 } else {
                     newBarFunc.CheckUnknownBarcode(barcode,user);
                 }
-
                 if(barInOut.CheckTempBarTranData(user) == true) {
                     PublicVars.GetNav().getMenu().findItem(R.id.barcodeOut).setEnabled(false); //disable Barcode Out in Menu if tempbarcode has data of IN
                     btnSave.setEnabled(true);

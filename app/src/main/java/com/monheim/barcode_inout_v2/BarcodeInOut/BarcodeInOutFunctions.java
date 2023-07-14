@@ -139,6 +139,28 @@ public class BarcodeInOutFunctions extends SqlCon {
         return data;
     }
 
+    public int GetItemCount(String barcode) {
+        int itemCount = 0;
+
+        try {
+            if (con != null) {
+                String query = "SELECT qty FROM barcodesys_TempBarcodeTransDetail WHERE barcode = '"+barcode+"'";
+                Statement st = con.createStatement();
+                ResultSet rs = st.executeQuery(query);
+
+                if (rs.next()) {
+                    itemCount = rs.getInt("qty");
+                } else {
+                    itemCount = 0;
+                }
+            }
+        } catch (Exception e) {
+            Log.e("Error", e.getMessage());
+        }
+
+        return itemCount;
+    }
+
     //Barcode In Out Save Fragment
     public List<Map<String, String>> GetTempBarList(String user) {
         List<Map<String, String>> data;

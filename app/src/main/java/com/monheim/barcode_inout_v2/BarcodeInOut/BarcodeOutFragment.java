@@ -43,6 +43,7 @@ public class BarcodeOutFragment extends Fragment {
         TextView tvDesc = rootView.findViewById(R.id.tvDesc);
         Spinner spUom = rootView.findViewById(R.id.spUom);
         Button btnSave = rootView.findViewById(R.id.btnSave);
+        TextView tvItemCount = rootView.findViewById(R.id.tvItemCount);
 
         etBarcodeQty.setEnabled(false);
 
@@ -140,6 +141,7 @@ public class BarcodeOutFragment extends Fragment {
 
                         barInOut.InsertIn(barcode,uom,qty * -1,"OUT", user, itemDesc, solomonID);
                     }
+                    tvItemCount.setText(String.valueOf(barInOut.GetItemCount(barcode)));
                 } else {
                     newBarFunc.CheckUnknownBarcode(barcode,user);
                 }
