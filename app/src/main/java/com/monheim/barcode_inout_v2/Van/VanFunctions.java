@@ -87,7 +87,7 @@ public class VanFunctions extends SqlCon {
                     ResultSet rs = stCheck.executeQuery(checkDtQuery);
                     if (!rs.next()) {
                         String query;
-                        query = "INSERT INTO barcodesys_VaNInventory (TranDate,RefNbr,InvtID,Descr,UnitDesc,Qty,PriceClass,ToSiteID) SELECT TranDate,RefNbr,InvtID,Descr,UnitDesc,Qty,PriceClass,ToSiteID FROM a_mldi_transfer WHERE TranDate ='" + tranDate + "'";
+                        query = "INSERT INTO barcodesys_VaNInventory (TranDate,RefNbr,InvtID,Descr,UnitDesc,Qty,PriceClass,ToSiteID,CnvFact) SELECT TranDate,RefNbr,InvtID,Descr,UnitDesc,Qty,PriceClass,ToSiteID,CnvFact FROM a_mldi_transfer WHERE TranDate ='" + tranDate + "'";
                         Statement st = con.createStatement();
                         st.execute(query);
                     }

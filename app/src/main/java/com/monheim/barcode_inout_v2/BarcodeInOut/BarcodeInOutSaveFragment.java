@@ -52,26 +52,25 @@ public class BarcodeInOutSaveFragment extends Fragment {
         barFunc.GetToTQtyCs(tvTotCs, user);
         barFunc.GetToTQtyPcs(tvTotPcs, user);
 
-//        lvTempBarcodeTran.setOnItemLongClickListener((parent, view, position, id) -> {
-//            TextView tvID = view.findViewById(R.id.id);
-//            TextView tvBarcode = view.findViewById(R.id.barcode);
-//            int item = Integer.parseInt(tvID.getText().toString());
-//
-//            new AlertDialog.Builder(getActivity())
-//                   .setIcon(android.R.drawable.ic_delete)
-//                   .setTitle("Are you sure ?")
-//                   .setMessage("Do you want to delete this item")
-//                   .setPositiveButton("Yes",(dialog, which) -> {
-//                       barFunc.DeleteTempBarcodeItem(item, user);
-//                       barFunc.GetToTQtyCs(tvTotCs,user);
-//                       barFunc.GetToTQtyPcs(tvTotPcs,user);
-//                       ListTempBarcodeTran(lvTempBarcodeTran);
-//                       log.InsertUserLog("Delete Barcode upon Saving Ref",tvBarcode.getText().toString()); //logUser
-//                   })
-//                   .setNegativeButton("No", null)
-//                   .show();
-//            return true;
-//        });
+        lvTempBarcodeTran.setOnItemLongClickListener((parent, view, position, id) -> {
+            TextView tvSolomonId = view.findViewById(R.id.tranType);
+            String item = tvSolomonId.getText().toString();
+
+            new AlertDialog.Builder(getActivity())
+                   .setIcon(android.R.drawable.ic_delete)
+                   .setTitle("Are you sure ?")
+                   .setMessage("Do you want to delete this item")
+                   .setPositiveButton("Yes",(dialog, which) -> {
+                       barFunc.DeleteTempBarcodeItem(item, user);
+                       barFunc.GetToTQtyCs(tvTotCs,user);
+                       barFunc.GetToTQtyPcs(tvTotPcs,user);
+                       ListTempBarcodeTran(lvTempBarcodeTran);
+                       log.InsertUserLog("Delete Barcode upon Saving Ref",tvSolomonId.getText().toString()); //logUser
+                   })
+                   .setNegativeButton("No", null)
+                   .show();
+            return true;
+        });
 
         btnSave.setOnClickListener(v -> {
             String refNbr = etRefNbr.getText().toString();

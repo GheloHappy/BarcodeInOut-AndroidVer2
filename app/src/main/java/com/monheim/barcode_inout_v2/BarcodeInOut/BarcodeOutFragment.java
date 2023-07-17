@@ -45,7 +45,8 @@ public class BarcodeOutFragment extends Fragment {
         Button btnSave = rootView.findViewById(R.id.btnSave);
         TextView tvItemCount = rootView.findViewById(R.id.tvItemCount);
 
-        etBarcodeQty.setEnabled(false);
+        //false in Cabrera true in Monheim line 68 also
+        etBarcodeQty.setEnabled(true);
 
         etBarcode.requestFocus();
 
@@ -64,7 +65,7 @@ public class BarcodeOutFragment extends Fragment {
                     etBarcodeQty.setEnabled(true);
                 } else {
                     etBarcodeQty.setText("1");
-                    etBarcodeQty.setEnabled(false);
+                    //etBarcodeQty.setEnabled(false);
                 }
             }
 

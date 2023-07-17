@@ -89,7 +89,7 @@ public class OSFunctions extends SqlCon {
                     ResultSet rs = stCheck.executeQuery(checkDtQuery);
                     if (!rs.next()) {
                         String query;
-                        query = "INSERT INTO barcodesys_OsInventory (InvcDate,InvcNbr,InvtID,Descr,UnitDesc,QtyShip) SELECT InvcDate,InvcNbr,InvtID,Descr,UnitDesc,QtyShip FROM barcodesys_summary_of_os_api WHERE InvcDate ='" + tranDate + "'";
+                        query = "INSERT INTO barcodesys_OsInventory (InvcDate,InvcNbr,InvtID,Descr,UnitDesc,QtyShip) SELECT User9,InvcNbr,InvtID,Descr,UnitDesc,QtyShip FROM barcodesys_summary_of_os_api WHERE User9 ='" + tranDate + "'";
                         Statement st = con.createStatement();
                         st.execute(query);
                     }

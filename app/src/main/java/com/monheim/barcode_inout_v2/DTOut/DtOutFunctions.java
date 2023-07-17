@@ -240,7 +240,7 @@ public class DtOutFunctions {
                     ResultSet rs = stCheck.executeQuery(checkDtQuery);
                     if (!rs.next()) {
                         String query;
-                        query = "INSERT INTO barcodesys_DTInventory (schedDate,dt,solomonID,uom,qty,CnvFact,uomOg,qtyOg) SELECT * FROM barcodesys_CutDt_api WHERE OrdDate ='" + date + "'";
+                        query = "INSERT INTO barcodesys_DTInventory (InvcNbr,schedDate,dt,solomonID,uom,qty,CnvFact,uomOg,qtyOg) SELECT InvcNbr,OrdDate,ShipViaID,InvtID,UnitDesc,QtyShip,CnvFact,uomOg,qtyOg FROM barcodesys_CutDt_api2 WHERE OrdDate ='" + date + "'";
                         Statement st = con.createStatement();
                         st.execute(query);
                     }

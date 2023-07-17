@@ -243,10 +243,10 @@ public class BarcodeInOutFunctions extends SqlCon {
         }
         return true;
     }
-    public void DeleteTempBarcodeItem(int id, String user){
+    public void DeleteTempBarcodeItem(String id, String user){
         try {
             if (con != null) {
-                String query = "DELETE FROM barcodesys_tempBarcodeTrans WHERE id = '"+ id +"' AND username = '"+ user +"'";
+                String query = "DELETE FROM barcodesys_tempBarcodeTrans WHERE solomonID = '"+ id +"' AND username = '"+ user +"'";
                 Statement st = con.createStatement();
                 st.execute(query);
             }
