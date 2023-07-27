@@ -11,9 +11,11 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
 import MssqlCon.PublicVars;
 import MssqlCon.SqlCon;
@@ -82,24 +84,66 @@ public class OSFunctions extends SqlCon {
     private boolean SyncOs(String tranDate){
         if(warehouse.equals("Monheim"))
         {
+//            try {
+//                if (con != null) {
+//                    String checkDtQuery = "SELECT DISTINCT InvcNbr FROM barcodesys_OsInventory  WHERE InvcDate ='" + tranDate + "'";
+//                    Statement stCheck = con.createStatement();
+//                    ResultSet rs = stCheck.executeQuery(checkDtQuery);
+//                    if (!rs.next()) {
+//                        String query;
+//                        query = "INSERT INTO barcodesys_OsInventory (InvcDate,InvcNbr,InvtID,Descr,UnitDesc,QtyShip) SELECT User9,InvcNbr,InvtID,Descr,UnitDesc,QtyShip FROM barcodesys_summary_of_os_api WHERE User9 ='" + tranDate + "'";
+//                        Statement st = con.createStatement();
+//                        st.execute(query);
+//                    }
+//                }
+//            } catch (Exception e) {
+//                System.out.println(e.getMessage());
+//                return  false;
+//            }
+
             try {
                 if (con != null) {
-                    String checkDtQuery = "SELECT DISTINCT InvcNbr FROM barcodesys_OsInventory  WHERE InvcDate ='" + tranDate + "'";
-                    Statement stCheck = con.createStatement();
-                    ResultSet rs = stCheck.executeQuery(checkDtQuery);
-                    if (!rs.next()) {
-                        String query;
-                        query = "INSERT INTO barcodesys_OsInventory (InvcDate,InvcNbr,InvtID,Descr,UnitDesc,QtyShip) SELECT User9,InvcNbr,InvtID,Descr,UnitDesc,QtyShip FROM barcodesys_summary_of_os_api WHERE User9 ='" + tranDate + "'";
-                        Statement st = con.createStatement();
-                        st.execute(query);
+                    String checkDtQuery = "SELECT DISTINCT InvcNbr FROM barcodesys_OsInventory WHERE InvcDate = ?";
+                    PreparedStatement stCheck = con.prepareStatement(checkDtQuery);
+                    stCheck.setString(1, tranDate);
+                    ResultSet rs = stCheck.executeQuery();
+
+                    // Create a HashSet to store the existing InvcNbr values in barcodesys_OsInventory
+                    Set<String> existingInvcNbrSet = new HashSet<>();
+                    while (rs.next()) {
+                        existingInvcNbrSet.add(rs.getString("InvcNbr"));
                     }
+
+                    // Close the ResultSet and the statement used for checking
+                    rs.close();
+                    stCheck.close();
+
+                    // Fetch new rows from barcodesys_summary_of_os_api that have InvcNbr not present in barcodesys_OsInventory
+                    String query = "INSERT INTO barcodesys_OsInventory (InvcDate, InvcNbr, InvtID, Descr, UnitDesc, QtyShip) " +
+                            "SELECT User9, InvcNbr, InvtID, Descr, UnitDesc, QtyShip FROM barcodesys_summary_of_os_api " +
+                            "WHERE User9 = ? AND InvcNbr NOT IN ('" + getCommaSeparatedRefNbrList(existingInvcNbrSet) + "')";
+                    PreparedStatement st = con.prepareStatement(query);
+                    st.setString(1, tranDate);
+                    st.execute();
+                    st.close();
                 }
             } catch (Exception e) {
                 System.out.println(e.getMessage());
-                return  false;
+                return false;
             }
         }
         return  true;
+    }
+
+    private String getCommaSeparatedRefNbrList(Set<String> itemSet) {
+        StringBuilder itemList = new StringBuilder();
+        for (String ref : itemSet) {
+            itemList.append("'").append(ref).append("',");
+        }
+        if (itemList.length() > 0) {
+            itemList.setLength(itemList.length() - 1); // Remove the trailing comma
+        }
+        return itemList.toString();
     }
 
     public void GetTotCs(String RefNbr, String tranDate, TextView tvTotCs, TextView tvTotCsOut) {

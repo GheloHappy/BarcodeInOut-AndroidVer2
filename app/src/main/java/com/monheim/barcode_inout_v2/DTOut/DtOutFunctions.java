@@ -233,7 +233,6 @@ public class DtOutFunctions {
         return true;
     }
     private boolean SyncDT(String date){
-        //TODO: Update barcode checking per dt not per day
         if(warehouse.equals("Monheim"))
         {
 //            try {
