@@ -61,23 +61,24 @@ public class OSFragment extends Fragment {
         tvTotPcs = rootView.findViewById(R.id.tvTotPcs);
         tvTotPcsShot = rootView.findViewById(R.id.tvTotPcsShot);
 
-        etOsOutQty.setEnabled(false);
         user = pubVars.GetUser();
 
-        spinUom.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (parent.getItemAtPosition(position).toString().equals("PCS")) {
-                    etOsOutQty.setEnabled(true);
-                } else {
-                    etOsOutQty.setText("1");
-                    etOsOutQty.setEnabled(false);
-                }
-            }
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-            }
-        });
+        //Uncomment Cabrera
+//        etOsOutQty.setEnabled(false);
+//        spinUom.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+//            @Override
+//            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+//                if (parent.getItemAtPosition(position).toString().equals("PCS")) {
+//                    etOsOutQty.setEnabled(true);
+//                } else {
+//                    etOsOutQty.setText("1");
+//                    etOsOutQty.setEnabled(false);
+//                }
+//            }
+//            @Override
+//            public void onNothingSelected(AdapterView<?> parent) {
+//            }
+//        });
 
         etSearchOSDate.addTextChangedListener(new TextWatcher() {
             private boolean isFormatting;

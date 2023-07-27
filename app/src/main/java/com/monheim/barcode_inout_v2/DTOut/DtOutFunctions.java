@@ -13,9 +13,11 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
 import MssqlCon.PublicVars;
 import MssqlCon.SqlCon;
@@ -231,25 +233,71 @@ public class DtOutFunctions {
         return true;
     }
     private boolean SyncDT(String date){
+        //TODO: Update barcode checking per dt not per day
         if(warehouse.equals("Monheim"))
         {
+//            try {
+//                if (con != null) {
+//                    String checkDtQuery = "SELECT DISTINCT dt FROM barcodesys_DTInventory  WHERE schedDate ='" + date + "'";
+//                    Statement stCheck = con.createStatement();
+//                    ResultSet rs = stCheck.executeQuery(checkDtQuery);
+//                    if (!rs.next()) {
+//                        String query;
+//                        query = "INSERT INTO barcodesys_DTInventory (InvcNbr,schedDate,dt,solomonID,uom,qty,CnvFact,uomOg,qtyOg) SELECT InvcNbr,OrdDate,ShipViaID,InvtID,UnitDesc,QtyShip,CnvFact,uomOg,qtyOg FROM barcodesys_CutDt_api2 WHERE OrdDate ='" + date + "'";
+//                        Statement st = con.createStatement();
+//                        st.execute(query);
+//                    }
+//                }
+//            } catch (Exception e) {
+//                System.out.println(e.getMessage());
+//                return  false;
+//            }
+
             try {
                 if (con != null) {
-                    String checkDtQuery = "SELECT DISTINCT dt FROM barcodesys_DTInventory  WHERE schedDate ='" + date + "'";
-                    Statement stCheck = con.createStatement();
-                    ResultSet rs = stCheck.executeQuery(checkDtQuery);
-                    if (!rs.next()) {
-                        String query;
-                        query = "INSERT INTO barcodesys_DTInventory (InvcNbr,schedDate,dt,solomonID,uom,qty,CnvFact,uomOg,qtyOg) SELECT InvcNbr,OrdDate,ShipViaID,InvtID,UnitDesc,QtyShip,CnvFact,uomOg,qtyOg FROM barcodesys_CutDt_api2 WHERE OrdDate ='" + date + "'";
-                        Statement st = con.createStatement();
-                        st.execute(query);
+                    // Fetch existing dt values from barcodesys_DTInventory for the given date
+                    String checkDtQuery = "SELECT DISTINCT dt FROM barcodesys_DTInventory WHERE schedDate = ?";
+                    PreparedStatement stCheck = con.prepareStatement(checkDtQuery);
+                    stCheck.setString(1, date);
+                    ResultSet rs = stCheck.executeQuery();
+
+                    // Create a HashSet to store the existing dt values in barcodesys_DTInventory
+                    Set<String> existingDtSet = new HashSet<>();
+                    while (rs.next()) {
+                        existingDtSet.add(rs.getString("dt"));
                     }
+
+                    // Close the ResultSet and the statement used for checking
+                    rs.close();
+                    stCheck.close();
+
+                    // Fetch new dt values from barcodesys_CutDt_api2 that are not present in barcodesys_DTInventory
+                    String insertQuery = "INSERT INTO barcodesys_DTInventory (InvcNbr, schedDate, dt, solomonID, uom, qty, CnvFact, uomOg, qtyOg) " +
+                            "SELECT InvcNbr, OrdDate, ShipViaID, InvtID, UnitDesc, QtyShip, CnvFact, uomOg, qtyOg " +
+                            "FROM barcodesys_CutDt_api2 " +
+                            "WHERE OrdDate = ? AND shipviaid NOT IN ('" + getCommaSeparatedDtList(existingDtSet) + "')";
+
+                    PreparedStatement stInsert = con.prepareStatement(insertQuery);
+                    stInsert.setString(1, date);
+                    stInsert.execute();
+                    stInsert.close();
                 }
             } catch (Exception e) {
                 System.out.println(e.getMessage());
-                return  false;
+                return false;
             }
         }
         return  true;
+    }
+
+    private String getCommaSeparatedDtList(Set<String> dtSet) {
+        StringBuilder dtList = new StringBuilder();
+        for (String dt : dtSet) {
+            dtList.append("'").append(dt).append("',");
+        }
+        if (dtList.length() > 0) {
+            dtList.setLength(dtList.length() - 1); // Remove the trailing comma
+        }
+        return dtList.toString();
     }
 }

@@ -62,23 +62,24 @@ public class VanFragment extends Fragment {
         tvTotPcs = view.findViewById(R.id.tvTotPcs);
         tvTotPcsShot = view.findViewById(R.id.tvTotPcsShot);
 
-        etVanOutQty.setEnabled(false);
         user = pubVars.GetUser();
 
-        spinUom.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (parent.getItemAtPosition(position).toString().equals("PCS")) {
-                    etVanOutQty.setEnabled(true);
-                } else {
-                    etVanOutQty.setText("1");
-                    etVanOutQty.setEnabled(false);
-                }
-            }
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-            }
-        });
+        //Uncomment Cabrera
+//        etVanOutQty.setEnabled(false);
+//        spinUom.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+//            @Override
+//            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+//                if (parent.getItemAtPosition(position).toString().equals("PCS")) {
+//                    etVanOutQty.setEnabled(true);
+//                } else {
+//                    etVanOutQty.setText("1");
+//                    etVanOutQty.setEnabled(false);
+//                }
+//            }
+//            @Override
+//            public void onNothingSelected(AdapterView<?> parent) {
+//            }
+//        });
 
         etSearchDate.addTextChangedListener(new TextWatcher() {
             private boolean isFormatting;

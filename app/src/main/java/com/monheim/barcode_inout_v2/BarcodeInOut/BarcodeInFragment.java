@@ -45,10 +45,10 @@ public class BarcodeInFragment extends Fragment {
         Button btnSave = rootView.findViewById(R.id.btnSave);
         TextView tvItemCount = rootView.findViewById(R.id.tvItemCount);
 
-        //false in Cabrera true in Monheim line 68 also
-        etBarcodeQty.setEnabled(true);
-
-        etBarcode.requestFocus();
+        //Uncomment Cabrera
+//        etBarcodeQty.setEnabled(true);
+//
+//        etBarcode.requestFocus();
 
         if(barInOut.CheckTempBarTranData(user) == true) {
             btnSave.setEnabled(true);
@@ -58,21 +58,22 @@ public class BarcodeInFragment extends Fragment {
 
         user = publVars.GetUser();
 
-        spUom.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (parent.getItemAtPosition(position).toString().equals("PCS")) {
-                    etBarcodeQty.setEnabled(true);
-                } else {
-                    etBarcodeQty.setText("1");
-                    //etBarcodeQty.setEnabled(false);
-                }
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-            }
-        });
+        //Uncomment Cabrera
+//        spUom.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+//            @Override
+//            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+//                if (parent.getItemAtPosition(position).toString().equals("PCS")) {
+//                    etBarcodeQty.setEnabled(true);
+//                } else {
+//                    etBarcodeQty.setText("1");
+//                    //etBarcodeQty.setEnabled(false);
+//                }
+//            }
+//
+//            @Override
+//            public void onNothingSelected(AdapterView<?> parent) {
+//            }
+//        });
 
         etBarcode.setOnKeyListener((v, keyCode, event) -> {
             if ((event.getAction() == KeyEvent.ACTION_DOWN) &&

@@ -62,23 +62,25 @@ public class DtOutFragment extends Fragment {
         tvTotPcsShot = rootView.findViewById(R.id.tvTotPcsShot);
         spInvtUom = rootView.findViewById(R.id.spInvtUom);
 
-        etDtOutQty.setEnabled(false);
         user = pubVars.GetUser();
 
-        spInvtUom.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (parent.getItemAtPosition(position).toString().equals("PCS")) {
-                    etDtOutQty.setEnabled(true);
-                } else {
-                    etDtOutQty.setText("1");
-                    etDtOutQty.setEnabled(false);
-                }
-            }
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-            }
-        });
+        //Uncomment Cabrera
+        //etDtOutQty.setEnabled(false);
+
+//        spInvtUom.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+//            @Override
+//            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+//                if (parent.getItemAtPosition(position).toString().equals("PCS")) {
+//                    etDtOutQty.setEnabled(true);
+//                } else {
+//                    etDtOutQty.setText("1");
+//                    etDtOutQty.setEnabled(false);
+//                }
+//            }
+//            @Override
+//            public void onNothingSelected(AdapterView<?> parent) {
+//            }
+//        });
         searchDtDate.addTextChangedListener(new TextWatcher() {
             private boolean isFormatting;
             private int inputLength;
