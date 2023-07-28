@@ -118,10 +118,18 @@ public class OSFunctions extends SqlCon {
                     rs.close();
                     stCheck.close();
 
-                    // Fetch new rows from barcodesys_summary_of_os_api that have InvcNbr not present in barcodesys_OsInventory
-                    String query = "INSERT INTO barcodesys_OsInventory (InvcDate, InvcNbr, InvtID, Descr, UnitDesc, QtyShip) " +
-                            "SELECT User9, InvcNbr, InvtID, Descr, UnitDesc, QtyShip FROM barcodesys_summary_of_os_api " +
-                            "WHERE User9 = ? AND InvcNbr NOT IN ('" + getCommaSeparatedRefNbrList(existingInvcNbrSet) + "')";
+                    String query;
+
+                    if (!existingInvcNbrSet.isEmpty()) {
+                        // Fetch new rows from barcodesys_summary_of_os_api that have InvcNbr not present in barcodesys_OsInventory
+                        query = "INSERT INTO barcodesys_OsInventory (InvcDate, InvcNbr, InvtID, Descr, UnitDesc, QtyShip) " +
+                                "SELECT User9, InvcNbr, InvtID, Descr, UnitDesc, QtyShip FROM barcodesys_summary_of_os_api " +
+                                "WHERE User9 = ? AND InvcNbr NOT IN (" + getCommaSeparatedRefNbrList(existingInvcNbrSet) + ")";
+                    } else {
+                        query = "INSERT INTO barcodesys_OsInventory (InvcDate, InvcNbr, InvtID, Descr, UnitDesc, QtyShip) " +
+                                "SELECT User9, InvcNbr, InvtID, Descr, UnitDesc, QtyShip FROM barcodesys_summary_of_os_api " +
+                                "WHERE User9 = ? ";
+                    }
                     PreparedStatement st = con.prepareStatement(query);
                     st.setString(1, tranDate);
                     st.execute();

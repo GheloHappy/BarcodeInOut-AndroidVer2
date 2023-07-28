@@ -118,10 +118,18 @@ public class IssuingFunctions extends  SqlCon{
                     rs.close();
                     stCheck.close();
 
-                    // Fetch new rows from barcodesys_issuing_api that have RefNbr not present in barcodesys_IssueInventory
-                    String query = "INSERT INTO barcodesys_IssueInventory (TranDate, RefNbr, InvtID, Descr, UnitDesc, Qty) " +
-                            "SELECT TranDate, RefNbr, InvtID, Descr, UnitDesc, Qty FROM barcodesys_issuing_api " +
-                            "WHERE TranDate = ? AND RefNbr NOT IN ('" + getCommaSeparatedRefNbrList(existingRefNbrSet) + "')";
+                    String query;
+
+                    if (!existingRefNbrSet.isEmpty()) {
+                        // Fetch new rows from barcodesys_issuing_api that have RefNbr not present in barcodesys_IssueInventory
+                        query = "INSERT INTO barcodesys_IssueInventory (TranDate, RefNbr, InvtID, Descr, UnitDesc, Qty) " +
+                                "SELECT TranDate, RefNbr, InvtID, Descr, UnitDesc, Qty FROM barcodesys_issuing_api " +
+                                "WHERE TranDate = ? AND RefNbr NOT IN (" + getCommaSeparatedRefNbrList(existingRefNbrSet) + ")";
+                    } else {
+                        query = "INSERT INTO barcodesys_IssueInventory (TranDate, RefNbr, InvtID, Descr, UnitDesc, Qty) " +
+                                "SELECT TranDate, RefNbr, InvtID, Descr, UnitDesc, Qty FROM barcodesys_issuing_api " +
+                                "WHERE TranDate = ? ";
+                    }
                     PreparedStatement st = con.prepareStatement(query);
                     st.setString(1, tranDate);
                     st.execute();

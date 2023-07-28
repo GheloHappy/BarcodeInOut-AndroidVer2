@@ -270,11 +270,21 @@ public class DtOutFunctions {
                     rs.close();
                     stCheck.close();
 
-                    // Fetch new dt values from barcodesys_CutDt_api2 that are not present in barcodesys_DTInventory
-                    String insertQuery = "INSERT INTO barcodesys_DTInventory (InvcNbr, schedDate, dt, solomonID, uom, qty, CnvFact, uomOg, qtyOg) " +
-                            "SELECT InvcNbr, OrdDate, ShipViaID, InvtID, UnitDesc, QtyShip, CnvFact, uomOg, qtyOg " +
-                            "FROM barcodesys_CutDt_api2 " +
-                            "WHERE OrdDate = ? AND shipviaid NOT IN ('" + getCommaSeparatedDtList(existingDtSet) + "')";
+                    String insertQuery;
+
+                    if (!existingDtSet.isEmpty())
+                    {
+                        // Fetch new dt values from barcodesys_CutDt_api2 that are not present in barcodesys_DTInventory
+                        insertQuery = "INSERT INTO barcodesys_DTInventory (InvcNbr, schedDate, dt, solomonID, uom, qty, CnvFact, uomOg, qtyOg) " +
+                                "SELECT InvcNbr, OrdDate, ShipViaID, InvtID, UnitDesc, QtyShip, CnvFact, uomOg, qtyOg " +
+                                "FROM barcodesys_CutDt_api2 " +
+                                "WHERE OrdDate = ? AND shipviaid NOT IN (" + getCommaSeparatedDtList(existingDtSet) + ")";
+                    } else {
+                        insertQuery = "INSERT INTO barcodesys_DTInventory (InvcNbr, schedDate, dt, solomonID, uom, qty, CnvFact, uomOg, qtyOg) " +
+                                "SELECT InvcNbr, OrdDate, ShipViaID, InvtID, UnitDesc, QtyShip, CnvFact, uomOg, qtyOg " +
+                                "FROM barcodesys_CutDt_api2 " +
+                                "WHERE OrdDate = ?";
+                    }
 
                     PreparedStatement stInsert = con.prepareStatement(insertQuery);
                     stInsert.setString(1, date);

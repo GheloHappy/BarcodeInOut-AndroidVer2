@@ -116,10 +116,18 @@ public class VanFunctions extends SqlCon {
                     rs.close();
                     stCheck.close();
 
-                    // Fetch new rows from a_mldi_transfer that have RefNbr not present in barcodesys_VaNInventory
-                    String query = "INSERT INTO barcodesys_VaNInventory (TranDate, RefNbr, InvtID, Descr, UnitDesc, Qty, PriceClass, ToSiteID, CnvFact) " +
-                            "SELECT TranDate, RefNbr, InvtID, Descr, UnitDesc, Qty, PriceClass, ToSiteID, CnvFact FROM a_mldi_transfer " +
-                            "WHERE TranDate = ? AND RefNbr NOT IN ('" + getCommaSeparatedRefNbrList(existingRefNbrSet) + "')";
+                    String query;
+
+                    if (!existingRefNbrSet.isEmpty()) {
+                        // Fetch new rows from a_mldi_transfer that have RefNbr not present in barcodesys_VaNInventory
+                        query = "INSERT INTO barcodesys_VaNInventory (TranDate, RefNbr, InvtID, Descr, UnitDesc, Qty, PriceClass, ToSiteID, CnvFact) " +
+                                "SELECT TranDate, RefNbr, InvtID, Descr, UnitDesc, Qty, PriceClass, ToSiteID, CnvFact FROM a_mldi_transfer " +
+                                "WHERE TranDate = ? AND RefNbr NOT IN (" + getCommaSeparatedRefNbrList(existingRefNbrSet) + ")";
+                    } else {
+                        query = "INSERT INTO barcodesys_VaNInventory (TranDate, RefNbr, InvtID, Descr, UnitDesc, Qty, PriceClass, ToSiteID, CnvFact) " +
+                                "SELECT TranDate, RefNbr, InvtID, Descr, UnitDesc, Qty, PriceClass, ToSiteID, CnvFact FROM a_mldi_transfer " +
+                                "WHERE TranDate = ? ";
+                    }
                     PreparedStatement st = con.prepareStatement(query);
                     st.setString(1, tranDate);
                     st.execute();
