@@ -98,7 +98,9 @@ public class BarcodeInOutFunctions extends SqlCon {
     public boolean CheckMultiBarcode(String barcode) {
         try {
             if (con != null) {
-                String query = "SELECT COUNT(*) AS count FROM barcodesys_Products WHERE barcode = '"+barcode+"'";
+                String query = "SELECT COUNT(DISTINCT solomonID) AS count " +
+                        "FROM barcodesys_Products " +
+                        "WHERE barcode ='"+barcode+"' GROUP BY barcode;";
                 Statement st = con.createStatement();
                 ResultSet rs = st.executeQuery(query);
 
