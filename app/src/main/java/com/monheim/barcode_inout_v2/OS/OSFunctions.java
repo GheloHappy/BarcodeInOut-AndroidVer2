@@ -82,7 +82,7 @@ public class OSFunctions extends SqlCon {
         return data;
     }
     private boolean SyncOs(String tranDate){
-        if(warehouse.equals("Monheim"))
+        if(warehouse.equals("Monheim") || warehouse.equals("Maryland"))
         {
 //            try {
 //                if (con != null) {
