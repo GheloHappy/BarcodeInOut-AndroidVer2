@@ -122,7 +122,7 @@ public class BarcodeInOutFunctions extends SqlCon {
 
         try {
             if (con != null) {
-                String query = "SELECT * FROM barcodesys_products WHERE barcode = '"+ barcode +"' ORDER BY solomonId ASC";
+                String query = "SELECT DISTINCT barcode, description, solomonID FROM barcodesys_products WHERE barcode = '"+ barcode +"' ORDER BY solomonId ASC";
                 Statement st = con.createStatement();
                 ResultSet rs = st.executeQuery(query);
 
