@@ -55,7 +55,7 @@
         android:textSize="20sp" />
 
     <ListView
-        android:id="@+id/lvInvtBarcodeTrans"
+        android:id="@+id/lvViewInvtBarcodeTrans"
         android:layout_width="570dp"
         android:layout_height="647dp"
         android:layout_alignParentStart="true"
@@ -82,7 +82,7 @@
         android:textSize="30sp" />
 
     <TextView
-        android:id="@+id/tvHomeTotCS"
+        android:id="@+id/tvViewInvtTotCS"
         android:layout_width="103dp"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
@@ -109,7 +109,7 @@
         android:textSize="30sp" />
 
     <TextView
-        android:id="@+id/tvHomeTotPcs"
+        android:id="@+id/tvViewInvtTotPcs"
         android:layout_width="103dp"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
