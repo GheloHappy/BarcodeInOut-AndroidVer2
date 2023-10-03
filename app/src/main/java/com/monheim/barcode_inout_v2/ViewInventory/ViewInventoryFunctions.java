@@ -49,7 +49,7 @@ public class ViewInventoryFunctions extends SqlCon {
                 String query = "SELECT " +
                         " SUM(CASE WHEN uom = 'CS' THEN qty ELSE 0 END) as totCs," +
                         " SUM(CASE WHEN uom = 'PCS' THEN qty ELSE 0 END) as totPcs FROM barcodesys_InventoryTrans_Report" +
-                        " WHERE refNbr = '"+refNbr+"' username = '"+user+"' ";
+                        " WHERE refNbr = '"+refNbr+"' AND username = '"+user+"' ";
                 Statement st = con.createStatement();
                 ResultSet rs = st.executeQuery(query);
 
