@@ -22,7 +22,7 @@ public class ViewInventoryFunctions extends SqlCon {
 
         try {
             if (con != null) {
-                String query = "SELECT * FROM barcodesys_InventoryTrans_Report WHERE refNbr = '"+refNbr+"'";
+                String query = "SELECT * FROM barcodesys_InventoryTrans_Report WHERE refNbr = '"+refNbr+"' AND username = '"+user+"'";
                 Statement st = con.createStatement();
                 ResultSet rs = st.executeQuery(query);
 
@@ -66,5 +66,28 @@ public class ViewInventoryFunctions extends SqlCon {
             Log.e("Error", e.getMessage());
         }
         return true;
+    }
+
+    public void GetTotItem(TextView tvTot, String refNbr, String user, String solomonID, String uom) {
+        try {
+            if (con != null) {
+                String query = "SELECT " +
+                        " SUM qty as tot" +
+                        " FROM barcodesys_InventoryTrans_Report" +
+                        " WHERE refNbr = '"+refNbr+"' AND username = '"+user+"' AND solomonID = '"+solomonID+"' AND uom = '"+uom+"'";
+                Statement st = con.createStatement();
+                ResultSet rs = st.executeQuery(query);
+
+                if (rs.next()) {
+                    if (rs.getString(1) != null){
+                        tvTot.setText(rs.getString(1));
+                    }else{
+                        tvTot.setText(0);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            Log.e("Error", e.getMessage());
+        }
     }
 }

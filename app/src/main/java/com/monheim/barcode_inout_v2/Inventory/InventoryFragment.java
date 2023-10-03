@@ -43,12 +43,12 @@ public class InventoryFragment extends Fragment {
     private Button btnSave;
 
     private TextView tvTotCs, tvTotPcs;
-
     String currentDate;
-
     SimpleAdapter simAd;
     InventoryFunctions invtFunc = new InventoryFunctions();
     Logs log = new Logs();
+
+    PublicVars pubVars = new PublicVars();
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -61,6 +61,8 @@ public class InventoryFragment extends Fragment {
         tvTotCs = rootView.findViewById(R.id.tvTotCs);
         tvTotPcs = rootView.findViewById(R.id.tvTotPcs);
         btnSave = rootView.findViewById(R.id.btnSave);
+
+        String user = pubVars.GetUser();
 
         Date c = Calendar.getInstance().getTime();
         SimpleDateFormat dfDate = new SimpleDateFormat("MM/dd/yyyy", Locale.getDefault());
@@ -143,7 +145,7 @@ public class InventoryFragment extends Fragment {
                     .setTitle("Are you sure ?")
                     .setMessage("Do you want to delete this item")
                     .setPositiveButton("Yes",(dialog, which) -> {
-                        if (invtFunc.DeleteItem(item, uom)) {
+                        if (invtFunc.DeleteItem(item, uom, user)) {
                             Toast.makeText(getActivity(), item + " - Successfully Deleted.", Toast.LENGTH_SHORT).show();
                             log.InsertUserLog("Inventory", "Delete item: " + item + uom);
                         } else {

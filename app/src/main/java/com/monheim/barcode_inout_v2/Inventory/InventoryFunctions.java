@@ -105,10 +105,10 @@ public class InventoryFunctions extends SqlCon {
         return data;
     }
 
-    public boolean DeleteItem(String barcode, String uom) {
+    public boolean DeleteItem(String barcode, String uom, String user) {
         try {
             if (con != null) {
-                String query = "DELETE FROM barcodesys_tempInventoryTrans WHERE barcode = '"+ barcode +"' AND username = '"+ user +"' AND UOM = '"+ uom + "'";
+                String query = "DELETE FROM barcodesys_tempInventoryTrans WHERE barcode = '"+ barcode +"' AND username = '"+ user +"' AND UOM = '"+ uom + "' AND username = '"+ user + "'";
                 Statement st = con.createStatement();
                 st.execute(query);
             }
