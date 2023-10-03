@@ -32,7 +32,7 @@ public class ViewInventoryFragment extends Fragment {
 
     PublicVars pubVars = new PublicVars();
 
-    String user ="",refNbr;
+    String user = "", refNbr;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -48,7 +48,7 @@ public class ViewInventoryFragment extends Fragment {
         user = pubVars.GetUser();
 
         etSearchRefNbr.setOnEditorActionListener((v, actionId, event) -> {
-            if(actionId == EditorInfo.IME_ACTION_DONE){
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
                 btnSearch.callOnClick();
                 return true;
             }
@@ -57,40 +57,40 @@ public class ViewInventoryFragment extends Fragment {
 
         btnSearch.setOnClickListener(v -> {
             refNbr = etSearchRefNbr.getText().toString();
-            if(viewInvtFunc.GetTotCs(tvTotCs, tvTotPcs, refNbr, user) == true) {
+            if (viewInvtFunc.GetTotCs(tvTotCs, tvTotPcs, refNbr, user) == true) {
                 ListInvtTran(lvBarcodeTrans, refNbr);
             } else {
                 Toast.makeText(getActivity(), "Reference number not found.", Toast.LENGTH_SHORT).show();
             }
         });
 
-        lvBarcodeTrans.setOnItemLongClickListener((parent, view, position, id) -> { //delete item long tap
-            TextView tvID = view.findViewById(R.id.invtBarcode);
-            TextView tvUom = view.findViewById(R.id.invtUom);
+        lvBarcodeTrans.setOnItemClickListener((parent, view, position, id) -> {
+//                TextView tvID = view.findViewById(R.id.barcode);
+            TextView tvUom = view.findViewById(R.id.uom);
             TextView tvSolomonID = view.findViewById(R.id.tranType);
 
-            String item = tvID.getText().toString();
+//            String item = tvID.getText().toString();
             String uom = tvUom.getText().toString();
             String solomonID = tvSolomonID.getText().toString();
 
-            LinearLayout layout = new LinearLayout(getActivity());
-            layout.setOrientation(LinearLayout.VERTICAL);
+            String total = viewInvtFunc.GetTotItem(refNbr, solomonID, uom);
+//            LinearLayout layout = new LinearLayout(getActivity());
+//            layout.setOrientation(LinearLayout.VERTICAL);
+//
+//            TextView textView = new TextView(getActivity());
 
-            TextView textView = new TextView(getActivity());
-
-            viewInvtFunc.GetTotItem(textView, refNbr,user,solomonID,uom);
-
-            layout.addView(textView);
+//            textView.setText(viewInvtFunc.GetTotItem(refNbr, user, solomonID, uom));
+//
+//            layout.addView(textView);
 
             new AlertDialog.Builder(getActivity())
                     .setIcon(android.R.drawable.ic_dialog_alert)
-                    .setTitle("Total Number")
-                    .setMessage("Total Qty of " + solomonID)
-                    .setPositiveButton("Confirm",(dialog, which) -> {
-                    })
-                    .setNegativeButton("Cancel", null)
+                    .setTitle("Total Qty of " + solomonID + " = " + total)
+//                    .setView(layout)
+//                    .setMessage("Total Qty of " + solomonID + " = " + total)
+                    .setPositiveButton("Confirm", null)
                     .show();
-            return true;
+
         });
 
         return rootView;
@@ -100,9 +100,9 @@ public class ViewInventoryFragment extends Fragment {
         List<Map<String, String>> dataList;
         dataList = viewInvtFunc.GetInvtList(refNbr, user);
 
-        String[] from = {"barcode","solomonID","description","uom","qty"};
-        int[] to = {R.id.barcode,R.id.tranType,R.id.description,R.id.uom,R.id.qty};
-        simAd = new SimpleAdapter(getActivity(),dataList,R.layout.temp_barcode_tran_list_template,from,to);
+        String[] from = {"barcode", "solomonID", "description", "uom", "qty"};
+        int[] to = {R.id.barcode, R.id.tranType, R.id.description, R.id.uom, R.id.qty};
+        simAd = new SimpleAdapter(getActivity(), dataList, R.layout.temp_barcode_tran_list_template, from, to);
         lvBarcodeTrans.setAdapter(simAd);
     }
 }

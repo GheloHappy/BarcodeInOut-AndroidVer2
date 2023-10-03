@@ -147,6 +147,8 @@ public class InventoryFragment extends Fragment {
                     .setPositiveButton("Yes",(dialog, which) -> {
                         if (invtFunc.DeleteItem(item, uom, user)) {
                             Toast.makeText(getActivity(), item + " - Successfully Deleted.", Toast.LENGTH_SHORT).show();
+                            invtFunc.GetToTQtyCs(tvTotCs);
+                            invtFunc.GetToTQtyPcs(tvTotPcs);
                             log.InsertUserLog("Inventory", "Delete item: " + item + uom);
                         } else {
                             Toast.makeText(getActivity(), "Failed to delete item.", Toast.LENGTH_SHORT).show();
