@@ -10,6 +10,7 @@
         <item>PCS</item>
         <item>SW</item>
         <item>SET</item>
+        <item>PCK</item>
     </string-array>
 
     <string-array name="spWarehouses">

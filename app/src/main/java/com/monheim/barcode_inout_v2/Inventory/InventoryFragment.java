@@ -68,23 +68,23 @@ public class InventoryFragment extends Fragment {
 
         BarcodeList(lvInventoryList);
 
-        etInvtQty.setEnabled(false);
+//        etInvtQty.setEnabled(false);
 
         etInvtBarcode.post(() -> etInvtBarcode.requestFocus());
-        spInvtUom.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (parent.getItemAtPosition(position).toString().equals("PCS")) {
-                    etInvtQty.setEnabled(true);
-                } else {
-                    etInvtQty.setText("1");
-                    etInvtQty.setEnabled(false);
-                }
-            }
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-            }
-        });
+//        spInvtUom.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+//            @Override
+//            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+//                if (parent.getItemAtPosition(position).toString().equals("PCS")) {
+//                    etInvtQty.setEnabled(true);
+//                } else {
+//                    etInvtQty.setText("1");
+//                    etInvtQty.setEnabled(false);
+//                }
+//            }
+//            @Override
+//            public void onNothingSelected(AdapterView<?> parent) {
+//            }
+//        });
 
         etInvtQty.setOnKeyListener((v, keyCode, event) -> {
             if ((event.getAction() == KeyEvent.ACTION_DOWN) &&
