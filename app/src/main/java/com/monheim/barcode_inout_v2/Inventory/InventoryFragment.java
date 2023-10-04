@@ -204,6 +204,9 @@ public class InventoryFragment extends Fragment {
             layout.addView(etRefNbr);
             layout.addView(etRemarks);
 
+            etRefNbr.setText(pubVars.GetInvtReference());
+            etRemarks.setText(pubVars.GetInvtRemarks());
+
             new AlertDialog.Builder(getActivity())
                     .setIcon(android.R.drawable.ic_dialog_alert)
                     .setTitle("Input reference number")
@@ -211,6 +214,9 @@ public class InventoryFragment extends Fragment {
                     .setPositiveButton("Yes",(dialog, which) -> {
                         String refNbr = etRefNbr.getText().toString();
                         String remarks = etRemarks.getText().toString();
+
+                        pubVars.SetInvtReference(refNbr);
+                        pubVars.SetInvtRemarks(remarks);
 
                         if(refNbr.equals("")) {
                             Toast.makeText(getActivity(), "Please add a reference number or text", Toast.LENGTH_SHORT).show();
@@ -240,6 +246,9 @@ public class InventoryFragment extends Fragment {
         String[] from = {"barcode","solomonID","description","uom","qty"};
         int[] to = {R.id.invtBarcode,R.id.tvSolomonId,R.id.tvDesc,R.id.invtUom,R.id.invtQty};
         simAd = new SimpleAdapter(getActivity(),dataList,R.layout.inventory_barcode_template,from,to);
+//        String[] from = {"timeStamp","solomonID","description","barcode","qtyOg","uomOg","qtyOut"};
+//        int[] to = {R.id.id,R.id.description,R.id.itemDescription,R.id.barcode,R.id.maxQty,R.id.uom,R.id.qty};
+//        simAd = new SimpleAdapter(getActivity(),dataList,R.layout.dt_barcode_tran_list_template,from,to);
         lv.setAdapter(simAd);
     }
 }

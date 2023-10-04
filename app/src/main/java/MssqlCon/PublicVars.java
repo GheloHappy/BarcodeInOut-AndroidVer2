@@ -34,4 +34,12 @@ public class PublicVars {
 
     public static void SetWarehouse(String warehouse) { _warehouse = warehouse; }
     public static String GetWarehouse() {return  _warehouse; }
+
+    public static String _ref;
+    public static void SetInvtReference(String ref) { _ref = ref;}
+    public static String GetInvtReference() {return _ref;}
+
+    public static String _remarks;
+    public static void SetInvtRemarks(String remarks) { _remarks = remarks;}
+    public static String GetInvtRemarks(){return  _remarks;}
 }
