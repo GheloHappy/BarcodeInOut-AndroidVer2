@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.Color;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -27,6 +28,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.monheim.barcode_inout_v2.BarcodeInOut.BarcodeInOutFunctions;
 import com.monheim.barcode_inout_v2.R;
 
 import java.text.SimpleDateFormat;
@@ -35,6 +37,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 
 import MssqlCon.Logs;
 import MssqlCon.PublicVars;
@@ -43,11 +46,12 @@ public class InventoryFragment extends Fragment {
     private Button btnSave;
 
     private TextView tvTotCs, tvTotPcs;
-    String currentDate;
+    String currentDate, solomonID;
     SimpleAdapter simAd;
     InventoryFunctions invtFunc = new InventoryFunctions();
-    Logs log = new Logs();
 
+    BarcodeInOutFunctions barInOut = new BarcodeInOutFunctions();
+    Logs log = new Logs();
     PublicVars pubVars = new PublicVars();
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -115,17 +119,73 @@ public class InventoryFragment extends Fragment {
 //                    } else {
 //                        invtFunc.InsertBarcode(barcode, uom, qty, GetTodaysDate());
 //                    }
-                    invtFunc.InsertTempBarcode(barcode, uom, qty);
+                    solomonID = invtFunc.GetSolomonID(barcode);
 
-                    invtFunc.GetToTQtyCs(tvTotCs);
-                    invtFunc.GetToTQtyPcs(tvTotPcs);
+                    if (Objects.equals(solomonID, "multi")) {
+                        List<Map<String, String>> dataList;
+                        dataList = barInOut.GetMultiBarcode(barcode);
+
+                        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                        builder.setTitle("Detected multiple solomon ID");
+                        builder.setMessage("Please select appropriate solomon ID");
+                        builder.setCancelable(false);
+                        builder.setNegativeButton("Cancel", (dialog, which) -> {
+                            dialog.dismiss();
+                        });
+                        builder.setPositiveButton("Save", (dialog, which) -> {
+                            invtFunc.InsertTempBarcode(barcode, uom, qty, solomonID);
+
+                            invtFunc.GetToTQtyCs(tvTotCs);
+                            invtFunc.GetToTQtyPcs(tvTotPcs);
+
+                            etInvtQty.setText("1");
+                            BarcodeList(lvInventoryList);
+                            etInvtBarcode.setText("");
+                            etInvtBarcode.post(() -> etInvtBarcode.requestFocus());
+                        });
+
+                        ListView listView = new ListView(getContext());
+
+                        String[] from = {"barcode","description","solomonID"};
+                        int[] to = {R.id.barcode,R.id.description,R.id.qty};
+                        simAd = new SimpleAdapter(getActivity(),dataList,R.layout.temp_barcode_tran_list_template,from,to);
+                        listView.setAdapter(simAd);
+
+                        listView.setChoiceMode(ListView.CHOICE_MODE_NONE);
+                        builder.setView(listView);
+
+                        final AlertDialog dialog = builder.create();
+
+                        listView.setOnItemClickListener((parent, view, position, id) -> {
+                            for (int i = 0; i < parent.getChildCount(); i++) {
+                                TextView tvItemDesc = parent.getChildAt(i).findViewById(R.id.description);
+                                TextView tvSolomonID = parent.getChildAt(i).findViewById(R.id.qty);
+
+                                if (i == position) {
+                                    tvItemDesc.setTextColor(Color.RED);
+                                    tvSolomonID.setTextColor(Color.RED);
+
+                                    solomonID = tvSolomonID.getText().toString();
+                                } else {
+                                    tvItemDesc.setTextColor(Color.BLACK);
+                                    tvSolomonID.setTextColor(Color.BLACK);
+                                }
+                            }
+                        });
+
+                        dialog.show();
+                    } else {
+                        invtFunc.InsertTempBarcode(barcode, uom, qty, solomonID);
+
+                        invtFunc.GetToTQtyCs(tvTotCs);
+                        invtFunc.GetToTQtyPcs(tvTotPcs);
+
+                        etInvtQty.setText("1");
+                        BarcodeList(lvInventoryList);
+                        etInvtBarcode.setText("");
+                        etInvtBarcode.post(() -> etInvtBarcode.requestFocus());
+                    }
                 }
-
-
-                etInvtQty.setText("1");
-                BarcodeList(lvInventoryList);
-                etInvtBarcode.setText("");
-                etInvtBarcode.post(() -> etInvtBarcode.requestFocus());
 
                 return true;
             }
@@ -133,6 +193,7 @@ public class InventoryFragment extends Fragment {
             etInvtBarcode.post(() -> etInvtBarcode.requestFocus());
             return false;
         });
+
         lvInventoryList.setOnItemLongClickListener((parent, view, position, id) -> { //delete item long tap
             TextView tvID = view.findViewById(R.id.invtBarcode);
             TextView tvUom = view.findViewById(R.id.invtUom);

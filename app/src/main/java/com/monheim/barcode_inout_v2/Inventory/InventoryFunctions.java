@@ -5,6 +5,7 @@ import android.util.Log;
 import android.widget.TextView;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.text.SimpleDateFormat;
@@ -24,10 +25,10 @@ public class InventoryFunctions extends SqlCon {
     PublicVars pubVar = new PublicVars();
     String user = pubVar.GetUser();
 
-    public void InsertTempBarcode(String barcode, String uom, int qty) {
+    public void InsertTempBarcode(String barcode, String uom, int qty, String solomonID) {
         try {
             if (con != null) {
-                String query = "INSERT INTO barcodesys_tempInventoryTrans VALUES ('"+barcode+ "','" + GetSolomonID(barcode) +"','" + uom +"','" + qty + "','" + user + "')";
+                String query = "INSERT INTO barcodesys_tempInventoryTrans VALUES ('"+barcode+ "','" + solomonID +"','" + uom +"','" + qty + "','" + user + "')";
                 Statement st = con.createStatement();
                 st.execute(query);
             }
@@ -59,24 +60,45 @@ public class InventoryFunctions extends SqlCon {
         return true;
     }
 
-    private String GetSolomonID(String barcode) {
+    public String GetSolomonID(String barcode) {
+        String solomonId = "";
         try {
             if (con != null) {
-                String query = "SELECT solomonID FROM barcodesys_Products WHERE barcode ='" + barcode + "'";
-                Statement st = con.createStatement();
-                ResultSet rs = st.executeQuery(query);
+//                String query = "SELECT DISTINCT solomonID FROM barcodesys_Products WHERE barcode ='" + barcode + "'";
+//                Statement st = con.createStatement();
+//                ResultSet rs = st.executeQuery(query);
+//
+//                if (rs.next()) {
+//                    barcode = rs.getString(1);
+//                } else {
+//                    barcode = "NA";
+//                }
 
-                if (rs.next()) {
-                    barcode = rs.getString(1);
+                String queryDt = "SELECT DISTINCT solomonID FROM barcodesys_Products WHERE barcode = ?";
+                PreparedStatement stDt = con.prepareStatement(queryDt);
+                stDt.setString(1, barcode);
+                ResultSet rsDt = stDt.executeQuery();
+
+                List<String[]> rows = new ArrayList<>();
+                while (rsDt.next()) {
+                    String[] row = new String[2];
+                    row[0] = rsDt.getString(1);
+                    rows.add(row);
+                }
+
+                int rowCount = rows.size();
+
+                if (rowCount > 1) {
+                    solomonId = "multi";
                 } else {
-                    barcode = "NA";
+                    solomonId = rows.get(0)[0];
                 }
             }
         } catch (Exception e) {
             Log.e("Error", e.getMessage());
         }
 
-        return barcode;
+        return solomonId;
     }
 
     public List<Map<String, String>> GetInventoryBarList() {

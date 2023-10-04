@@ -88,7 +88,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
                 android:layout_marginTop="22dp"
-                android:text="Warehouse Barcode System v.1.5.7"
+                android:text="Warehouse Barcode System v.1.5.8"
                 android:textAlignment="center"
                 android:textColor="#fff"
                 android:textSize="50dp" />
