@@ -272,7 +272,11 @@ public class InventoryFragment extends Fragment {
             layout.addView(etRefNbr);
             layout.addView(etRemarks);
 
-            etRefNbr.setText(pubVars.GetInvtReference());
+            SimpleDateFormat dateFormat = new SimpleDateFormat("MMddyy");
+            String formattedDate = dateFormat.format(currentDate);
+
+            etRefNbr.setText(formattedDate);
+            etRefNbr.setEnabled(false);
             etRemarks.setText(pubVars.GetInvtRemarks());
 
             new AlertDialog.Builder(getActivity())
@@ -282,6 +286,8 @@ public class InventoryFragment extends Fragment {
                     .setPositiveButton("Yes",(dialog, which) -> {
                         String refNbr = etRefNbr.getText().toString();
                         String remarks = etRemarks.getText().toString();
+
+
 
                         pubVars.SetInvtReference(refNbr);
                         pubVars.SetInvtRemarks(remarks);
