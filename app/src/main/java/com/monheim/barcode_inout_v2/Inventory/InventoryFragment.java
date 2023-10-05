@@ -133,15 +133,21 @@ public class InventoryFragment extends Fragment {
                             dialog.dismiss();
                         });
                         builder.setPositiveButton("Save", (dialog, which) -> {
-                            invtFunc.InsertTempBarcode(barcode, uom, qty, solomonID);
 
-                            invtFunc.GetToTQtyCs(tvTotCs);
-                            invtFunc.GetToTQtyPcs(tvTotPcs);
+                            if (Objects.equals(solomonID, "multi") || Objects.equals(solomonID, "")) {
+                                Toast.makeText(getActivity(), "Please select an item", Toast.LENGTH_SHORT).show();
+                            } else {
+                                invtFunc.InsertTempBarcode(barcode, uom, qty, solomonID);
 
-                            etInvtQty.setText("1");
-                            BarcodeList(lvInventoryList);
-                            etInvtBarcode.setText("");
-                            etInvtBarcode.post(() -> etInvtBarcode.requestFocus());
+                                invtFunc.GetToTQtyCs(tvTotCs);
+                                invtFunc.GetToTQtyPcs(tvTotPcs);
+
+                                etInvtQty.setText("1");
+                                BarcodeList(lvInventoryList);
+                                etInvtBarcode.setText("");
+                                spInvtUom.setSelection(0,true);
+                                etInvtBarcode.post(() -> etInvtBarcode.requestFocus());
+                            }
                         });
 
                         ListView listView = new ListView(getContext());
@@ -182,6 +188,7 @@ public class InventoryFragment extends Fragment {
 
                         etInvtQty.setText("1");
                         BarcodeList(lvInventoryList);
+                        spInvtUom.setSelection(0,true);
                         etInvtBarcode.setText("");
                         etInvtBarcode.post(() -> etInvtBarcode.requestFocus());
                     }
