@@ -22,7 +22,7 @@ public class ViewInventoryFunctions extends SqlCon {
 
         try {
             if (con != null) {
-                String query = "SELECT * FROM barcodesys_InventoryTrans_Report WHERE refNbr = '"+refNbr+"' AND username = '"+user+"'";
+                String query = "SELECT * FROM barcodesys_InventoryTrans_Report_TabView WHERE refNbr LIKE '%"+refNbr+"%' OR remarks LIKE '%"+refNbr+"%' AND username = '"+user+"'";
                 Statement st = con.createStatement();
                 ResultSet rs = st.executeQuery(query);
 
@@ -33,6 +33,7 @@ public class ViewInventoryFunctions extends SqlCon {
                     dtTempBarTran.put("description", rs.getString("description"));
                     dtTempBarTran.put("uom", rs.getString("uom"));
                     dtTempBarTran.put("qty", rs.getString("qty"));
+                    dtTempBarTran.put("remarks", rs.getString("remarks"));
                     data.add(dtTempBarTran);
                 }
             }
@@ -49,7 +50,7 @@ public class ViewInventoryFunctions extends SqlCon {
                 String query = "SELECT " +
                         " SUM(CASE WHEN uom = 'CS' THEN qty ELSE 0 END) as totCs," +
                         " SUM(CASE WHEN uom = 'PCS' THEN qty ELSE 0 END) as totPcs FROM barcodesys_InventoryTrans_Report" +
-                        " WHERE refNbr = '"+refNbr+"' AND username = '"+user+"' ";
+                        " WHERE refNbr LIKE '%"+refNbr+"%' OR remarks LIKE '%"+refNbr+"%'  AND username = '"+user+"' ";
                 Statement st = con.createStatement();
                 ResultSet rs = st.executeQuery(query);
 
@@ -64,6 +65,42 @@ public class ViewInventoryFunctions extends SqlCon {
             }
         } catch (Exception e) {
             Log.e("Error", e.getMessage());
+        }
+        return true;
+    }
+
+    public boolean CheckVoidUser(String pass) {
+        try {
+            if (con != null) {
+                String query = "SELECT password FROM barcodesys_Users WHERE username = 'void' AND password = '"+pass+"'";
+                Statement st = con.createStatement();
+                ResultSet rs = st.executeQuery(query);
+
+                if (rs.next()) {
+                    if (rs.getString(1) != null){
+                        return true;
+                    }
+                }
+            }
+        } catch (Exception e) {
+            Log.e("Error", e.getMessage());
+            System.out.println("getVoidUser" + e.getMessage());
+        }
+
+        return false;
+    }
+
+    public boolean VoidRemoveItem(String barcode, String solomonID, String uom, String refnbr, String user, String remarks){
+        try {
+            if (con != null) {
+                String query = "DELETE FROM barcodesys_InventoryTrans WHERE barcode = '"+ barcode +"' AND solomonID = '"+
+                        solomonID +"' AND uom = '"+ uom + "' AND refnbr = '"+ refnbr + "' AND username = '"+ user + "' AND remarks = '"+ remarks + "'";
+                Statement st = con.createStatement();
+                st.execute(query);
+            }
+        } catch (Exception e) {
+            Log.e("Error", "VoidRemoveItem - " + e.getMessage());
+            return false;
         }
         return true;
     }

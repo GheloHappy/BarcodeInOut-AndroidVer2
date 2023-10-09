@@ -1,10 +1,12 @@
 package com.monheim.barcode_inout_v2.ViewInventory;
 
 import android.app.AlertDialog;
+import android.graphics.Color;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
+import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +24,7 @@ import com.monheim.barcode_inout_v2.R;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import MssqlCon.PublicVars;
 
@@ -64,33 +67,86 @@ public class ViewInventoryFragment extends Fragment {
             }
         });
 
-        lvBarcodeTrans.setOnItemClickListener((parent, view, position, id) -> {
-//                TextView tvID = view.findViewById(R.id.barcode);
+//        lvBarcodeTrans.setOnItemClickListener((parent, view, position, id) -> {
+////                TextView tvID = view.findViewById(R.id.barcode);
+//            TextView tvUom = view.findViewById(R.id.uom);
+//            TextView tvSolomonID = view.findViewById(R.id.tranType);
+//
+////            String item = tvID.getText().toString();
+//            String uom = tvUom.getText().toString();
+//            String solomonID = tvSolomonID.getText().toString();
+//
+//            String total = viewInvtFunc.GetTotItem(refNbr, solomonID, uom);
+////            LinearLayout layout = new LinearLayout(getActivity());
+////            layout.setOrientation(LinearLayout.VERTICAL);
+////
+////            TextView textView = new TextView(getActivity());
+//
+////            textView.setText(viewInvtFunc.GetTotItem(refNbr, user, solomonID, uom));
+////
+////            layout.addView(textView);
+//
+//            new AlertDialog.Builder(getActivity())
+//                    .setIcon(android.R.drawable.ic_dialog_alert)
+//                    .setTitle("Total Qty of " + solomonID + " = " + total)
+////                    .setView(layout)
+////                    .setMessage("Total Qty of " + solomonID + " = " + total)
+//                    .setPositiveButton("Confirm", null)
+//                    .show();
+//
+//        });
+
+        lvBarcodeTrans.setOnItemLongClickListener((parent, view, position, id) -> {
+            TextView tvBarcode = view.findViewById(R.id.barcode);
+            TextView tvSolomon = view.findViewById(R.id.tranType);
             TextView tvUom = view.findViewById(R.id.uom);
-            TextView tvSolomonID = view.findViewById(R.id.tranType);
+            TextView tvRemarks = view.findViewById(R.id.remarks);
 
-//            String item = tvID.getText().toString();
+            String barcode = tvBarcode.getText().toString();
+            String solomonID = tvSolomon.getText().toString();
             String uom = tvUom.getText().toString();
-            String solomonID = tvSolomonID.getText().toString();
+            String remarks = tvRemarks.getText().toString();
 
-            String total = viewInvtFunc.GetTotItem(refNbr, solomonID, uom);
-//            LinearLayout layout = new LinearLayout(getActivity());
-//            layout.setOrientation(LinearLayout.VERTICAL);
-//
-//            TextView textView = new TextView(getActivity());
+            LinearLayout layout = new LinearLayout(getActivity());
+            layout.setOrientation(LinearLayout.VERTICAL);
 
-//            textView.setText(viewInvtFunc.GetTotItem(refNbr, user, solomonID, uom));
-//
-//            layout.addView(textView);
+            EditText etAdminpass = new EditText(getActivity());
+            etAdminpass.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+            etAdminpass.setHint("Admin Password");
+
+            layout.addView(etAdminpass);
 
             new AlertDialog.Builder(getActivity())
                     .setIcon(android.R.drawable.ic_dialog_alert)
-                    .setTitle("Total Qty of " + solomonID + " = " + total)
-//                    .setView(layout)
-//                    .setMessage("Total Qty of " + solomonID + " = " + total)
-                    .setPositiveButton("Confirm", null)
+                    .setTitle("Input Admin Password")
+                    .setView(layout)
+                    .setNegativeButton("Cancel", (dialog, which) -> {
+                        dialog.dismiss();
+                    })
+                    .setPositiveButton("Yes",(dialog, which) -> {
+                        String adminPass = etAdminpass.getText().toString();
+
+                        if(adminPass.equals("")) {
+                            Toast.makeText(getActivity(), "Please input admin password.", Toast.LENGTH_SHORT).show();
+                            dialog.dismiss();
+                        } else {
+                            if(!viewInvtFunc.CheckVoidUser(adminPass)) {
+                                Toast.makeText(getActivity(), "Incorrect admin password.", Toast.LENGTH_SHORT).show();
+                            } else {
+                                if(viewInvtFunc.VoidRemoveItem(barcode, solomonID, uom, refNbr, user, remarks)) {
+                                    Toast.makeText(getActivity(), "Item Deleted Successfully!", Toast.LENGTH_SHORT).show();
+                                    ListInvtTran(lvBarcodeTrans, refNbr);
+                                    viewInvtFunc.GetTotCs(tvTotCs, tvTotPcs, refNbr, user);
+                                } else {
+                                    Toast.makeText(getActivity(), "Failed to delete item.", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        }
+                    })
+                    .setNegativeButton("CANCEL", null)
                     .show();
 
+            return true;
         });
 
         return rootView;
@@ -100,9 +156,9 @@ public class ViewInventoryFragment extends Fragment {
         List<Map<String, String>> dataList;
         dataList = viewInvtFunc.GetInvtList(refNbr, user);
 
-        String[] from = {"barcode", "solomonID", "description", "uom", "qty"};
-        int[] to = {R.id.barcode, R.id.tranType, R.id.description, R.id.uom, R.id.qty};
-        simAd = new SimpleAdapter(getActivity(), dataList, R.layout.temp_barcode_tran_list_template, from, to);
+        String[] from = {"barcode", "solomonID", "description", "uom", "qty", "remarks"};
+        int[] to = {R.id.barcode, R.id.tranType, R.id.description, R.id.uom, R.id.qty, R.id.remarks};
+        simAd = new SimpleAdapter(getActivity(), dataList, R.layout.temp_inventory_report, from, to);
         lvBarcodeTrans.setAdapter(simAd);
     }
 }
