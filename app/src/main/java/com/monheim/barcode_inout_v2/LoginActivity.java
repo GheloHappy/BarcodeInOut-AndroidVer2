@@ -6,6 +6,7 @@ import androidx.core.view.GravityCompat;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -13,9 +14,13 @@ import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.material.materialswitch.MaterialSwitch;
+import com.google.android.material.switchmaterial.SwitchMaterial;
 import com.monheim.barcode_inout_v2.BarcodeInOut.BarcodeInOutFunctions;
 import com.monheim.barcode_inout_v2.Inventory.InventoryFunctions;
 import com.monheim.barcode_inout_v2.NewBarcode.NewBarcodeFunctions;
@@ -42,6 +47,10 @@ public class LoginActivity extends AppCompatActivity {
         EditText etUser = findViewById(R.id.edtUserName);
         EditText etPass = findViewById(R.id.edtPassword);
 
+        //Offline functions
+        SwitchMaterial toggleOfflineMode = findViewById(R.id.toggleOfflineMode);
+        TextView txtToggleOffline = findViewById(R.id.txtToggleOffline);
+
         OnBackPressedCallback callback = new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
@@ -49,8 +58,17 @@ public class LoginActivity extends AppCompatActivity {
             }
         };
 
-        // Add the callback to the back button dispatcher
         getOnBackPressedDispatcher().addCallback(this, callback);
+
+        toggleOfflineMode.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked) {
+                txtToggleOffline.setTextColor(Color.RED);
+                txtToggleOffline.setText("OFFLINE MODE");
+            } else {
+                txtToggleOffline.setTextColor(Color.GREEN);
+                txtToggleOffline.setText("ONLINE MODE");
+            }
+        });
 
         btnLogin.setOnClickListener(v -> {
             ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
