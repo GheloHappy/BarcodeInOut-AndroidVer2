@@ -136,7 +136,7 @@ public class ViewInventoryFragment extends Fragment {
                                 if(viewInvtFunc.VoidRemoveItem(barcode, solomonID, uom, refNbr, user, remarks)) {
                                     Toast.makeText(getActivity(), "Item Deleted Successfully!", Toast.LENGTH_SHORT).show();
                                     ListInvtTran(lvBarcodeTrans, refNbr);
-                                    viewInvtFunc.GetTotCs(tvTotCs, tvTotPcs, refNbr, user);
+//                                    viewInvtFunc.GetTotCs(tvTotCs, tvTotPcs, refNbr, user);
                                 } else {
                                     Toast.makeText(getActivity(), "Failed to delete item.", Toast.LENGTH_SHORT).show();
                                 }

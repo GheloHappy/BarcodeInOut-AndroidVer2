@@ -97,7 +97,9 @@ public class ViewInventoryFunctions extends SqlCon {
                         solomonID +"' AND uom = '"+ uom + "' AND refnbr = '"+ refnbr + "' AND username = '"+ user + "' AND remarks = '"+ remarks + "'";
                 Statement st = con.createStatement();
                 st.execute(query);
+
             }
+
         } catch (Exception e) {
             Log.e("Error", "VoidRemoveItem - " + e.getMessage());
             return false;
