@@ -1,5 +1,6 @@
 package com.monheim.barcode_inout_v2;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
 
@@ -41,6 +42,16 @@ public class LoginActivity extends AppCompatActivity {
         EditText etUser = findViewById(R.id.edtUserName);
         EditText etPass = findViewById(R.id.edtPassword);
 
+        OnBackPressedCallback callback = new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                // Disable back button press
+            }
+        };
+
+        // Add the callback to the back button dispatcher
+        getOnBackPressedDispatcher().addCallback(this, callback);
+
         btnLogin.setOnClickListener(v -> {
             ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
             NetworkInfo ni = cm.getActiveNetworkInfo();
@@ -80,11 +91,5 @@ public class LoginActivity extends AppCompatActivity {
                 toggle = true;
             }
         });
-    }
-
-    @Override
-    public void onBackPressed() {
-        moveTaskToBack(true); //closes app to taskbar running
-        //super.onBackPressed(); //enable back press
     }
 }
