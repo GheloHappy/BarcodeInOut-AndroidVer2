@@ -9,6 +9,7 @@ import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -30,8 +31,10 @@ public class LoginActivity extends AppCompatActivity {
     ConnectionFragment conFrag = new ConnectionFragment();
     boolean toggle = true;
     boolean offlineToggle = false;
+    boolean firstSyncToggle = false;
 
     private UserDbHelper userDbHelper;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,6 +50,10 @@ public class LoginActivity extends AppCompatActivity {
         Button btnConn = findViewById(R.id.btnConn);
         EditText etUser = findViewById(R.id.edtUserName);
         EditText etPass = findViewById(R.id.edtPassword);
+
+        //Offline functions
+        SwitchMaterial switchOfflineMode = findViewById(R.id.toggleOfflineMode);
+        TextView txtToggleOffline = findViewById(R.id.txtToggleOffline);
 
         OnBackPressedCallback callback = new OnBackPressedCallback(true) {
             @Override
@@ -64,33 +71,24 @@ public class LoginActivity extends AppCompatActivity {
             ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
             NetworkInfo ni = cm.getActiveNetworkInfo();
 
-            Login login = new Login();
+            Login login = new Login(this);
 
-            if(offlineToggle) {
-                if(userDbHelper.getUser(userName)){
-                    System.out.println("user exist");
-
-                } else {
+            if (offlineToggle) {
+                if (firstSyncToggle) {
                     if (ni != null && ni.getType() == ConnectivityManager.TYPE_WIFI) {
-                        if (login.CheckUser(userName, pass)) {
-                            List<Map<String, String>> dataList;
-                            dataList = login.GetUserDetails(userName);
-
-                            for (Map<String, String> userData : dataList) {
-                                int id = Integer.parseInt(userData.get("id"));
-                                String username = userData.get("username");
-                                String password = userData.get("password");
-                                String name = userData.get("name");
-                                String department = userData.get("department");
-
-                                User user = new User(id, username, password, name, department);
-                                userDbHelper.insertUser(user);
-                            }
+                        if (login.CheckUser(userName, pass)) { // Sync user date to local db if user is existing
+                            startActivity(new Intent(LoginActivity.this, MainActivity.class));
                         } else {
                             Toast.makeText(LoginActivity.this, "Invalid Username/Password or Saved Connection.", Toast.LENGTH_SHORT).show();
                         }
                     } else {
                         Toast.makeText(LoginActivity.this, "Connect to Local Wifi for sync", Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    if (userDbHelper.localLoginUser(userName, pass)) {
+                        startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                    } else {
+                        Toast.makeText(LoginActivity.this, "Invalid Username/Password or Saved Connection.", Toast.LENGTH_SHORT).show();
                     }
                 }
             } else {
@@ -118,28 +116,37 @@ public class LoginActivity extends AppCompatActivity {
 
         btnConn.setOnClickListener(v -> {
             if (toggle == true) {
+                switchOfflineMode.setVisibility(View.INVISIBLE);
                 getSupportFragmentManager().beginTransaction().replace(R.id.frmLogin, conFrag).commit();
                 toggle = false;
             } else {
                 //getSupportFragmentManager().beginTransaction().replace(R.id.frmLogin,conFrag).commit();
+                switchOfflineMode.setVisibility(View.VISIBLE);
                 startActivity(new Intent(LoginActivity.this, LoginActivity.class));
                 toggle = true;
             }
         });
 
-        //Offline functions
-        SwitchMaterial toggleOfflineMode = findViewById(R.id.toggleOfflineMode);
-        TextView txtToggleOffline = findViewById(R.id.txtToggleOffline);
+        switchOfflineMode.setOnCheckedChangeListener((buttonView, isChecked) ->
 
-        toggleOfflineMode.setOnCheckedChangeListener((buttonView, isChecked) -> {
+        {
             if (isChecked) {
                 txtToggleOffline.setTextColor(Color.RED);
                 txtToggleOffline.setText("OFFLINE MODE");
                 offlineToggle = true;
+                btnConn.setVisibility(View.INVISIBLE);
+                if (userDbHelper.userNotEmpty()) {
+                    btnLogin.setText("LOGIN");
+                    firstSyncToggle = false;
+                } else {
+                    firstSyncToggle = true;
+                    btnLogin.setText("SYNC");
+                }
             } else {
                 txtToggleOffline.setTextColor(Color.GREEN);
                 txtToggleOffline.setText("ONLINE MODE");
                 offlineToggle = false;
+                btnConn.setVisibility(View.VISIBLE);
             }
         });
 

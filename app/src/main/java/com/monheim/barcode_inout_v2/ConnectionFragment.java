@@ -44,9 +44,9 @@ public class ConnectionFragment extends Fragment {
             String ip = etServerIp.getText().toString();
             String port = etPort.getText().toString();
             String warehouse = spinWarehouse.getSelectedItem().toString();
+            Login login = new Login(rootView.getContext());
 
             if (ni != null && ni.getType() == ConnectivityManager.TYPE_WIFI) {
-                Login login = new Login();
 
                 SharedPreferences.Editor editor = settings.edit(); //saved ip and port
                 editor.putString("ip", ip);
