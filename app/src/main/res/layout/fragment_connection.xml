@@ -138,13 +138,29 @@
         android:id="@+id/btnConSave"
         android:layout_width="148dp"
         android:layout_height="48dp"
+        android:layout_marginStart="120dp"
         android:background="@drawable/login_button_bg"
         android:text="Save"
         android:textSize="20sp"
+
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/spinWarehouse"
-        app:layout_constraintVertical_bias="0.339" />
+        app:layout_constraintVertical_bias="0.429" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btnSync"
+        android:layout_width="148dp"
+        android:layout_height="48dp"
+        android:layout_marginEnd="104dp"
+        android:background="@drawable/login_button_bg"
+        android:text="Sync"
+        android:textColor="#F80707"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/spinWarehouse"
+        app:layout_constraintVertical_bias="0.429" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

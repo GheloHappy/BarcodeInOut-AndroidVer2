@@ -18,11 +18,24 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import LocalDb.Products;
+import LocalDb.ProductsDbHelper;
+import LocalDb.UserDbHelper;
 import MssqlCon.Login;
+import MssqlCon.OfflineSync;
 import MssqlCon.PublicVars;
 import MssqlCon.SqlCon;
 
 public class ConnectionFragment extends Fragment {
+
+    private UserDbHelper userDbHelper;
+    private ProductsDbHelper productsDbHelper;
+
+    OfflineSync offlineSync = new OfflineSync(getContext());
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -31,6 +44,7 @@ public class ConnectionFragment extends Fragment {
         EditText etServerIp = rootView.findViewById(R.id.etServerIp);
         EditText etPort = rootView.findViewById(R.id.etPort);
         Button btnConSave = rootView.findViewById(R.id.btnConSave);
+        Button btnSync = rootView.findViewById(R.id.btnSync);
         Spinner spinWarehouse = rootView.findViewById(R.id.spinWarehouse);
 
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(getActivity());
@@ -40,25 +54,16 @@ public class ConnectionFragment extends Fragment {
         ConnectivityManager cm = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo ni = cm.getActiveNetworkInfo();
 
+        Login login = new Login(rootView.getContext());
+        OfflineSync offlineSync = new OfflineSync(rootView.getContext());
+
         btnConSave.setOnClickListener(v -> {
             String ip = etServerIp.getText().toString();
             String port = etPort.getText().toString();
             String warehouse = spinWarehouse.getSelectedItem().toString();
-            Login login = new Login(rootView.getContext());
+
 
             if (ni != null && ni.getType() == ConnectivityManager.TYPE_WIFI) {
-
-                SharedPreferences.Editor editor = settings.edit(); //saved ip and port
-                editor.putString("ip", ip);
-                editor.putString("port", port);
-                editor.putString("warehouse", warehouse);
-                editor.commit();
-
-                PublicVars pubVars = new PublicVars();
-                pubVars.SetIp(ip);
-                pubVars.SetPort(port);
-                pubVars.SetWarehouse(warehouse);
-
                 if (login.CheckUser("admin", "adminx") == false) { //test Login
                     Toast.makeText(getActivity(), "Failed to Connect in "+ ip + " - "+ port, Toast.LENGTH_SHORT).show();
                 } else  {
@@ -70,6 +75,45 @@ public class ConnectionFragment extends Fragment {
             }
         });
 
+        btnSync.setOnClickListener(v -> {
+            String ip = etServerIp.getText().toString();
+            String port = etPort.getText().toString();
+            String warehouse = spinWarehouse.getSelectedItem().toString();
+
+            if (ni != null && ni.getType() == ConnectivityManager.TYPE_WIFI) {
+
+                if (login.CheckUser("admin", "adminx") == false) { //test Login
+                    Toast.makeText(getActivity(), "Failed to Connect in "+ ip + " - "+ port, Toast.LENGTH_SHORT).show();
+                } else  {
+                    try {
+                        SyncProducts(warehouse);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+//                    startActivity(new Intent(getActivity(), LoginActivity.class));
+                }
+            } else {
+                Toast.makeText(getActivity(), "Please check if you are connected to wifi.", Toast.LENGTH_SHORT).show();
+            }
+        });
+
         return rootView;
+    }
+
+        private void SyncProducts(String warehouse) {
+        List<Map<String, String>> dataList;
+        List<Products> products = new ArrayList<>();
+
+        dataList = offlineSync.getOfflineProducts();
+        for (Map<String, String> data : dataList) {
+            String barcode = data.get("barcode");
+            String description = data.get("description");
+            String solomonID = data.get("solomonID");
+            String uom = data.get("uom");
+            String csPkg = data.get("csPkg");
+            products.add(new Products(barcode, description, solomonID, uom, Integer.parseInt(csPkg), warehouse));
+        }
+
+        productsDbHelper.syncProducts(products);
     }
 }

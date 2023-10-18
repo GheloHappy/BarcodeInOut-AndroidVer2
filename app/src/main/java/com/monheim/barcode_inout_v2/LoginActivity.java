@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -20,20 +21,26 @@ import com.monheim.barcode_inout_v2.BarcodeInOut.BarcodeInOutFunctions;
 import com.monheim.barcode_inout_v2.Inventory.InventoryFunctions;
 import com.monheim.barcode_inout_v2.NewBarcode.NewBarcodeFunctions;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import LocalDb.Products;
+import LocalDb.ProductsDbHelper;
 import LocalDb.User;
 import LocalDb.UserDbHelper;
 import MssqlCon.Login;
+import MssqlCon.PublicVars;
 
 public class LoginActivity extends AppCompatActivity {
     ConnectionFragment conFrag = new ConnectionFragment();
     boolean toggle = true;
     boolean offlineToggle = false;
-    boolean firstSyncToggle = false;
 
     private UserDbHelper userDbHelper;
+//    private ProductsDbHelper productsDbHelper;
+
+    Login login = new Login(this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,14 +61,15 @@ public class LoginActivity extends AppCompatActivity {
         //Offline functions
         SwitchMaterial switchOfflineMode = findViewById(R.id.toggleOfflineMode);
         TextView txtToggleOffline = findViewById(R.id.txtToggleOffline);
+        Spinner spinWarehouse = findViewById(R.id.offlineSpinWarehouse);
 
+        spinWarehouse.setVisibility(View.INVISIBLE);
         OnBackPressedCallback callback = new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
                 // Disable back button press
             }
         };
-
         getOnBackPressedDispatcher().addCallback(this, callback);
 
         btnLogin.setOnClickListener(v -> {
@@ -71,26 +79,29 @@ public class LoginActivity extends AppCompatActivity {
             ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
             NetworkInfo ni = cm.getActiveNetworkInfo();
 
-            Login login = new Login(this);
-
             if (offlineToggle) {
-                if (firstSyncToggle) {
-                    if (ni != null && ni.getType() == ConnectivityManager.TYPE_WIFI) {
-                        if (login.CheckUser(userName, pass)) { // Sync user date to local db if user is existing
-                            startActivity(new Intent(LoginActivity.this, MainActivity.class));
-                        } else {
-                            Toast.makeText(LoginActivity.this, "Invalid Username/Password or Saved Connection.", Toast.LENGTH_SHORT).show();
-                        }
-                    } else {
-                        Toast.makeText(LoginActivity.this, "Connect to Local Wifi for sync", Toast.LENGTH_SHORT).show();
-                    }
-                } else {
+                String warehouse = spinWarehouse.getSelectedItem().toString();
+                PublicVars.SetWarehouse(warehouse);
+//
+//                if (firstSyncToggle) {
+//                    if (ni != null && ni.getType() == ConnectivityManager.TYPE_WIFI) {
+//                        if (login.CheckUser(userName, pass, true)) { // Sync user date to local db if user is existing
+//                            SyncProducts(warehouse);
+//                            startActivity(new Intent(LoginActivity.this, MainActivity.class));
+//                        } else {
+//                            Toast.makeText(LoginActivity.this, "Invalid Username/Password or Saved Connection.", Toast.LENGTH_SHORT).show();
+//                        }
+//                    } else {
+//                        Toast.makeText(LoginActivity.this, "Connect to Local Wifi for sync", Toast.LENGTH_SHORT).show();
+//                    }
+//                } else {
                     if (userDbHelper.localLoginUser(userName, pass)) {
+//                        SyncProducts(warehouse);
                         startActivity(new Intent(LoginActivity.this, MainActivity.class));
                     } else {
                         Toast.makeText(LoginActivity.this, "Invalid Username/Password or Saved Connection.", Toast.LENGTH_SHORT).show();
                     }
-                }
+                //}
             } else {
                 if (ni != null && ni.getType() == ConnectivityManager.TYPE_WIFI) {
 
@@ -134,22 +145,33 @@ public class LoginActivity extends AppCompatActivity {
                 txtToggleOffline.setTextColor(Color.RED);
                 txtToggleOffline.setText("OFFLINE MODE");
                 offlineToggle = true;
+                spinWarehouse.setVisibility(View.VISIBLE);
                 btnConn.setVisibility(View.INVISIBLE);
-                if (userDbHelper.userNotEmpty()) {
-                    btnLogin.setText("LOGIN");
-                    firstSyncToggle = false;
-                } else {
-                    firstSyncToggle = true;
-                    btnLogin.setText("SYNC");
-                }
             } else {
                 txtToggleOffline.setTextColor(Color.GREEN);
                 txtToggleOffline.setText("ONLINE MODE");
                 offlineToggle = false;
+                spinWarehouse.setVisibility(View.INVISIBLE);
                 btnConn.setVisibility(View.VISIBLE);
             }
         });
 
-
     }
+
+//    private void SyncProducts(String warehouse) {
+//        List<Map<String, String>> dataList;
+//        List<Products> products = new ArrayList<>();
+//
+//        dataList = login.getOfflineProducts();
+//        for (Map<String, String> data : dataList) {
+//            String barcode = data.get("barcode");
+//            String description = data.get("description");
+//            String solomonID = data.get("solomonID");
+//            String uom = data.get("uom");
+//            String csPkg = data.get("csPkg");
+//            products.add(new Products(barcode, description, solomonID, uom, Integer.parseInt(csPkg), warehouse));
+//        }
+//
+//        productsDbHelper.syncProducts(products);
+//    }
 }
