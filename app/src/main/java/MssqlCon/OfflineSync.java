@@ -18,6 +18,7 @@ public class OfflineSync extends  SqlCon{
     }
 
     public List<Map<String, String>> getOfflineProducts() {
+        con = SQLConnection();
         List<Map<String, String>> data;
         data = new ArrayList<>();
 
@@ -39,7 +40,6 @@ public class OfflineSync extends  SqlCon{
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
-
         return data;
     }
 

@@ -38,9 +38,8 @@ public class LoginActivity extends AppCompatActivity {
     boolean offlineToggle = false;
 
     private UserDbHelper userDbHelper;
-//    private ProductsDbHelper productsDbHelper;
 
-    Login login = new Login(this);
+    Login login = new Login();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,26 +81,11 @@ public class LoginActivity extends AppCompatActivity {
             if (offlineToggle) {
                 String warehouse = spinWarehouse.getSelectedItem().toString();
                 PublicVars.SetWarehouse(warehouse);
-//
-//                if (firstSyncToggle) {
-//                    if (ni != null && ni.getType() == ConnectivityManager.TYPE_WIFI) {
-//                        if (login.CheckUser(userName, pass, true)) { // Sync user date to local db if user is existing
-//                            SyncProducts(warehouse);
-//                            startActivity(new Intent(LoginActivity.this, MainActivity.class));
-//                        } else {
-//                            Toast.makeText(LoginActivity.this, "Invalid Username/Password or Saved Connection.", Toast.LENGTH_SHORT).show();
-//                        }
-//                    } else {
-//                        Toast.makeText(LoginActivity.this, "Connect to Local Wifi for sync", Toast.LENGTH_SHORT).show();
-//                    }
-//                } else {
                     if (userDbHelper.localLoginUser(userName, pass)) {
-//                        SyncProducts(warehouse);
                         startActivity(new Intent(LoginActivity.this, MainActivity.class));
                     } else {
                         Toast.makeText(LoginActivity.this, "Invalid Username/Password or Saved Connection.", Toast.LENGTH_SHORT).show();
                     }
-                //}
             } else {
                 if (ni != null && ni.getType() == ConnectivityManager.TYPE_WIFI) {
 
@@ -131,16 +115,13 @@ public class LoginActivity extends AppCompatActivity {
                 getSupportFragmentManager().beginTransaction().replace(R.id.frmLogin, conFrag).commit();
                 toggle = false;
             } else {
-                //getSupportFragmentManager().beginTransaction().replace(R.id.frmLogin,conFrag).commit();
                 switchOfflineMode.setVisibility(View.VISIBLE);
                 startActivity(new Intent(LoginActivity.this, LoginActivity.class));
                 toggle = true;
             }
         });
 
-        switchOfflineMode.setOnCheckedChangeListener((buttonView, isChecked) ->
-
-        {
+        switchOfflineMode.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (isChecked) {
                 txtToggleOffline.setTextColor(Color.RED);
                 txtToggleOffline.setText("OFFLINE MODE");
@@ -157,21 +138,4 @@ public class LoginActivity extends AppCompatActivity {
         });
 
     }
-
-//    private void SyncProducts(String warehouse) {
-//        List<Map<String, String>> dataList;
-//        List<Products> products = new ArrayList<>();
-//
-//        dataList = login.getOfflineProducts();
-//        for (Map<String, String> data : dataList) {
-//            String barcode = data.get("barcode");
-//            String description = data.get("description");
-//            String solomonID = data.get("solomonID");
-//            String uom = data.get("uom");
-//            String csPkg = data.get("csPkg");
-//            products.add(new Products(barcode, description, solomonID, uom, Integer.parseInt(csPkg), warehouse));
-//        }
-//
-//        productsDbHelper.syncProducts(products);
-//    }
 }

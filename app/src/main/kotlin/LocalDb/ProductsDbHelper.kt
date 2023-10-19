@@ -43,24 +43,37 @@ class ProductsDbHelper(context: Context) :
         }
     }
 
-    fun clearProducts(warehouse: String) {
 
+    fun clearProducts(warehouse: String) {
+        val db = writableDatabase
+        try {
+            db.delete(TABLE_NAME, warehouse, null)
+        } catch (e: SQLException){
+            e.printStackTrace()
+        } finally{
+            db.close()
+        }
     }
 
     fun syncProducts(products: List<Products>) {
         val db = writableDatabase
-        for (product in products) {
-            val values = ContentValues().apply {
-                put(COLUMN_BARCODE, product.barcode)
-                put(COLUMN_DESCRIPTION, product.description)
-                put(COLUMN_SOLOMONID, product.solomonID)
-                put(COLUMN_UOM, product.uom)
-                put(COLUMN_CSPKG, product.csPkg)
-                put(COLUMN_WAREHOUSE, product.wareHouse)
+        try {
+            for (product in products) {
+                val values = ContentValues().apply {
+                    put(COLUMN_BARCODE, product.barcode)
+                    put(COLUMN_DESCRIPTION, product.description)
+                    put(COLUMN_SOLOMONID, product.solomonID)
+                    put(COLUMN_UOM, product.uom)
+                    put(COLUMN_CSPKG, product.csPkg)
+                    put(COLUMN_WAREHOUSE, product.wareHouse)
+                }
+                db.insert(TABLE_NAME, null, values)
             }
-            db.insert(TABLE_NAME, null, values)
+        } catch (e: SQLException) {
+            e.printStackTrace()
+        } finally {
+            db.close()
         }
-        db.close()
     }
 
 }

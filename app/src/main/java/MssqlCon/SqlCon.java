@@ -16,16 +16,27 @@ public class SqlCon {
         //String ip="192.168.1.249", port="1433", dbName="BarcodeInOut", un="sa", pass = "Passw0rd"; mdiserver-l
         //String ip="192.168.1.252", port="1433", dbName="MONHEIMAPP", un="sa", pass = "Passw0rd"; mdiserver
         //String ip="192.168.1.248", port="1433", dbName="MLDIAPP", un="sa", pass = "Passw0rd"; solomon
-        String ip, port, dbName, un, pass, warehouse;
+        String ip= "", port = "1433", dbName ="", un ="sa", pass  = "Passw0rd", warehouse ="";
+
+
+        ip = pubVars.GetIp();
+        if(ip.equals("192.168.1.249") || ip.equals("192.168.2.249")) {
+            pubVars.SetWarehouse("Cabrera");
+        } else if (ip.equals("192.168.1.252") || ip.equals("192.168.2.252")) {
+            pubVars.SetWarehouse("Monheim");
+        } else if (ip.equals("192.168.1.248") || ip.equals("192.168.2.248")) {
+            pubVars.SetWarehouse("Maryland");
+        }
 
         warehouse = pubVars.GetWarehouse();
         if(warehouse.equals("Cabrera")) {
-            ip= pubVars.GetIp(); port=pubVars.GetPort(); dbName="BarcodeInOut"; un="sa"; pass = "Passw0rd";
+            ip= pubVars.GetIp();  dbName="BarcodeInOut";//mdiserver-l Cabrera
         } else if (warehouse.equals("Monheim")) {
-            ip= pubVars.GetIp(); port=pubVars.GetPort(); dbName="MONHEIMAPP"; un="sa"; pass = "Passw0rd";
-        } else {
-            ip= pubVars.GetIp(); port=pubVars.GetPort(); dbName="MLDIAPP"; un="sa"; pass = "Passw0rd";
+            ip= pubVars.GetIp(); dbName="MONHEIMAPP";
+        } else if (warehouse.equals("Maryland")) {
+            ip= pubVars.GetIp(); dbName="MLDIAPP";
         }
+
         StrictMode.ThreadPolicy tp = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(tp);
         String ConURL = null;

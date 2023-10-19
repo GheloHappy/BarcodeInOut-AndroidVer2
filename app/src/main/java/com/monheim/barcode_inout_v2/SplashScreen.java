@@ -19,11 +19,9 @@ public class SplashScreen extends AppCompatActivity {
 
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(SplashScreen.this);
         String ip = settings.getString("ip", "0");
-        String port = settings.getString("port", "0");
         String warehouse = settings.getString("warehouse", "0");
 
         pubVars.SetIp(ip);
-        pubVars.SetPort(port);
         pubVars.SetWarehouse(warehouse);
 
         new Handler().postDelayed(new Runnable() {

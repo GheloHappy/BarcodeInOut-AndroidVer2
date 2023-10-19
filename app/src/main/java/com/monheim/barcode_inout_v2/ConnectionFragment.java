@@ -7,6 +7,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import android.preference.PreferenceManager;
@@ -15,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -24,96 +26,99 @@ import java.util.Map;
 
 import LocalDb.Products;
 import LocalDb.ProductsDbHelper;
-import LocalDb.UserDbHelper;
 import MssqlCon.Login;
 import MssqlCon.OfflineSync;
 import MssqlCon.PublicVars;
-import MssqlCon.SqlCon;
 
 public class ConnectionFragment extends Fragment {
-
-    private UserDbHelper userDbHelper;
     private ProductsDbHelper productsDbHelper;
 
     OfflineSync offlineSync = new OfflineSync(getContext());
+
+    PublicVars pubVars = new PublicVars();
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_connection, container, false);
 
         EditText etServerIp = rootView.findViewById(R.id.etServerIp);
-        EditText etPort = rootView.findViewById(R.id.etPort);
         Button btnConSave = rootView.findViewById(R.id.btnConSave);
         Button btnSync = rootView.findViewById(R.id.btnSync);
-        Spinner spinWarehouse = rootView.findViewById(R.id.spinWarehouse);
+        ProgressBar progressBar = rootView.findViewById(R.id.connectionProgBar);
+
+        progressBar.getIndeterminateDrawable().setColorFilter(ContextCompat.getColor(getContext(), android.R.color.holo_red_dark), android.graphics.PorterDuff.Mode.MULTIPLY); // set color of progressbar
 
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(getActivity());
         etServerIp.setText(settings.getString("ip", "0")); //retrieve ip and port
-        etPort.setText(settings.getString("port", "0"));
 
         ConnectivityManager cm = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo ni = cm.getActiveNetworkInfo();
 
-        Login login = new Login(rootView.getContext());
-        OfflineSync offlineSync = new OfflineSync(rootView.getContext());
-
-        btnConSave.setOnClickListener(v -> {
-            String ip = etServerIp.getText().toString();
-            String port = etPort.getText().toString();
-            String warehouse = spinWarehouse.getSelectedItem().toString();
+        productsDbHelper = new ProductsDbHelper(rootView.getContext());
 
 
-            if (ni != null && ni.getType() == ConnectivityManager.TYPE_WIFI) {
-                if (login.CheckUser("admin", "adminx") == false) { //test Login
-                    Toast.makeText(getActivity(), "Failed to Connect in "+ ip + " - "+ port, Toast.LENGTH_SHORT).show();
-                } else  {
-                    Toast.makeText(getActivity(), "Connection Saved", Toast.LENGTH_SHORT).show();
+        if (ni != null && ni.getType() == ConnectivityManager.TYPE_WIFI) {
+            btnConSave.setOnClickListener(v -> {
+                updateSharedPref(etServerIp, settings);
+
+                Toast.makeText(getActivity(), "Connection Saved", Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(getActivity(), LoginActivity.class));
+            });
+            //Sync Button
+            btnSync.setOnClickListener(v -> {
+                progressBar.setVisibility(View.VISIBLE);
+                updateSharedPref(etServerIp, settings);
+
+                String warehouse = pubVars.GetWarehouse();
+                productsDbHelper.clearProducts(warehouse);
+                if (SyncProducts(warehouse)) {
+                    Toast.makeText(getActivity(), "Sync Done", Toast.LENGTH_SHORT).show();
                     startActivity(new Intent(getActivity(), LoginActivity.class));
+                } else {
+                    Toast.makeText(getActivity(), "Sync Failed", Toast.LENGTH_SHORT).show();
+                    progressBar.setVisibility(View.INVISIBLE);
                 }
-            } else {
-                Toast.makeText(getActivity(), "Please check if you are connected to wifi.", Toast.LENGTH_SHORT).show();
-            }
-        });
-
-        btnSync.setOnClickListener(v -> {
-            String ip = etServerIp.getText().toString();
-            String port = etPort.getText().toString();
-            String warehouse = spinWarehouse.getSelectedItem().toString();
-
-            if (ni != null && ni.getType() == ConnectivityManager.TYPE_WIFI) {
-
-                if (login.CheckUser("admin", "adminx") == false) { //test Login
-                    Toast.makeText(getActivity(), "Failed to Connect in "+ ip + " - "+ port, Toast.LENGTH_SHORT).show();
-                } else  {
-                    try {
-                        SyncProducts(warehouse);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-//                    startActivity(new Intent(getActivity(), LoginActivity.class));
-                }
-            } else {
-                Toast.makeText(getActivity(), "Please check if you are connected to wifi.", Toast.LENGTH_SHORT).show();
-            }
-        });
+            });
+        } else {
+            Toast.makeText(getActivity(), "Please check if you are connected to wifi.", Toast.LENGTH_SHORT).show();
+        }
 
         return rootView;
     }
 
-        private void SyncProducts(String warehouse) {
+    private void updateSharedPref(EditText etServerIp, SharedPreferences settings){
+
+        String ip = etServerIp.getText().toString();
+
+        SharedPreferences.Editor editor = settings.edit(); //saved ip and port
+        editor.putString("ip", ip);
+        editor.commit();
+
+        pubVars.SetIp(ip);
+    }
+
+    private boolean SyncProducts(String warehouse) {
         List<Map<String, String>> dataList;
         List<Products> products = new ArrayList<>();
+        try {
+            dataList = offlineSync.getOfflineProducts();
+            for (Map<String, String> data : dataList) {
+                String barcode = data.get("barcode");
+                String description = data.get("description");
+                String solomonID = data.get("solomonID");
+                String uom = data.get("uom");
+                String csPkg = data.get("csPkg");
+                products.add(new Products(barcode, description, solomonID, uom, Integer.parseInt(csPkg), warehouse));
+            }
 
-        dataList = offlineSync.getOfflineProducts();
-        for (Map<String, String> data : dataList) {
-            String barcode = data.get("barcode");
-            String description = data.get("description");
-            String solomonID = data.get("solomonID");
-            String uom = data.get("uom");
-            String csPkg = data.get("csPkg");
-            products.add(new Products(barcode, description, solomonID, uom, Integer.parseInt(csPkg), warehouse));
+            productsDbHelper.syncProducts(products);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
         }
 
-        productsDbHelper.syncProducts(products);
+        return true;
     }
 }
+
