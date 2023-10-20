@@ -71,12 +71,14 @@ public class ConnectionFragment extends Fragment {
                 updateSharedPref(etServerIp, settings);
 
                 String warehouse = pubVars.GetWarehouse();
-                productsDbHelper.clearProducts(warehouse);
+
+                //TODO: ADD clear and insert user using dbHelper
+
                 if (SyncProducts(warehouse)) {
                     Toast.makeText(getActivity(), "Sync Done", Toast.LENGTH_SHORT).show();
                     startActivity(new Intent(getActivity(), LoginActivity.class));
                 } else {
-                    Toast.makeText(getActivity(), "Sync Failed", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), "Sync Failed / Invalid server Connection", Toast.LENGTH_LONG).show();
                     progressBar.setVisibility(View.INVISIBLE);
                 }
             });
@@ -87,7 +89,7 @@ public class ConnectionFragment extends Fragment {
         return rootView;
     }
 
-    private void updateSharedPref(EditText etServerIp, SharedPreferences settings){
+    private void updateSharedPref(EditText etServerIp, SharedPreferences settings) {
 
         String ip = etServerIp.getText().toString();
 
@@ -103,21 +105,24 @@ public class ConnectionFragment extends Fragment {
         List<Products> products = new ArrayList<>();
         try {
             dataList = offlineSync.getOfflineProducts();
-            for (Map<String, String> data : dataList) {
-                String barcode = data.get("barcode");
-                String description = data.get("description");
-                String solomonID = data.get("solomonID");
-                String uom = data.get("uom");
-                String csPkg = data.get("csPkg");
-                products.add(new Products(barcode, description, solomonID, uom, Integer.parseInt(csPkg), warehouse));
+            if (!dataList.isEmpty()) {
+                for (Map<String, String> data : dataList) {
+                    String barcode = data.get("barcode");
+                    String description = data.get("description");
+                    String solomonID = data.get("solomonID");
+                    String uom = data.get("uom");
+                    String csPkg = data.get("csPkg");
+                    products.add(new Products(barcode, description, solomonID, uom, Integer.parseInt(csPkg), warehouse));
+                }
+                productsDbHelper.clearProducts(warehouse); //clear products first
+                productsDbHelper.syncProducts(products);
+            } else {
+                return false;
             }
-
-            productsDbHelper.syncProducts(products);
         } catch (Exception e) {
             e.printStackTrace();
             return false;
         }
-
         return true;
     }
 }

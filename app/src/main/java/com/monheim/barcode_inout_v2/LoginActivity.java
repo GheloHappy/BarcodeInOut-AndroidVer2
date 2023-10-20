@@ -2,6 +2,7 @@ package com.monheim.barcode_inout_v2;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import android.content.Context;
 import android.content.Intent;
@@ -12,6 +13,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -56,6 +58,8 @@ public class LoginActivity extends AppCompatActivity {
         Button btnConn = findViewById(R.id.btnConn);
         EditText etUser = findViewById(R.id.edtUserName);
         EditText etPass = findViewById(R.id.edtPassword);
+        ProgressBar progressBar = findViewById(R.id.loginProgBar);
+        progressBar.getIndeterminateDrawable().setColorFilter(ContextCompat.getColor(this, android.R.color.black), android.graphics.PorterDuff.Mode.MULTIPLY); // set color of progressbar
 
         //Offline functions
         SwitchMaterial switchOfflineMode = findViewById(R.id.toggleOfflineMode);
@@ -72,6 +76,7 @@ public class LoginActivity extends AppCompatActivity {
         getOnBackPressedDispatcher().addCallback(this, callback);
 
         btnLogin.setOnClickListener(v -> {
+            progressBar.setVisibility(View.VISIBLE);
             String userName = etUser.getText().toString();
             String pass = etPass.getText().toString();
 
@@ -85,6 +90,7 @@ public class LoginActivity extends AppCompatActivity {
                         startActivity(new Intent(LoginActivity.this, MainActivity.class));
                     } else {
                         Toast.makeText(LoginActivity.this, "Invalid Username/Password or Saved Connection.", Toast.LENGTH_SHORT).show();
+                        progressBar.setVisibility(View.INVISIBLE);
                     }
             } else {
                 if (ni != null && ni.getType() == ConnectivityManager.TYPE_WIFI) {
@@ -102,9 +108,11 @@ public class LoginActivity extends AppCompatActivity {
                         startActivity(new Intent(LoginActivity.this, MainActivity.class));
                     } else {
                         Toast.makeText(LoginActivity.this, "Invalid Username/Password or Saved Connection.", Toast.LENGTH_SHORT).show();
+                        progressBar.setVisibility(View.INVISIBLE);
                     }
                 } else {
                     Toast.makeText(LoginActivity.this, "Please check if you are connected to wifi.", Toast.LENGTH_SHORT).show();
+                    progressBar.setVisibility(View.INVISIBLE);
                 }
             }
         });
