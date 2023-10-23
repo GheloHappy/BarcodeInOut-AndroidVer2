@@ -43,4 +43,31 @@ public class OfflineSync extends  SqlCon{
         return data;
     }
 
+    public List<Map<String, String>> getOfflineUsers() {
+        con = SQLConnection();
+        List<Map<String, String>> data;
+        data = new ArrayList<>();
+
+        try {
+            if(con != null) {
+                String query = "SELECT * FROM barcodesys_users";
+                Statement st = con.createStatement();
+                ResultSet rs = st.executeQuery(query);
+                while(rs.next()) {
+                    Map<String, String> map = new HashMap<>();
+                    map.put("id", rs.getString("id"));
+                    map.put("username", rs.getString("username"));
+                    map.put("password", rs.getString("password"));
+                    map.put("name", rs.getString("name"));
+                    map.put("department", rs.getString("department"));
+                    data.add(map);
+                }
+            }
+        } catch (Exception e){
+            System.out.println(e.getMessage());
+        }
+
+        return  data;
+    }
+
 }

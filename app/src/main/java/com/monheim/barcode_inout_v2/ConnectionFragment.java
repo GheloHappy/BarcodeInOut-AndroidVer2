@@ -26,12 +26,16 @@ import java.util.Map;
 
 import LocalDb.Products;
 import LocalDb.ProductsDbHelper;
+import LocalDb.Users;
+import LocalDb.UsersDbHelper;
 import MssqlCon.Login;
 import MssqlCon.OfflineSync;
 import MssqlCon.PublicVars;
+import MssqlCon.SqlCon;
 
 public class ConnectionFragment extends Fragment {
     private ProductsDbHelper productsDbHelper;
+    private UsersDbHelper usersDbHelper;
 
     OfflineSync offlineSync = new OfflineSync(getContext());
 
@@ -55,8 +59,9 @@ public class ConnectionFragment extends Fragment {
         ConnectivityManager cm = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo ni = cm.getActiveNetworkInfo();
 
+        //get context create new
         productsDbHelper = new ProductsDbHelper(rootView.getContext());
-
+        usersDbHelper = new UsersDbHelper(rootView.getContext());
 
         if (ni != null && ni.getType() == ConnectivityManager.TYPE_WIFI) {
             btnConSave.setOnClickListener(v -> {
@@ -69,18 +74,27 @@ public class ConnectionFragment extends Fragment {
             btnSync.setOnClickListener(v -> {
                 progressBar.setVisibility(View.VISIBLE);
                 updateSharedPref(etServerIp, settings);
+                SqlCon sqlCon = new SqlCon(); //refresh sqlcon get IP
+                sqlCon.Reconnect();
 
                 String warehouse = pubVars.GetWarehouse();
 
-                //TODO: ADD clear and insert user using dbHelper
+                new Thread(() -> {
+                    boolean usersSynced = SyncUsers(warehouse);
+                    boolean productsSynced = SyncProducts(warehouse);
 
-                if (SyncProducts(warehouse)) {
-                    Toast.makeText(getActivity(), "Sync Done", Toast.LENGTH_SHORT).show();
-                    startActivity(new Intent(getActivity(), LoginActivity.class));
-                } else {
-                    Toast.makeText(getActivity(), "Sync Failed / Invalid server Connection", Toast.LENGTH_LONG).show();
-                    progressBar.setVisibility(View.INVISIBLE);
-                }
+                    // Update the UI on the main thread
+                    getActivity().runOnUiThread(() -> {
+                        progressBar.setVisibility(View.INVISIBLE);
+                        if (usersSynced && productsSynced) {
+                            Toast.makeText(getActivity(), "Sync Done", Toast.LENGTH_SHORT).show();
+                            startActivity(new Intent(getActivity(), LoginActivity.class));
+                        } else {
+                            Toast.makeText(getActivity(), "Sync Failed / Invalid server Connection", Toast.LENGTH_LONG).show();
+                            progressBar.setVisibility(View.INVISIBLE);
+                        }
+                    });
+                }).start();
             });
         } else {
             Toast.makeText(getActivity(), "Please check if you are connected to wifi.", Toast.LENGTH_SHORT).show();
@@ -114,7 +128,8 @@ public class ConnectionFragment extends Fragment {
                     String csPkg = data.get("csPkg");
                     products.add(new Products(barcode, description, solomonID, uom, Integer.parseInt(csPkg), warehouse));
                 }
-                productsDbHelper.clearProducts(warehouse); //clear products first
+//                productsDbHelper.clearProducts(warehouse);
+                productsDbHelper.clearProducts(); //clear products first
                 productsDbHelper.syncProducts(products);
             } else {
                 return false;
@@ -124,6 +139,32 @@ public class ConnectionFragment extends Fragment {
             return false;
         }
         return true;
+    }
+
+    private boolean SyncUsers(String warehouse) {
+        List <Map<String, String>> dataList;
+        List<Users> users = new ArrayList<>();
+
+        try {
+            dataList = offlineSync.getOfflineUsers();
+            for (Map<String, String> data : dataList) {
+                int id = Integer.parseInt(data.get("id"));
+                String username = data.get("username");
+                String password = data.get("password");
+                String name = data.get("name");
+                String department = data.get("department");
+                users.add(new Users(id,username, password, name, department, warehouse));
+            }
+//            usersDbHelper.clearUser(warehouse);
+            usersDbHelper.clearUser();
+            usersDbHelper.syncUsers(users);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return  false;
+        }
+
+        return  true;
     }
 }
 

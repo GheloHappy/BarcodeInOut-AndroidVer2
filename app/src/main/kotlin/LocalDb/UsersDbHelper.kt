@@ -1,20 +1,18 @@
 package LocalDb
 
-import MssqlCon.PublicVars
 import android.content.ContentValues
 import android.content.Context
-import android.database.Cursor
 import android.database.SQLException
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 
-class UserDbHelper(context: Context) :
+class UsersDbHelper(context: Context) :
     SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
     companion object {
         private const val DATABASE_NAME = "barcodesys.db"
-        private const val DATABASE_VERSION = 4
+        private const val DATABASE_VERSION = 6
 
-        private const val TABLE_NAME = "user"
+        private const val TABLE_NAME = "users"
         private const val COLUMN_ID = "id"
         private const val COLUMN_USERNAME = "username"
         private const val COLUMN_PASSWORD = "password"
@@ -44,17 +42,20 @@ class UserDbHelper(context: Context) :
         }
     }
 
-    fun insertUser(user: User) {
+    fun syncUsers(users: List<Users>) {
         val db = writableDatabase
         try {
-            val values = ContentValues().apply {
-                put(COLUMN_USERNAME, user.username)
-                put(COLUMN_PASSWORD, user.password)
-                put(COLUMN_NAME, user.name)
-                put(COLUMN_DEPARTMENT, user.department)
-                put(COLUMN_WAREHOUSE, user.warehouse)
+            for (user in users){
+                val values = ContentValues().apply {
+                    put(COLUMN_USERNAME, user.id)
+                    put(COLUMN_USERNAME, user.username)
+                    put(COLUMN_PASSWORD, user.password)
+                    put(COLUMN_NAME, user.name)
+                    put(COLUMN_DEPARTMENT, user.department)
+                    put(COLUMN_WAREHOUSE, user.warehouse)
+                }
+                db.insert(TABLE_NAME, null, values)
             }
-            db.insert(TABLE_NAME, null, values)
         } catch (e: SQLException) {
             e.printStackTrace()
         } finally {
@@ -62,10 +63,11 @@ class UserDbHelper(context: Context) :
         }
     }
 
-    fun clearUser(warehouse: String) {
+    fun clearUser() {
         val db = writableDatabase
         try {
-            db.delete(TABLE_NAME, warehouse, null)
+//            db.delete(TABLE_NAME, "warehouse = ?", arrayOf(warehouse))
+            db.delete(TABLE_NAME, null, null)
         } catch (e: SQLException){
             e.printStackTrace()
         } finally{

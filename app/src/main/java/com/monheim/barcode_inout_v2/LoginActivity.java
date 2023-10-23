@@ -23,14 +23,7 @@ import com.monheim.barcode_inout_v2.BarcodeInOut.BarcodeInOutFunctions;
 import com.monheim.barcode_inout_v2.Inventory.InventoryFunctions;
 import com.monheim.barcode_inout_v2.NewBarcode.NewBarcodeFunctions;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
-import LocalDb.Products;
-import LocalDb.ProductsDbHelper;
-import LocalDb.User;
-import LocalDb.UserDbHelper;
+import LocalDb.UsersDbHelper;
 import MssqlCon.Login;
 import MssqlCon.PublicVars;
 
@@ -39,7 +32,7 @@ public class LoginActivity extends AppCompatActivity {
     boolean toggle = true;
     boolean offlineToggle = false;
 
-    private UserDbHelper userDbHelper;
+    private UsersDbHelper userDbHelper;
 
     Login login = new Login();
 
@@ -49,10 +42,11 @@ public class LoginActivity extends AppCompatActivity {
         try {
             this.getSupportActionBar().hide();
         } catch (NullPointerException e) {
+            e.printStackTrace();
         }
         setContentView(R.layout.activity_login);
 
-        userDbHelper = new UserDbHelper(this);
+        userDbHelper = new UsersDbHelper(this);
 
         Button btnLogin = findViewById(R.id.btnLogin);
         Button btnConn = findViewById(R.id.btnConn);
@@ -64,9 +58,8 @@ public class LoginActivity extends AppCompatActivity {
         //Offline functions
         SwitchMaterial switchOfflineMode = findViewById(R.id.toggleOfflineMode);
         TextView txtToggleOffline = findViewById(R.id.txtToggleOffline);
-        Spinner spinWarehouse = findViewById(R.id.offlineSpinWarehouse);
-
-        spinWarehouse.setVisibility(View.INVISIBLE);
+//        Spinner spinWarehouse = findViewById(R.id.offlineSpinWarehouse);
+//        spinWarehouse.setVisibility(View.INVISIBLE);
         OnBackPressedCallback callback = new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
@@ -84,12 +77,12 @@ public class LoginActivity extends AppCompatActivity {
             NetworkInfo ni = cm.getActiveNetworkInfo();
 
             if (offlineToggle) {
-                String warehouse = spinWarehouse.getSelectedItem().toString();
-                PublicVars.SetWarehouse(warehouse);
+                String warehouse = PublicVars.GetWarehouse();
                     if (userDbHelper.localLoginUser(userName, pass)) {
+                        PublicVars.SetUser(userName); //set offline user
                         startActivity(new Intent(LoginActivity.this, MainActivity.class));
                     } else {
-                        Toast.makeText(LoginActivity.this, "Invalid Username/Password or Saved Connection.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(LoginActivity.this, "Invalid Username or Password", Toast.LENGTH_SHORT).show();
                         progressBar.setVisibility(View.INVISIBLE);
                     }
             } else {
@@ -118,7 +111,7 @@ public class LoginActivity extends AppCompatActivity {
         });
 
         btnConn.setOnClickListener(v -> {
-            if (toggle == true) {
+            if (toggle) {
                 switchOfflineMode.setVisibility(View.INVISIBLE);
                 getSupportFragmentManager().beginTransaction().replace(R.id.frmLogin, conFrag).commit();
                 toggle = false;
@@ -134,13 +127,11 @@ public class LoginActivity extends AppCompatActivity {
                 txtToggleOffline.setTextColor(Color.RED);
                 txtToggleOffline.setText("OFFLINE MODE");
                 offlineToggle = true;
-                spinWarehouse.setVisibility(View.VISIBLE);
                 btnConn.setVisibility(View.INVISIBLE);
             } else {
                 txtToggleOffline.setTextColor(Color.GREEN);
                 txtToggleOffline.setText("ONLINE MODE");
                 offlineToggle = false;
-                spinWarehouse.setVisibility(View.INVISIBLE);
                 btnConn.setVisibility(View.VISIBLE);
             }
         });

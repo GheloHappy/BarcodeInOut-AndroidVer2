@@ -35,8 +35,6 @@ public class SqlCon {
             dbName ="";
         }
 
-        System.out.println(ip);
-
         if (!ip.equals("")) {
             StrictMode.ThreadPolicy tp = new StrictMode.ThreadPolicy.Builder().permitAll().build();
             StrictMode.setThreadPolicy(tp);

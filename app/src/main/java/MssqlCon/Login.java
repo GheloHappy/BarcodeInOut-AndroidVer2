@@ -1,17 +1,9 @@
 package MssqlCon;
 
-import android.content.Context;
 import android.util.Log;
 
 import java.sql.ResultSet;
 import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import LocalDb.User;
-import LocalDb.UserDbHelper;
 
 public class Login extends  SqlCon {
     PublicVars pubVar = new PublicVars();

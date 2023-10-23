@@ -155,26 +155,26 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.131" />
 
-    <Spinner
-        android:id="@+id/offlineSpinWarehouse"
-        android:layout_width="130dp"
-        android:layout_height="50dp"
-        android:background="@drawable/login_input_bg"
-        android:backgroundTint="#fff"
-        android:drawablePadding="10dp"
-        android:entries="@array/spWarehouses"
-        android:inputType="number"
-        android:paddingLeft="20dp"
-        android:paddingTop="5sp"
-        android:paddingRight="10dp"
-        android:paddingBottom="5sp"
-        android:textSize="30sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.13" />
+<!--    <Spinner-->
+<!--        android:id="@+id/offlineSpinWarehouse"-->
+<!--        android:layout_width="130dp"-->
+<!--        android:layout_height="50dp"-->
+<!--        android:background="@drawable/login_input_bg"-->
+<!--        android:backgroundTint="#fff"-->
+<!--        android:drawablePadding="10dp"-->
+<!--        android:entries="@array/spWarehouses"-->
+<!--        android:inputType="number"-->
+<!--        android:paddingLeft="20dp"-->
+<!--        android:paddingTop="5sp"-->
+<!--        android:paddingRight="10dp"-->
+<!--        android:paddingBottom="5sp"-->
+<!--        android:textSize="30sp"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintHorizontal_bias="0.498"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toTopOf="parent"-->
+<!--        app:layout_constraintVertical_bias="0.13" />-->
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

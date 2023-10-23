@@ -10,7 +10,7 @@ class ProductsDbHelper(context: Context) :
     SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
     companion object {
         private const val DATABASE_NAME = "barcodesys.db"
-        private const val DATABASE_VERSION = 3
+        private const val DATABASE_VERSION = 6
 
         private const val TABLE_NAME = "products"
         private const val COLUMN_ID = "id"
@@ -43,11 +43,11 @@ class ProductsDbHelper(context: Context) :
         }
     }
 
-
-    fun clearProducts(warehouse: String) {
+    fun clearProducts() {
         val db = writableDatabase
         try {
-            db.delete(TABLE_NAME, warehouse, null)
+//            db.delete(TABLE_NAME, "warehouse = ?", arrayOf(warehouse))
+            db.delete(TABLE_NAME, null, null)
         } catch (e: SQLException){
             e.printStackTrace()
         } finally{
