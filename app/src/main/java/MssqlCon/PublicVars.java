@@ -29,6 +29,6 @@ public class PublicVars {
     public static String GetInvtRemarks(){return  _remarks;}
 
     public static boolean _mode;
-    public static void SetMode(boolean offlineMode) { _mode = offlineMode;}
-    public static Boolean GetMode() {return  _mode; }
+    public static void SetOfflineMode(boolean offlineMode) { _mode = offlineMode;}
+    public static Boolean GetOfflineMode() {return  _mode; }
 }

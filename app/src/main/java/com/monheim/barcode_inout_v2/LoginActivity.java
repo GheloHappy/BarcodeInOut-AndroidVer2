@@ -31,9 +31,7 @@ public class LoginActivity extends AppCompatActivity {
     ConnectionFragment conFrag = new ConnectionFragment();
     boolean toggle = true;
     boolean offlineToggle = false;
-
     private UsersDbHelper userDbHelper;
-
     Login login = new Login();
 
     @Override
@@ -77,9 +75,9 @@ public class LoginActivity extends AppCompatActivity {
             NetworkInfo ni = cm.getActiveNetworkInfo();
 
             if (offlineToggle) {
-                String warehouse = PublicVars.GetWarehouse();
                     if (userDbHelper.localLoginUser(userName, pass)) {
                         PublicVars.SetUser(userName); //set offline user
+                        PublicVars.SetOfflineMode(true);
                         startActivity(new Intent(LoginActivity.this, MainActivity.class));
                     } else {
                         Toast.makeText(LoginActivity.this, "Invalid Username or Password", Toast.LENGTH_SHORT).show();
@@ -97,6 +95,9 @@ public class LoginActivity extends AppCompatActivity {
                         barInOutFunc.ClearTempTrans(userName);
                         newBarFunc.clearUnknownBarcode(userName);
                         invtFunc.ClearTempInventory();
+
+                        PublicVars.SetUser(userName);
+                        PublicVars.SetOfflineMode(false);
 
                         startActivity(new Intent(LoginActivity.this, MainActivity.class));
                     } else {
