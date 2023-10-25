@@ -1,5 +1,6 @@
 package LocalDb
 
+import MssqlCon.PublicVars
 import android.content.ContentValues
 import android.content.Context
 import android.database.SQLException
@@ -7,10 +8,9 @@ import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 
 class UsersDbHelper(context: Context) :
-    SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
+    SQLiteOpenHelper(context, DATABASE_NAME, null, PublicVars.DATABASE_VERSION) {
     companion object {
         private const val DATABASE_NAME = "barcodesys.db"
-        private const val DATABASE_VERSION = 6
 
         private const val TABLE_NAME = "users"
         private const val COLUMN_ID = "id"
@@ -28,7 +28,7 @@ class UsersDbHelper(context: Context) :
         try {
             db?.execSQL(createTableQuery)
         } catch (e: SQLException) {
-            e.printStackTrace();
+            e.printStackTrace()
         }
     }
 

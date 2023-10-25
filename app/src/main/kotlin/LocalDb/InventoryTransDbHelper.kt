@@ -1,21 +1,21 @@
 package LocalDb
 
+import MssqlCon.PublicVars
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import java.sql.SQLException
 
-class InventoryTransDbHelper (context: Context) : SQLiteOpenHelper(context,
-    DATABASE_NAME, null, DATABASE_VERSION) {
+class InventoryTransDbHelper (context: Context) :
+    SQLiteOpenHelper(context, DATABASE_NAME, null, PublicVars.DATABASE_VERSION) {
 
     companion object {
         private const val DATABASE_NAME = "barcodesys.db"
-        private const val DATABASE_VERSION = 6
 
         private const val TABLE_NAME = "inventory_trans"
         private const val COLUMN_ID = "id"
         private const val COLUMN_BARCODE = "barcode"
-        private const val COLUMN_SOLOMONID = "solomon_ID"
+        private const val COLUMN_SOLOMONID = "solomonID"
         private const val COLUMN_UOM = "uom"
         private const val COLUMN_QTY = "qty"
         private const val COLUMN_DATE = "date"

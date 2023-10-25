@@ -31,4 +31,6 @@ public class PublicVars {
     public static boolean _mode;
     public static void SetOfflineMode(boolean offlineMode) { _mode = offlineMode;}
     public static Boolean GetOfflineMode() {return  _mode; }
+
+    public static int DATABASE_VERSION = 13;
 }

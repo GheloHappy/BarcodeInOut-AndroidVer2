@@ -1,22 +1,23 @@
 package LocalDb
 
+import MssqlCon.PublicVars
 import android.content.ContentValues
 import android.content.Context
 import android.database.SQLException
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
+import android.util.Log
 
 class ProductsDbHelper(context: Context) :
-    SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
+    SQLiteOpenHelper(context, DATABASE_NAME, null, PublicVars.DATABASE_VERSION) {
     companion object {
         private const val DATABASE_NAME = "barcodesys.db"
-        private const val DATABASE_VERSION = 6
 
         private const val TABLE_NAME = "products"
         private const val COLUMN_ID = "id"
         private const val COLUMN_BARCODE = "barcode"
         private const val COLUMN_DESCRIPTION = "description"
-        private const val COLUMN_SOLOMONID = "solomon_ID"
+        private const val COLUMN_SOLOMONID = "solomonID"
         private const val COLUMN_UOM = "uom"
         private const val COLUMN_CSPKG = "csPkg"
         private const val COLUMN_WAREHOUSE = "wareHouse"
@@ -74,6 +75,26 @@ class ProductsDbHelper(context: Context) :
         } finally {
             db.close()
         }
+    }
+
+    fun getSolomonID(barcode: String): String {
+        val db = readableDatabase
+        val query = "SELECT $COLUMN_SOLOMONID FROM $TABLE_NAME WHERE $COLUMN_BARCODE = ?"
+        val cursor = db.rawQuery(query, arrayOf(barcode))
+
+        cursor.use {
+            if(cursor.moveToFirst()) {
+                val solomonID = cursor.getString(cursor.getColumnIndexOrThrow("solomonID"))
+
+                if (cursor.moveToNext()) {
+                    return "multi"
+                }
+
+                return solomonID
+            }
+        }
+
+        return "none"
     }
 
 }
