@@ -8,9 +8,10 @@ import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 
 class UsersDbHelper(context: Context) :
-    SQLiteOpenHelper(context, DATABASE_NAME, null, PublicVars.DATABASE_VERSION) {
+    SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
     companion object {
-        private const val DATABASE_NAME = "barcodesys.db"
+        private val DATABASE_NAME = PublicVars.DATABASE_NAME
+        private val DATABASE_VERSION = PublicVars.DATABASE_VERSION
 
         private const val TABLE_NAME = "users"
         private const val COLUMN_ID = "id"

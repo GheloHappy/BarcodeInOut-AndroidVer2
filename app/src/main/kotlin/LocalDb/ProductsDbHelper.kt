@@ -9,15 +9,16 @@ import android.database.sqlite.SQLiteOpenHelper
 import android.util.Log
 
 class ProductsDbHelper(context: Context) :
-    SQLiteOpenHelper(context, DATABASE_NAME, null, PublicVars.DATABASE_VERSION) {
+    SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
     companion object {
-        private const val DATABASE_NAME = "barcodesys.db"
+        private val DATABASE_NAME = PublicVars.DATABASE_NAME
+        private val DATABASE_VERSION = PublicVars.DATABASE_VERSION
 
         private const val TABLE_NAME = "products"
         private const val COLUMN_ID = "id"
         private const val COLUMN_BARCODE = "barcode"
         private const val COLUMN_DESCRIPTION = "description"
-        private const val COLUMN_SOLOMONID = "solomonID"
+        private const val COLUMN_SOLOMON_ID = "solomonID"
         private const val COLUMN_UOM = "uom"
         private const val COLUMN_CSPKG = "csPkg"
         private const val COLUMN_WAREHOUSE = "wareHouse"
@@ -25,7 +26,7 @@ class ProductsDbHelper(context: Context) :
 
     override fun onCreate(db: SQLiteDatabase?) {
         val createTableQuery =
-            "CREATE TABLE $TABLE_NAME ($COLUMN_ID INTEGER PRIMARY KEY, $COLUMN_BARCODE TEXT, $COLUMN_DESCRIPTION TEXT, $COLUMN_SOLOMONID TEXT, " +
+            "CREATE TABLE $TABLE_NAME ($COLUMN_ID INTEGER PRIMARY KEY, $COLUMN_BARCODE TEXT, $COLUMN_DESCRIPTION TEXT, $COLUMN_SOLOMON_ID TEXT, " +
                     "$COLUMN_UOM TEXT, $COLUMN_CSPKG INTEGER, $COLUMN_WAREHOUSE TEXT)"
         try {
             db?.execSQL(createTableQuery)
@@ -63,7 +64,7 @@ class ProductsDbHelper(context: Context) :
                 val values = ContentValues().apply {
                     put(COLUMN_BARCODE, product.barcode)
                     put(COLUMN_DESCRIPTION, product.description)
-                    put(COLUMN_SOLOMONID, product.solomonID)
+                    put(COLUMN_SOLOMON_ID, product.solomonID)
                     put(COLUMN_UOM, product.uom)
                     put(COLUMN_CSPKG, product.csPkg)
                     put(COLUMN_WAREHOUSE, product.wareHouse)
@@ -79,7 +80,7 @@ class ProductsDbHelper(context: Context) :
 
     fun getSolomonID(barcode: String): String {
         val db = readableDatabase
-        val query = "SELECT $COLUMN_SOLOMONID FROM $TABLE_NAME WHERE $COLUMN_BARCODE = ?"
+        val query = "SELECT $COLUMN_SOLOMON_ID FROM $TABLE_NAME WHERE $COLUMN_BARCODE = ?"
         val cursor = db.rawQuery(query, arrayOf(barcode))
 
         cursor.use {

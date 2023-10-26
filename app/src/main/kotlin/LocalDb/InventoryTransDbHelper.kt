@@ -7,15 +7,16 @@ import android.database.sqlite.SQLiteOpenHelper
 import java.sql.SQLException
 
 class InventoryTransDbHelper (context: Context) :
-    SQLiteOpenHelper(context, DATABASE_NAME, null, PublicVars.DATABASE_VERSION) {
+    SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
 
     companion object {
-        private const val DATABASE_NAME = "barcodesys.db"
+        private val DATABASE_NAME = PublicVars.DATABASE_NAME
+        private val DATABASE_VERSION = PublicVars.DATABASE_VERSION
 
         private const val TABLE_NAME = "inventory_trans"
         private const val COLUMN_ID = "id"
         private const val COLUMN_BARCODE = "barcode"
-        private const val COLUMN_SOLOMONID = "solomonID"
+        private const val COLUMN_SOLOMON_ID = "solomonID"
         private const val COLUMN_UOM = "uom"
         private const val COLUMN_QTY = "qty"
         private const val COLUMN_DATE = "date"
@@ -29,7 +30,7 @@ class InventoryTransDbHelper (context: Context) :
 
     override fun onCreate(db: SQLiteDatabase?) {
         val createTable =
-            "CREATE TABLE $TABLE_NAME ($COLUMN_ID INTEGER PRIMARY KEY, $COLUMN_BARCODE TEXT, $COLUMN_SOLOMONID TEXT, $COLUMN_UOM TEXT, $COLUMN_QTY INTEGER, $COLUMN_DATE TEXT, " +
+            "CREATE TABLE $TABLE_NAME ($COLUMN_ID INTEGER PRIMARY KEY, $COLUMN_BARCODE TEXT, $COLUMN_SOLOMON_ID TEXT, $COLUMN_UOM TEXT, $COLUMN_QTY INTEGER, $COLUMN_DATE TEXT, " +
                     "$COLUMN_DATE_ENTRY TEXT, $COLUMN_USERNAME TEXT, $COLUMN_DESCRIPTION TEXT, $COLUMN_REFNBR TEXT, $COLUMN_REMARKS TEXT, $COLUMN_WAREHOUSE TEXT)"
         try {
             db?.execSQL(createTable)

@@ -17,7 +17,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
-import android.widget.Spinner;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -28,7 +27,6 @@ import LocalDb.Products;
 import LocalDb.ProductsDbHelper;
 import LocalDb.Users;
 import LocalDb.UsersDbHelper;
-import MssqlCon.Login;
 import MssqlCon.OfflineSync;
 import MssqlCon.PublicVars;
 import MssqlCon.SqlCon;
@@ -36,9 +34,7 @@ import MssqlCon.SqlCon;
 public class ConnectionFragment extends Fragment {
     private ProductsDbHelper productsDbHelper;
     private UsersDbHelper usersDbHelper;
-
     OfflineSync offlineSync = new OfflineSync(getContext());
-
     PublicVars pubVars = new PublicVars();
 
     @Override
@@ -59,10 +55,6 @@ public class ConnectionFragment extends Fragment {
         ConnectivityManager cm = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo ni = cm.getActiveNetworkInfo();
 
-        //get context create new
-        productsDbHelper = new ProductsDbHelper(rootView.getContext());
-        usersDbHelper = new UsersDbHelper(rootView.getContext());
-
         if (ni != null && ni.getType() == ConnectivityManager.TYPE_WIFI) {
             btnConSave.setOnClickListener(v -> {
                 updateSharedPref(etServerIp, settings);
@@ -80,8 +72,8 @@ public class ConnectionFragment extends Fragment {
                 String warehouse = pubVars.GetWarehouse();
 
                 new Thread(() -> {
-                    boolean usersSynced = SyncUsers(warehouse);
                     boolean productsSynced = SyncProducts(warehouse);
+                    boolean usersSynced = SyncUsers(warehouse);
 
                     // Update the UI on the main thread
                     getActivity().runOnUiThread(() -> {
@@ -115,6 +107,7 @@ public class ConnectionFragment extends Fragment {
     }
 
     private boolean SyncProducts(String warehouse) {
+        productsDbHelper = new ProductsDbHelper(getContext());
         List<Map<String, String>> dataList;
         List<Products> products = new ArrayList<>();
         try {
@@ -142,6 +135,7 @@ public class ConnectionFragment extends Fragment {
     }
 
     private boolean SyncUsers(String warehouse) {
+        usersDbHelper = new UsersDbHelper(getContext());
         List <Map<String, String>> dataList;
         List<Users> users = new ArrayList<>();
 
