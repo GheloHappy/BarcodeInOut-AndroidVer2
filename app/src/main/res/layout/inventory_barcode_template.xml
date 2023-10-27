@@ -9,7 +9,7 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="90dp"
+        android:layout_height="120dp"
         android:layout_marginTop="4dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -20,22 +20,6 @@
 
 
         <TextView
-            android:id="@+id/invtBarcode"
-            android:layout_width="244dp"
-            android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentBottom="true"
-            android:layout_marginStart="14dp"
-            android:layout_marginLeft="5dp"
-            android:layout_marginEnd="340dp"
-            android:layout_marginBottom="59dp"
-            android:hint="BARCODE"
-            android:textColor="#F41018"
-            android:textSize="22sp"
-            android:textStyle="bold" />
-
-        <TextView
             android:id="@+id/invtUom"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -44,10 +28,26 @@
             android:layout_alignParentBottom="true"
             android:layout_marginStart="348dp"
             android:layout_marginEnd="166dp"
-            android:layout_marginBottom="59dp"
+            android:layout_marginBottom="75dp"
             android:hint="UOM"
             android:textColor="#000"
             android:textSize="22sp" />
+
+        <TextView
+            android:id="@+id/invtBarcode"
+            android:layout_width="244dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginStart="14dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginEnd="341dp"
+            android:layout_marginBottom="75dp"
+            android:hint="BARCODE"
+            android:textColor="#F41018"
+            android:textSize="22sp"
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/invtQty"
@@ -58,7 +58,7 @@
             android:layout_alignParentBottom="true"
             android:layout_marginStart="487dp"
             android:layout_marginEnd="20dp"
-            android:layout_marginBottom="58dp"
+            android:layout_marginBottom="73dp"
             android:hint="QTY"
             android:inputType="number"
             android:textColor="#08ACED"
@@ -66,29 +66,29 @@
 
         <TextView
             android:id="@+id/tvSolomonId"
-            android:layout_width="155dp"
+            android:layout_width="128dp"
             android:layout_height="40dp"
             android:layout_alignParentStart="true"
             android:layout_alignParentEnd="true"
             android:layout_alignParentBottom="true"
             android:layout_marginStart="18dp"
             android:layout_marginTop="7dp"
-            android:layout_marginEnd="427dp"
-            android:layout_marginBottom="-1dp"
+            android:layout_marginEnd="455dp"
+            android:layout_marginBottom="25dp"
             android:hint="Sol ID"
             android:textColor="#000"
             android:textSize="22sp" />
 
         <TextView
             android:id="@+id/tvDesc"
-            android:layout_width="wrap_content"
-            android:layout_height="40dp"
+            android:layout_width="436dp"
+            android:layout_height="58dp"
             android:layout_alignParentStart="true"
             android:layout_alignParentEnd="true"
             android:layout_alignParentBottom="true"
-            android:layout_marginStart="166dp"
-            android:layout_marginEnd="22dp"
-            android:layout_marginBottom="6dp"
+            android:layout_marginStart="141dp"
+            android:layout_marginEnd="24dp"
+            android:layout_marginBottom="8dp"
             android:hint="Description"
             android:textColor="#000"
             android:textSize="18sp" />

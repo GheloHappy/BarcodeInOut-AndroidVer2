@@ -133,7 +133,7 @@ public class ViewInventoryFragment extends Fragment {
                             if(!viewInvtFunc.CheckVoidUser(adminPass)) {
                                 Toast.makeText(getActivity(), "Incorrect admin password.", Toast.LENGTH_SHORT).show();
                             } else {
-                                if(viewInvtFunc.VoidRemoveItem(barcode, solomonID, uom, refNbr, user, remarks)) {
+                                if(viewInvtFunc.VoidRemoveItem(barcode, solomonID, uom, user, remarks)) {
                                     Toast.makeText(getActivity(), "Item Deleted Successfully!", Toast.LENGTH_SHORT).show();
                                     ListInvtTran(lvBarcodeTrans, refNbr);
 //                                    viewInvtFunc.GetTotCs(tvTotCs, tvTotPcs, refNbr, user);

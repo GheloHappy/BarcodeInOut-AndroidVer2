@@ -1,0 +1,117 @@
+package LocalDb
+
+import MssqlCon.PublicVars
+import android.content.ContentValues
+import android.content.Context
+import android.database.SQLException
+import android.database.sqlite.SQLiteDatabase
+import android.database.sqlite.SQLiteOpenHelper
+
+class UsersDbHelper(context: Context) :
+    SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
+    companion object {
+        private const val DATABASE_NAME = PublicVars.DATABASE_NAME
+        private const val DATABASE_VERSION = PublicVars.DATABASE_VERSION
+
+        private const val TABLE_NAME = "users"
+        private const val COLUMN_ID = "id"
+        private const val COLUMN_USERNAME = "username"
+        private const val COLUMN_PASSWORD = "password"
+        private const val COLUMN_NAME = "name"
+        private const val COLUMN_DEPARTMENT = "department"
+        private const val COLUMN_WAREHOUSE = "warehouse"
+    }
+
+    override fun onCreate(db: SQLiteDatabase?) {
+        val createTableQuery =
+            "CREATE TABLE $TABLE_NAME ($COLUMN_ID INTEGER PRIMARY KEY, $COLUMN_USERNAME TEXT, $COLUMN_PASSWORD TEXT, " +
+                    "$COLUMN_NAME TEXT, $COLUMN_DEPARTMENT TEXT, $COLUMN_WAREHOUSE TEXT)"
+        try {
+            db?.execSQL(createTableQuery)
+        } catch (e: SQLException) {
+            e.printStackTrace()
+        }
+    }
+
+    override fun onUpgrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) {
+        try {
+            if (newVersion > oldVersion) {
+                db?.execSQL("DROP TABLE IF EXISTS $TABLE_NAME")
+                onCreate(db)
+            }
+        } catch (e: SQLException) {
+            e.printStackTrace();
+        }
+    }
+    fun syncUsers(users: List<Users>) {
+        val db = writableDatabase
+        db.beginTransaction()
+        try {
+            for (user in users){
+                val values = ContentValues().apply {
+                    put(COLUMN_USERNAME, user.id)
+                    put(COLUMN_USERNAME, user.username)
+                    put(COLUMN_PASSWORD, user.password)
+                    put(COLUMN_NAME, user.name)
+                    put(COLUMN_DEPARTMENT, user.department)
+                    put(COLUMN_WAREHOUSE, user.warehouse)
+                }
+                db.insert(TABLE_NAME, null, values)
+                db.setTransactionSuccessful()
+            }
+        } catch (e: SQLException) {
+            e.printStackTrace()
+        } finally {
+            db.endTransaction()
+            db.close()
+        }
+    }
+
+    fun clearUser() {
+        val db = writableDatabase
+        db.beginTransaction()
+        try {
+//            db.delete(TABLE_NAME, "warehouse = ?", arrayOf(warehouse))
+            db.delete(TABLE_NAME, null, null)
+            db.setTransactionSuccessful()
+        } catch (e: SQLException){
+            e.printStackTrace()
+        } finally{
+            db.endTransaction()
+            db.close()
+        }
+    }
+
+//    fun userNotEmpty(): Boolean {
+//        val db = readableDatabase
+//        val query = "SELECT COUNT(*) FROM $TABLE_NAME"
+//        val cursor = db.rawQuery(query, null)
+//
+//        cursor.use {
+//            return try {
+//                if (cursor.moveToFirst()) {
+//                    val count = cursor.getInt(0)
+//                    count > 0
+//                } else {
+//                    false
+//                }
+//            } finally {
+//                cursor.close()
+//            }
+//        }
+//    }
+
+    fun localLoginUser(username: String, password: String): Boolean {
+        val db = readableDatabase
+        val query = "SELECT COUNT(*) FROM $TABLE_NAME WHERE username = ? AND password = ?"
+        val cursor = db.rawQuery(query, arrayOf(username, password))
+
+        cursor.use {
+            if (it.moveToFirst()) {
+                val count = it.getInt(0)
+                return count > 0
+            }
+        }
+        return false
+    }
+}

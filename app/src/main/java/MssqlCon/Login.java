@@ -6,9 +6,7 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 
 public class Login extends  SqlCon {
-    PublicVars pubVar = new PublicVars();
-
-    public boolean CheckUser(String usr, String pass) {
+    public boolean CheckUser(String usr, String pass ) {
         con = SQLConnection();
         Logs log = new Logs();
         try {
@@ -18,14 +16,13 @@ public class Login extends  SqlCon {
                 ResultSet rs = st.executeQuery(query);
 
                 if (rs.next()) {
-                    pubVar.SetUser(rs.getString(2));
-                    pubVar.SetUserDept(rs.getString(5));
                     log.InsertUserLog("Login", "");
                     return true;
                 }
             }
         } catch (Exception e) {
             Log.e("Error", e.getMessage());
+            e.printStackTrace();
         }
         return false;
     }
