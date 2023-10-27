@@ -10,8 +10,8 @@ class InventoryTransDbHelper (context: Context) :
     SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
 
     companion object {
-        private val DATABASE_NAME = PublicVars.DATABASE_NAME
-        private val DATABASE_VERSION = PublicVars.DATABASE_VERSION
+        private const val DATABASE_NAME = PublicVars.DATABASE_NAME
+        private const val DATABASE_VERSION = PublicVars.DATABASE_VERSION
 
         private const val TABLE_NAME = "inventory_trans"
         private const val COLUMN_ID = "id"
@@ -38,11 +38,12 @@ class InventoryTransDbHelper (context: Context) :
     }
 
     override fun onUpgrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) {
-        val dropTableQuery = "DROP TABLE IF EXISTS TABLE_NAME"
         try {
-            db?.execSQL(dropTableQuery)
-            onCreate(db)
-        } catch (e: android.database.SQLException) {
+            if (newVersion > oldVersion) {
+                db?.execSQL("DROP TABLE IF EXISTS $TABLE_NAME")
+                onCreate(db)
+            }
+        } catch (e: SQLException) {
             e.printStackTrace();
         }
     }

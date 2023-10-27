@@ -11,8 +11,8 @@ import android.util.Log
 class ProductsDbHelper(context: Context) :
     SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
     companion object {
-        private val DATABASE_NAME = PublicVars.DATABASE_NAME
-        private val DATABASE_VERSION = PublicVars.DATABASE_VERSION
+        private const val DATABASE_NAME = PublicVars.DATABASE_NAME
+        private const val DATABASE_VERSION = PublicVars.DATABASE_VERSION
 
         private const val TABLE_NAME = "products"
         private const val COLUMN_ID = "id"
@@ -35,11 +35,21 @@ class ProductsDbHelper(context: Context) :
         }
     }
 
+    //    override fun onUpgrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) {
+//        val dropTableQuery = "DROP TABLE IF EXISTS $TABLE_NAME"
+//        try {
+//            db?.execSQL(dropTableQuery)
+//            onCreate(db)
+//        } catch (e: SQLException) {
+//            e.printStackTrace();
+//        }
+//    }
     override fun onUpgrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) {
-        val dropTableQuery = "DROP TABLE IF EXISTS $TABLE_NAME"
         try {
-            db?.execSQL(dropTableQuery)
-            onCreate(db)
+            if (newVersion > oldVersion) {
+                db?.execSQL("DROP TABLE IF EXISTS $TABLE_NAME")
+                onCreate(db)
+            }
         } catch (e: SQLException) {
             e.printStackTrace();
         }
@@ -47,18 +57,22 @@ class ProductsDbHelper(context: Context) :
 
     fun clearProducts() {
         val db = writableDatabase
+        db.beginTransaction()
         try {
 //            db.delete(TABLE_NAME, "warehouse = ?", arrayOf(warehouse))
             db.delete(TABLE_NAME, null, null)
-        } catch (e: SQLException){
+            db.setTransactionSuccessful()
+        } catch (e: SQLException) {
             e.printStackTrace()
-        } finally{
+        } finally {
+            db.endTransaction()
             db.close()
         }
     }
 
     fun syncProducts(products: List<Products>) {
         val db = writableDatabase
+        db.beginTransaction()
         try {
             for (product in products) {
                 val values = ContentValues().apply {
@@ -70,21 +84,24 @@ class ProductsDbHelper(context: Context) :
                     put(COLUMN_WAREHOUSE, product.wareHouse)
                 }
                 db.insert(TABLE_NAME, null, values)
+                db.setTransactionSuccessful()
             }
         } catch (e: SQLException) {
             e.printStackTrace()
         } finally {
+            db.endTransaction()
             db.close()
         }
     }
 
     fun getSolomonID(barcode: String): String {
         val db = readableDatabase
+        db.beginTransaction()
         val query = "SELECT $COLUMN_SOLOMON_ID FROM $TABLE_NAME WHERE $COLUMN_BARCODE = ?"
         val cursor = db.rawQuery(query, arrayOf(barcode))
 
         cursor.use {
-            if(cursor.moveToFirst()) {
+            if (cursor.moveToFirst()) {
                 val solomonID = cursor.getString(cursor.getColumnIndexOrThrow("solomonID"))
 
                 if (cursor.moveToNext()) {

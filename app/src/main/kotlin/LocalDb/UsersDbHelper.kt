@@ -10,8 +10,8 @@ import android.database.sqlite.SQLiteOpenHelper
 class UsersDbHelper(context: Context) :
     SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
     companion object {
-        private val DATABASE_NAME = PublicVars.DATABASE_NAME
-        private val DATABASE_VERSION = PublicVars.DATABASE_VERSION
+        private const val DATABASE_NAME = PublicVars.DATABASE_NAME
+        private const val DATABASE_VERSION = PublicVars.DATABASE_VERSION
 
         private const val TABLE_NAME = "users"
         private const val COLUMN_ID = "id"
@@ -34,17 +34,18 @@ class UsersDbHelper(context: Context) :
     }
 
     override fun onUpgrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) {
-        val dropTableQuery = "DROP TABLE IF EXISTS $TABLE_NAME"
         try {
-            db?.execSQL(dropTableQuery)
-            onCreate(db)
+            if (newVersion > oldVersion) {
+                db?.execSQL("DROP TABLE IF EXISTS $TABLE_NAME")
+                onCreate(db)
+            }
         } catch (e: SQLException) {
             e.printStackTrace();
         }
     }
-
     fun syncUsers(users: List<Users>) {
         val db = writableDatabase
+        db.beginTransaction()
         try {
             for (user in users){
                 val values = ContentValues().apply {
@@ -56,22 +57,27 @@ class UsersDbHelper(context: Context) :
                     put(COLUMN_WAREHOUSE, user.warehouse)
                 }
                 db.insert(TABLE_NAME, null, values)
+                db.setTransactionSuccessful()
             }
         } catch (e: SQLException) {
             e.printStackTrace()
         } finally {
+            db.endTransaction()
             db.close()
         }
     }
 
     fun clearUser() {
         val db = writableDatabase
+        db.beginTransaction()
         try {
 //            db.delete(TABLE_NAME, "warehouse = ?", arrayOf(warehouse))
             db.delete(TABLE_NAME, null, null)
+            db.setTransactionSuccessful()
         } catch (e: SQLException){
             e.printStackTrace()
         } finally{
+            db.endTransaction()
             db.close()
         }
     }

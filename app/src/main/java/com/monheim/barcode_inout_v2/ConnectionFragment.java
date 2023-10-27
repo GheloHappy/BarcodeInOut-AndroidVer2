@@ -11,6 +11,7 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -54,6 +55,9 @@ public class ConnectionFragment extends Fragment {
 
         ConnectivityManager cm = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo ni = cm.getActiveNetworkInfo();
+
+        productsDbHelper = new ProductsDbHelper(getContext());
+        usersDbHelper = new UsersDbHelper(getContext());
 
         if (ni != null && ni.getType() == ConnectivityManager.TYPE_WIFI) {
             btnConSave.setOnClickListener(v -> {
@@ -107,7 +111,6 @@ public class ConnectionFragment extends Fragment {
     }
 
     private boolean SyncProducts(String warehouse) {
-        productsDbHelper = new ProductsDbHelper(getContext());
         List<Map<String, String>> dataList;
         List<Products> products = new ArrayList<>();
         try {
@@ -135,7 +138,6 @@ public class ConnectionFragment extends Fragment {
     }
 
     private boolean SyncUsers(String warehouse) {
-        usersDbHelper = new UsersDbHelper(getContext());
         List <Map<String, String>> dataList;
         List<Users> users = new ArrayList<>();
 

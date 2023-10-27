@@ -32,6 +32,6 @@ public class PublicVars {
     public static void SetOfflineMode(boolean offlineMode) { _mode = offlineMode;}
     public static Boolean GetOfflineMode() {return  _mode; }
 
-    public static int DATABASE_VERSION = 1;
-    public static String DATABASE_NAME = "barcodesys.db";
+    public static final int DATABASE_VERSION = 15;
+    public static final String DATABASE_NAME = "barcodesys.db";
 }
