@@ -189,7 +189,7 @@ public class DtOutFragment extends Fragment {
                         dialog.dismiss();
                     });
                     builder.setPositiveButton("Save", (dialog, which) -> {
-                        UpdateDt();
+                        UpdateDt(barcode);
                     });
 
                     ListView listView = new ListView(getContext());
@@ -223,7 +223,7 @@ public class DtOutFragment extends Fragment {
 
                     dialog.show();
                 } else {
-                    UpdateDt();
+                    UpdateDt(barcode);
                 }
 
                 etDtOutQty.setText("1");
@@ -246,9 +246,9 @@ public class DtOutFragment extends Fragment {
         return  rootView;
     }
 
-    private void UpdateDt(){
+    private void UpdateDt(String barcode){
         if(dtOutFunc.GetLastQty(searchDate,dt,solomonID,uom)) {
-            if (dtOutFunc.UpdateDtItem(qty, uom)){
+            if (dtOutFunc.UpdateDtItem(qty, uom, barcode)){
                 DisplayTotCs();
                 ListBarcodeTran(lvDTOut);
                 //log.InsertUserLog("DT-OUT","Update :" + solomonID + " : " + spInvtUom.getSelectedItem().toString() + " : " + qty + " : " + dt);

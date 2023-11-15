@@ -90,14 +90,14 @@ public class ViewInventoryFunctions extends SqlCon {
         return false;
     }
 
-    public boolean VoidRemoveItem(String barcode, String solomonID, String uom, String refnbr, String user, String remarks){
+    public boolean VoidRemoveItem(String barcode, String solomonID, String uom, String user, String remarks){
         try {
             if (con != null) {
                 String query = "DELETE FROM barcodesys_InventoryTrans WHERE barcode = '"+ barcode +"' AND solomonID = '"+
-                        solomonID +"' AND uom = '"+ uom + "' AND refnbr = '"+ refnbr + "' AND username = '"+ user + "' AND remarks = '"+ remarks + "'";
+                        solomonID +"' AND uom = '"+ uom + "' AND username = '"+ user + "' AND remarks = '"+ remarks + "'";
                 Statement st = con.createStatement();
                 st.execute(query);
-
+                System.out.println(query);
             }
 
         } catch (Exception e) {

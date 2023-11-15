@@ -36,7 +36,7 @@ import MssqlCon.SqlCon;
 
 public class MainActivity extends AppCompatActivity {
     SqlCon sqlCon = new SqlCon();
-    PublicVars pubVars = new PublicVars();
+//    PublicVars pubVars = new PublicVars();
     Logs log = new Logs();
     DrawerLayout drawerLayout;
     public NavigationView navigationView;
@@ -56,6 +56,7 @@ public class MainActivity extends AppCompatActivity {
         try {
             this.getSupportActionBar().hide();
         } catch (NullPointerException e) {
+            System.out.println(e.getMessage());
         }
         setContentView(R.layout.activity_main);
 
@@ -92,7 +93,8 @@ public class MainActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         TextView tvWarehouse = navigationView.getHeaderView(0).findViewById(R.id.tvWarehouse);
-        tvWarehouse.setText("Warehouse Barcode System : " + pubVars.GetWarehouse() + " : " +pubVars.GetUser()); //set text to view database using
+        String loginDetails = "Warehouse Barcode System : " + MssqlCon.PublicVars.GetWarehouse() + " : " +MssqlCon.PublicVars.GetUser();  //set text to view database using
+        tvWarehouse.setText(loginDetails);
 
         navigationView.setNavigationItemSelectedListener(item -> {
             sqlCon.Reconnect();
@@ -143,7 +145,7 @@ public class MainActivity extends AppCompatActivity {
                     finish();
                     break;
             }
-            pubVars.SetMainNav(navigationView); //sending naviagtion view to public variable for disabling/enabling menu items after barcode in/out save
+            MssqlCon.PublicVars.SetMainNav(navigationView); //sending naviagtion view to public variable for disabling/enabling menu items after barcode in/out save
 
             return false;
         });

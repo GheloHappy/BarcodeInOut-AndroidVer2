@@ -177,7 +177,7 @@ public class DtOutFunctions {
     }
 
     String date, dt, solomonID;
-    public boolean UpdateDtItem(int qty, String uomOg) {
+    public boolean UpdateDtItem(int qty, String uomOg, String barcode) {
         Date c = Calendar.getInstance().getTime();
         SimpleDateFormat dfTime = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss", Locale.getDefault());
         String currentDateTime = dfTime.format(c);
@@ -187,7 +187,7 @@ public class DtOutFunctions {
             try {
                 if (con != null) {
                     String query;
-                    query = "UPDATE barcodesys_DTInventory Set qtyOut = '" + totQty + "', timeStamp = '" +currentDateTime+ "' WHERE schedDate ='" + date + "' AND dt = '" + dt +
+                    query = "UPDATE barcodesys_DTInventory Set qtyOut = '" + totQty + "', barcode = '" + barcode + "', timeStamp = '" +currentDateTime+ "' WHERE schedDate ='" + date + "' AND dt = '" + dt +
                             "' AND solomonID ='" + solomonID + "' AND uomOg = '" + uomOg +"'";
                     Statement st = con.createStatement();
                     st.execute(query);
