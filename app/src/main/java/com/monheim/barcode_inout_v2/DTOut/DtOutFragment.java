@@ -196,7 +196,23 @@ public class DtOutFragment extends Fragment {
 
                     String[] from = {"barcode","description","solomonID"};
                     int[] to = {R.id.barcode,R.id.description,R.id.qty};
-                    simAd = new SimpleAdapter(getActivity(),dataList,R.layout.temp_barcode_tran_list_template,from,to);
+                    simAd = new SimpleAdapter(getActivity(), dataList, R.layout.temp_barcode_tran_list_template, from, to) {
+                        @Override
+                        public View getView(int position, View convertView, ViewGroup parent) {
+                            View view = super.getView(position, convertView, parent);
+                            TextView tvItemDesc = view.findViewById(R.id.description);
+
+                            String description = dataList.get(position).get("description");
+                            if (description != null && description.contains("FG")) {
+                                tvItemDesc.setTextColor(Color.BLUE);
+                            } else {
+                                tvItemDesc.setTextColor(Color.BLACK);
+                            }
+
+                            return view;
+                        }
+                    };
+
                     listView.setAdapter(simAd);
 
                     listView.setChoiceMode(ListView.CHOICE_MODE_NONE);
