@@ -25,6 +25,7 @@ import com.monheim.barcode_inout_v2.Home.HomeFragment;
 import com.monheim.barcode_inout_v2.Inventory.InventoryFragment;
 import com.monheim.barcode_inout_v2.Issuing.IssuingFragment;
 import com.monheim.barcode_inout_v2.Issuing.IssuingFunctions;
+import com.monheim.barcode_inout_v2.ItemList.ItemListFragment;
 import com.monheim.barcode_inout_v2.NewBarcode.NewBarcodeFragment;
 import com.monheim.barcode_inout_v2.OS.OSFragment;
 import com.monheim.barcode_inout_v2.Van.VanFragment;
@@ -70,6 +71,7 @@ public class MainActivity extends AppCompatActivity {
         NewBarcodeFragment nbarFrag = new NewBarcodeFragment();
         InventoryFragment invtFrag = new InventoryFragment();
         ViewInventoryFragment viewInvtFrag = new ViewInventoryFragment();
+        ItemListFragment itemListFrag = new ItemListFragment();
 
         getSupportFragmentManager().beginTransaction().replace(R.id.container,homeFragment).commit();
 
@@ -137,6 +139,10 @@ public class MainActivity extends AppCompatActivity {
                     break;
                 case R.id.viewInventory:
                     getSupportFragmentManager().beginTransaction().replace(R.id.container,viewInvtFrag).commit();
+                    drawerLayout.closeDrawer(GravityCompat.START);
+                    break;
+                case R.id.itemList:
+                    getSupportFragmentManager().beginTransaction().replace(R.id.container,itemListFrag).commit();
                     drawerLayout.closeDrawer(GravityCompat.START);
                     break;
                 case R.id.logOut:
