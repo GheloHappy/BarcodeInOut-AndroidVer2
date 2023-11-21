@@ -29,7 +29,7 @@ public class BarcodeInOutFunctions extends SqlCon {
     public boolean GetBarcode(String barcode, TextView tvBar, TextView tvDesc) {
         try {
             if (con != null) {
-                String query = "SELECT barcode, description FROM barcodesys_Products WHERE barcode ='" + barcode + "'";
+                String query = "SELECT barcode, description FROM barcodesys_productslist WHERE barcode ='" + barcode + "'";
                 Statement st = con.createStatement();
                 ResultSet rs = st.executeQuery(query);
 
@@ -52,7 +52,7 @@ public class BarcodeInOutFunctions extends SqlCon {
         return true;
     }
     int id = 1;
-    public void InsertIn(String barcode,String uom, int qty, String tranType, String user, String itemDesc, String solomonID){
+    public void InsertIn(String barcode,String uom, int qty, String tranType, String user, String solomonID){
         Date c = Calendar.getInstance().getTime();
         SimpleDateFormat dfDate = new SimpleDateFormat("MM/dd/yyyy", Locale.getDefault());
         SimpleDateFormat dfTime = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss", Locale.getDefault());
@@ -65,7 +65,7 @@ public class BarcodeInOutFunctions extends SqlCon {
 
         try {
             if (con != null) {
-                String query = "INSERT INTO barcodesys_tempBarcodeTrans VALUES ('"+ id + "','"+ barcode+ "','" + itemDesc + "','" + solomonID + "','" + uom + "','"
+                String query = "INSERT INTO barcodesys_tempBarcodeTrans VALUES ('"+ id + "','"+ barcode+ "','NA','" + solomonID + "','" + uom + "','"
                         + qty + "','" + currentDate + "','"+ currentTime + "','"+ tranType +"','"+user+"')";
                 Statement st = con.createStatement();
                 st.execute(query);

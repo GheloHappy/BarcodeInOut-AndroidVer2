@@ -96,7 +96,7 @@ public class BarcodeOutFragment extends Fragment {
                             dialog.dismiss();
                         });
                         builder.setPositiveButton("Save", (dialog, which) -> {
-                            barInOut.InsertIn(barcode,uom,qty * -1,"OUT", user, itemDesc, solomonId);
+                            barInOut.InsertIn(barcode,uom,qty * -1,"OUT", user, solomonId);
                             PublicVars.GetNav().getMenu().findItem(R.id.barcodeIn).setEnabled(false); //disable Barcode Out in Menu if tempbarcode has data of IN
                             btnSave.setEnabled(true);
                         });
@@ -157,7 +157,7 @@ public class BarcodeOutFragment extends Fragment {
                             solomonID = dataMap.get("solomonID");
                         }
 
-                        barInOut.InsertIn(barcode,uom,qty * -1,"OUT", user, itemDesc, solomonID);
+                        barInOut.InsertIn(barcode,uom,qty * -1,"OUT", user, solomonID);
                     }
                     tvItemCount.setText(String.valueOf(barInOut.GetItemCount(barcode)));
                 } else {
