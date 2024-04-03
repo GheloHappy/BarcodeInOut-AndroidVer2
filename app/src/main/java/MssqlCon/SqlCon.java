@@ -21,6 +21,8 @@ public class SqlCon {
         warehouse = pubVars.GetWarehouse();
         if(warehouse.equals("Cabrera")) {
             ip= pubVars.GetIp(); port=pubVars.GetPort(); dbName="BarcodeInOut"; un="sa"; pass = "Passw0rd";
+        } else if (warehouse.equals("Cebu")) {
+            ip= pubVars.GetIp(); port=pubVars.GetPort(); dbName="BarcodeInOut"; un="sa"; pass = "Passw0rd";
         } else if (warehouse.equals("Monheim")) {
             ip= pubVars.GetIp(); port=pubVars.GetPort(); dbName="MONHEIMAPP"; un="sa"; pass = "Passw0rd";
         } else {

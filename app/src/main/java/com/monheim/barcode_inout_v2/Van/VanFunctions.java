@@ -80,7 +80,7 @@ public class VanFunctions extends SqlCon {
         return data;
     }
     private boolean SyncVan(String tranDate){
-        if(warehouse.equals("Monheim") || warehouse.equals("Maryland"))
+        if(warehouse.equals("Monheim") || warehouse.equals("Maryland") || warehouse.equals("Cebu"))
         {
 //            try {
 //                if (con != null) {
