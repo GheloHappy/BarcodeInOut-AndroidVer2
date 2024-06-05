@@ -8,21 +8,19 @@
 
     <EditText
         android:id="@+id/etSearchVanDate"
-        android:layout_width="168dp"
+        android:layout_width="198dp"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginStart="41dp"
+        android:layout_marginStart="20dp"
         android:layout_marginTop="30dp"
-        android:layout_marginEnd="391dp"
         android:hint="Search Date"
-        android:textSize="20dp"
         android:inputType="date"
         android:maxLines="1"
         android:singleLine="true"
         android:textAlignment="center"
-        android:textColor="#fff" />
+        android:textColor="#fff"
+        android:textSize="20dp" />
 
     <TextView
         android:layout_width="87dp"
