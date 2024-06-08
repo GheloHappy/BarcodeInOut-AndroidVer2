@@ -11,6 +11,7 @@
         <item>SW</item>
         <item>SET</item>
         <item>PCK</item>
+        <item>ZIN</item>
     </string-array>
 
     <string-array name="spWarehouses">
