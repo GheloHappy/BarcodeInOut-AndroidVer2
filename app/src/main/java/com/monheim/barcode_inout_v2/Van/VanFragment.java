@@ -21,6 +21,7 @@ import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.monheim.barcode_inout_v2.BarcodeInOut.BarcodeInOutFunctions;
 import com.monheim.barcode_inout_v2.NewBarcode.NewBarcodeFunctions;
@@ -123,6 +124,7 @@ public class VanFragment extends Fragment {
                     ArrayAdapter adapter = new ArrayAdapter(getActivity(), R.layout.spinner_item, vanFunc.GetVan(searchDate));
                     adapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
                     spinRefNbr.setAdapter(adapter);
+                    Toast.makeText(getActivity(), "Loading... " + searchDate, Toast.LENGTH_SHORT).show();
                 }
             }
             @Override

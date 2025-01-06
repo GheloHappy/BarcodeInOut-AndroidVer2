@@ -1,4 +1,4 @@
-package com.monheim.barcode_inout_v2.Inventory;
+package com.monheim.barcode_inout_v2.BOInventory;
 
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
@@ -42,13 +42,13 @@ import java.util.Objects;
 import MssqlCon.Logs;
 import MssqlCon.PublicVars;
 
-public class InventoryFragment extends Fragment {
+public class BOInventoryFragment extends Fragment {
     private Button btnSave;
 
     private TextView tvTotCs, tvTotPcs;
     String currentDate, solomonID;
     SimpleAdapter simAd;
-    InventoryFunctions invtFunc = new InventoryFunctions();
+    BOInventoryFunctions invtFunc = new BOInventoryFunctions();
 
     BarcodeInOutFunctions barInOut = new BarcodeInOutFunctions();
     Logs log = new Logs();
@@ -56,7 +56,7 @@ public class InventoryFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_inventory, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_b_o_inventory, container, false);
 
         ListView lvInventoryList = rootView.findViewById(R.id.lvInventoryList);
         EditText etInvtBarcode = rootView.findViewById(R.id.etInvtBarcode);
@@ -278,53 +278,53 @@ public class InventoryFragment extends Fragment {
 //        });
 
         btnSave.setOnClickListener(v -> {
-                LinearLayout layout = new LinearLayout(getActivity());
-                layout.setOrientation(LinearLayout.VERTICAL);
+            LinearLayout layout = new LinearLayout(getActivity());
+            layout.setOrientation(LinearLayout.VERTICAL);
 
-                EditText etRefNbr = new EditText(getActivity());
-                etRefNbr.setHint("Reference number");
+            EditText etRefNbr = new EditText(getActivity());
+            etRefNbr.setHint("Reference number");
 
-                EditText etRemarks = new EditText(getActivity());
-                etRemarks.setHint("Remarks");
+            EditText etRemarks = new EditText(getActivity());
+            etRemarks.setHint("Remarks");
 
-                layout.addView(etRefNbr);
-                layout.addView(etRemarks);
+            layout.addView(etRefNbr);
+            layout.addView(etRemarks);
 
             SimpleDateFormat dateFormat = new SimpleDateFormat("MMddyy", Locale.getDefault());
-            String currentDateRef = dateFormat.format(c);
+            String currentDateRef = "BO"+dateFormat.format(c);
 
-                etRefNbr.setText(currentDateRef);
-                etRefNbr.setEnabled(false);
-                etRemarks.setText(pubVars.GetInvtRemarks());
+            etRefNbr.setText(currentDateRef);
+            etRefNbr.setEnabled(false);
+            etRemarks.setText(pubVars.GetInvtRemarks());
 
-                new AlertDialog.Builder(getActivity())
-                        .setIcon(android.R.drawable.ic_dialog_alert)
-                        .setTitle("Input reference number")
-                        .setView(layout)
-                        .setPositiveButton("Yes",(dialog, which) -> {
-                            String refNbr = currentDateRef;
-                            String remarks = etRemarks.getText().toString();
+            new AlertDialog.Builder(getActivity())
+                    .setIcon(android.R.drawable.ic_dialog_alert)
+                    .setTitle("Input reference number")
+                    .setView(layout)
+                    .setPositiveButton("Yes",(dialog, which) -> {
+                        String refNbr = currentDateRef;
+                        String remarks = etRemarks.getText().toString();
 
-                            pubVars.SetInvtReference(refNbr);
-                            pubVars.SetInvtRemarks(remarks);
+                        pubVars.SetInvtReference(refNbr);
+                        pubVars.SetInvtRemarks(remarks);
 
-                            if(refNbr.equals("")) {
-                                Toast.makeText(getActivity(), "Please add a reference number or text", Toast.LENGTH_SHORT).show();
-                                dialog.dismiss();
+                        if(refNbr.equals("")) {
+                            Toast.makeText(getActivity(), "Please add a reference number or text", Toast.LENGTH_SHORT).show();
+                            dialog.dismiss();
+                        } else {
+                            if(invtFunc.InsertInventory(refNbr, remarks)) {
+                                log.InsertUserLog(  "Inventory",refNbr);
+                                invtFunc.ClearTempInventory();
+                                BarcodeList(lvInventoryList);
+                                invtFunc.GetToTQtyCs(tvTotCs);
+                                invtFunc.GetToTQtyPcs(tvTotPcs);
                             } else {
-                                if(invtFunc.InsertInventory(refNbr, remarks)) {
-                                    log.InsertUserLog(  "Inventory",refNbr);
-                                    invtFunc.ClearTempInventory();
-                                    BarcodeList(lvInventoryList);
-                                    invtFunc.GetToTQtyCs(tvTotCs);
-                                    invtFunc.GetToTQtyPcs(tvTotPcs);
-                                } else {
-                                    Toast.makeText(getActivity(), "Failed to save inventory", Toast.LENGTH_SHORT).show();
-                                }
+                                Toast.makeText(getActivity(), "Failed to save inventory", Toast.LENGTH_SHORT).show();
                             }
-                        })
-                        .setNegativeButton("CANCEL", null)
-                        .show();
+                        }
+                    })
+                    .setNegativeButton("CANCEL", null)
+                    .show();
         });
 
         return rootView;

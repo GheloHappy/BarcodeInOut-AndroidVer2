@@ -80,8 +80,7 @@ public class VanFunctions extends SqlCon {
         return data;
     }
     private boolean SyncVan(String tranDate){
-        if(warehouse.equals("Monheim") || warehouse.equals("Maryland") || warehouse.equals("Cebu"))
-        {
+
 //            try {
 //                if (con != null) {
 //                    String checkDtQuery = "SELECT DISTINCT RefNbr FROM barcodesys_VaNInventory  WHERE TranDate ='" + tranDate + "'";
@@ -137,7 +136,6 @@ public class VanFunctions extends SqlCon {
                 System.out.println(e.getMessage());
                 return false;
             }
-        }
         return  true;
     }
 

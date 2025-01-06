@@ -3,9 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Inventory.InventoryFragment"
+    tools:context=".BOInventory.BOInventoryFragment"
     android:background="@drawable/gradient_color">
-
 
     <RelativeLayout
         android:layout_width="wrap_content"
@@ -169,7 +168,5 @@
         android:outlineAmbientShadowColor="@color/black"
         android:clickable="true"
         android:focusable="true"/>
-
-
 
 </RelativeLayout>

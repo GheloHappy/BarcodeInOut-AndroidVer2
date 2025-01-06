@@ -1,4 +1,4 @@
-package com.monheim.barcode_inout_v2.Inventory;
+package com.monheim.barcode_inout_v2.BOInventory;
 
 import android.graphics.Color;
 import android.util.Log;
@@ -20,7 +20,7 @@ import java.util.Map;
 import MssqlCon.PublicVars;
 import MssqlCon.SqlCon;
 
-public class InventoryFunctions extends SqlCon {
+public class BOInventoryFunctions extends SqlCon {
     Connection con = SQLConnection();
     PublicVars pubVar = new PublicVars();
     String user = pubVar.GetUser();
@@ -28,7 +28,7 @@ public class InventoryFunctions extends SqlCon {
     public void InsertTempBarcode(String barcode, String uom, int qty, String solomonID) {
         try {
             if (con != null) {
-                String query = "INSERT INTO barcodesys_tempInventoryTrans VALUES ('"+barcode+ "','" + solomonID +"','" + uom +"','" + qty + "','" + user + "')";
+                String query = "INSERT INTO barcodesys_tempBOInventoryTrans VALUES ('"+barcode+ "','" + solomonID +"','" + uom +"','" + qty + "','" + user + "')";
                 Statement st = con.createStatement();
                 st.execute(query);
             }
@@ -46,8 +46,8 @@ public class InventoryFunctions extends SqlCon {
 
         try {
             if (con != null) {
-                String query = "INSERT INTO barcodesys_InventoryTrans SELECT barcode,solomonId,uom, qty, '" +
-                        currentDate + "','"+ currentTime + "','" + user + "',description,'" + refNbr +"','" + remarks +"' " + "FROM barcodesys_tempInventoryTransDetail WHERE username = '"+user+"'";
+                String query = "INSERT INTO barcodesys_BOInventoryTrans SELECT barcode,solomonId,uom, qty, '" +
+                        currentDate + "','"+ currentTime + "','" + user + "',description,'" + refNbr +"','" + remarks +"' " + "FROM barcodesys_tempBOInventoryTransDetail WHERE username = '"+user+"'";
                 Statement st = con.createStatement();
                 System.out.println(query);
                 st.execute(query);
@@ -151,7 +151,7 @@ public class InventoryFunctions extends SqlCon {
 
         try {
             if (con != null) {
-                String query = "SELECT * FROM barcodesys_tempInventoryTransDetail WHERE username = '" +user + "' ORDER BY solomonID ASC";
+                String query = "SELECT * FROM barcodesys_tempBOInventoryTransDetail WHERE username = '" +user + "' ORDER BY solomonID ASC";
                 Statement st = con.createStatement();
                 ResultSet rs = st.executeQuery(query);
                 while(rs.next()) {
@@ -174,7 +174,7 @@ public class InventoryFunctions extends SqlCon {
     public boolean DeleteItem(String barcode, String uom, String user) {
         try {
             if (con != null) {
-                String query = "DELETE FROM barcodesys_tempInventoryTrans WHERE barcode = '"+ barcode +"' AND username = '"+ user +"' AND UOM = '"+ uom + "' AND username = '"+ user + "'";
+                String query = "DELETE FROM barcodesys_tempBOInventoryTrans WHERE barcode = '"+ barcode +"' AND username = '"+ user +"' AND UOM = '"+ uom + "' AND username = '"+ user + "'";
                 Statement st = con.createStatement();
                 st.execute(query);
             }
@@ -187,7 +187,7 @@ public class InventoryFunctions extends SqlCon {
     public boolean UpdateItem(String barcode, int qty, String date) {
         try {
             if (con != null) {
-                String query = "Update barcodesys_InventoryTrans SET qty = '" + qty+ "' WHERE barcode = '"+ barcode +"' AND username = '"+ user +"'";
+                String query = "Update barcodesys_BOInventoryTrans SET qty = '" + qty+ "' WHERE barcode = '"+ barcode +"' AND username = '"+ user +"'";
                 Statement st = con.createStatement();
                 st.execute(query);
             }
@@ -201,7 +201,7 @@ public class InventoryFunctions extends SqlCon {
     public boolean CheckBarcode(String barcode, String date) {
         try {
             if (con != null) {
-                String query = "SELECT barcode FROM barcodesys_InventoryTrans WHERE barcode = '"+barcode+"' AND date = '"+ date +"'";
+                String query = "SELECT barcode FROM barcodesys_tempBOInventoryTrans WHERE barcode = '"+barcode+"' AND date = '"+ date +"'";
                 Statement st = con.createStatement();
                 ResultSet rs = st.executeQuery(query);
 
@@ -218,7 +218,7 @@ public class InventoryFunctions extends SqlCon {
     public void GetToTQtyCs(TextView tvTotCase) {
         try {
             if (con != null) {
-                String queryCS = "SELECT SUM(qty) as totCs FROM barcodesys_tempInventoryTransDetail WHERE Uom = 'CS' AND username = '"+user+"'";
+                String queryCS = "SELECT SUM(qty) as totCs FROM barcodesys_tempBOInventoryTransDetail WHERE Uom = 'CS' AND username = '"+user+"'";
                 Statement st = con.createStatement();
                 ResultSet rsCS = st.executeQuery(queryCS);
 
@@ -235,7 +235,7 @@ public class InventoryFunctions extends SqlCon {
     public void GetToTQtyPcs(TextView tvTotCase) {
         try {
             if (con != null) {
-                String queryCS = "SELECT SUM(qty) as totCs FROM barcodesys_tempInventoryTransDetail WHERE Uom = 'PCS' AND username = '"+user+"'";
+                String queryCS = "SELECT SUM(qty) as totCs FROM barcodesys_tempBOInventoryTransDetail WHERE Uom = 'PCS' AND username = '"+user+"'";
                 Statement st = con.createStatement();
                 ResultSet rsCS = st.executeQuery(queryCS);
 
@@ -253,7 +253,7 @@ public class InventoryFunctions extends SqlCon {
     public void ClearTempInventory(){
         try {
             if (con != null) {
-                String query = "DELETE FROM barcodesys_tempInventoryTrans WHERE username = '"+user+"'";
+                String query = "DELETE FROM barcodesys_tempBOInventoryTrans WHERE username = '"+user+"'";
                 Statement st = con.createStatement();
                 st.execute(query);
             }

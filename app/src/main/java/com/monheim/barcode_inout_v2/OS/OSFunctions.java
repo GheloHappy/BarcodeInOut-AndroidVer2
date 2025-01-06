@@ -77,13 +77,11 @@ public class OSFunctions extends SqlCon {
                 }
             }
         } catch (Exception e) {
-            System.out.println(e.getMessage() + "GetVanList");
+            System.out.println(e.getMessage() + "GetOsList");
         }
         return data;
     }
     private boolean SyncOs(String tranDate){
-        if(warehouse.equals("Monheim") || warehouse.equals("Maryland") || warehouse.equals("Cebu"))
-        {
 //            try {
 //                if (con != null) {
 //                    String checkDtQuery = "SELECT DISTINCT InvcNbr FROM barcodesys_OsInventory  WHERE InvcDate ='" + tranDate + "'";
@@ -139,7 +137,6 @@ public class OSFunctions extends SqlCon {
                 System.out.println(e.getMessage());
                 return false;
             }
-        }
         return  true;
     }
 

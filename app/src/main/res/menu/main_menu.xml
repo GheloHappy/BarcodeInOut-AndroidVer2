@@ -28,9 +28,15 @@
         <item android:id="@+id/inventory"
             android:icon="@drawable/ic_baseline_shopping_cart_24"
             android:title="Inventory"/>
+        <item android:id="@+id/boinventory"
+            android:icon="@drawable/ic_baseline_shopping_cart_24"
+            android:title="BO Inventory"/>
         <item android:id="@+id/viewInventory"
             android:icon="@drawable/ic_baseline_shopping_cart_24"
             android:title="View Inventory"/>
+        <item android:id="@+id/viewBOInventory"
+            android:icon="@drawable/ic_baseline_shopping_cart_24"
+            android:title="View BO Inventory"/>
         <item android:id="@+id/itemList"
             android:icon="@drawable/ic_baseline_shopping_cart_24"
             android:title="View Item Barcodes"/>
