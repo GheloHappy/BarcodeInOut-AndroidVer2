@@ -313,11 +313,13 @@ public class InventoryFragment extends Fragment {
                                 dialog.dismiss();
                             } else {
                                 if(invtFunc.InsertInventory(refNbr, remarks)) {
-                                    log.InsertUserLog(  "Inventory",refNbr);
+                                    //log.InsertUserLog(  "Inventory",refNbr);
                                     invtFunc.ClearTempInventory();
                                     BarcodeList(lvInventoryList);
                                     invtFunc.GetToTQtyCs(tvTotCs);
                                     invtFunc.GetToTQtyPcs(tvTotPcs);
+
+                                    Toast.makeText(getActivity(), "Inventory Saved", Toast.LENGTH_SHORT).show();
                                 } else {
                                     Toast.makeText(getActivity(), "Failed to save inventory", Toast.LENGTH_SHORT).show();
                                 }

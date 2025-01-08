@@ -25,10 +25,10 @@ public class BOInventoryFunctions extends SqlCon {
     PublicVars pubVar = new PublicVars();
     String user = pubVar.GetUser();
 
-    public void InsertTempBarcode(String barcode, String uom, int qty, String solomonID) {
+    public void InsertTempBarcode(String barcode, String uom, int qty, String solomonID, String reason) {
         try {
             if (con != null) {
-                String query = "INSERT INTO barcodesys_tempBOInventoryTrans VALUES ('"+barcode+ "','" + solomonID +"','" + uom +"','" + qty + "','" + user + "')";
+                String query = "INSERT INTO barcodesys_tempBOInventoryTrans VALUES ('"+barcode+ "','" + solomonID +"','" + uom +"','" + qty + "','" + user + "', '" + reason +"')";
                 Statement st = con.createStatement();
                 st.execute(query);
             }
@@ -47,7 +47,7 @@ public class BOInventoryFunctions extends SqlCon {
         try {
             if (con != null) {
                 String query = "INSERT INTO barcodesys_BOInventoryTrans SELECT barcode,solomonId,uom, qty, '" +
-                        currentDate + "','"+ currentTime + "','" + user + "',description,'" + refNbr +"','" + remarks +"' " + "FROM barcodesys_tempBOInventoryTransDetail WHERE username = '"+user+"'";
+                        currentDate + "','"+ currentTime + "','" + user + "',description,'" + refNbr +"','" + remarks +"', reason " + "FROM barcodesys_tempBOInventoryTransDetail WHERE username = '"+user+"'";
                 Statement st = con.createStatement();
                 System.out.println(query);
                 st.execute(query);
@@ -231,6 +231,32 @@ public class BOInventoryFunctions extends SqlCon {
         } catch (Exception e) {
             Log.e("Error", e.getMessage());
         }
+    }
+
+    public ArrayList<String> GetReasons() {
+        ArrayList<String> data = new ArrayList<>();
+
+        try {
+            if (con != null) {
+                String query;
+                query = "SELECT reason_desc FROM barcodesys_reasons ORDER By reason_desc asc";
+                Statement st = con.createStatement();
+                ResultSet rs = st.executeQuery(query);
+                if (!rs.isBeforeFirst()) {
+                    // If the result set is empty, add a message to the list
+                    data.add("No data found");
+                } else {
+                    // If the result set is not empty, loop through the rows and add them to the list
+                    while (rs.next()) {
+                        String reasons = rs.getString(1);
+                        data.add(reasons);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage() + " - GET Reason");
+        }
+        return data;
     }
     public void GetToTQtyPcs(TextView tvTotCase) {
         try {

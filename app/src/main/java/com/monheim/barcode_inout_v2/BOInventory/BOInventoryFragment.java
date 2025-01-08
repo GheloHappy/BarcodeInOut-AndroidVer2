@@ -10,6 +10,7 @@ import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 
 import android.text.InputType;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -18,6 +19,7 @@ import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -46,13 +48,14 @@ public class BOInventoryFragment extends Fragment {
     private Button btnSave;
 
     private TextView tvTotCs, tvTotPcs;
-    String currentDate, solomonID;
+    String currentDate, solomonID, reason_desc;
     SimpleAdapter simAd;
     BOInventoryFunctions invtFunc = new BOInventoryFunctions();
 
     BarcodeInOutFunctions barInOut = new BarcodeInOutFunctions();
     Logs log = new Logs();
     PublicVars pubVars = new PublicVars();
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -65,8 +68,15 @@ public class BOInventoryFragment extends Fragment {
         tvTotCs = rootView.findViewById(R.id.tvTotCs);
         tvTotPcs = rootView.findViewById(R.id.tvTotPcs);
         btnSave = rootView.findViewById(R.id.btnSave);
+        Spinner spinReason = rootView.findViewById(R.id.spinReason);
+        //TextView tvReason = rootView.findViewById(R.id.tvReason);
 
         String user = pubVars.GetUser();
+
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, invtFunc.GetReasons());
+        adapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
+        spinReason.setAdapter(adapter);
 
         Date c = Calendar.getInstance().getTime();
         SimpleDateFormat dfDate = new SimpleDateFormat("MM/dd/yyyy", Locale.getDefault());
@@ -91,6 +101,21 @@ public class BOInventoryFragment extends Fragment {
 //            public void onNothingSelected(AdapterView<?> parent) {
 //            }
 //        });
+
+        spinReason.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                reason_desc = parent.getItemAtPosition(position).toString();
+                spinReason.setSelection(position);
+                etInvtBarcode.requestFocus();
+                //tvReason.setText(reason_desc);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
 
         etInvtQty.setOnKeyListener((v, keyCode, event) -> {
             if ((event.getAction() == KeyEvent.ACTION_DOWN) &&
@@ -139,7 +164,7 @@ public class BOInventoryFragment extends Fragment {
                             if (Objects.equals(solomonID, "multi") || Objects.equals(solomonID, "")) {
                                 Toast.makeText(getActivity(), "Please select an item", Toast.LENGTH_SHORT).show();
                             } else {
-                                invtFunc.InsertTempBarcode(barcode, uom, qty, solomonID);
+                                invtFunc.InsertTempBarcode(barcode, uom, qty, solomonID, reason_desc);
 
                                 invtFunc.GetToTQtyCs(tvTotCs);
                                 invtFunc.GetToTQtyPcs(tvTotPcs);
@@ -199,7 +224,7 @@ public class BOInventoryFragment extends Fragment {
 
                         dialog.show();
                     } else {
-                        invtFunc.InsertTempBarcode(barcode, uom, qty, solomonID);
+                        invtFunc.InsertTempBarcode(barcode, uom, qty, solomonID, reason_desc);
 
                         invtFunc.GetToTQtyCs(tvTotCs);
                         invtFunc.GetToTQtyPcs(tvTotPcs);
@@ -313,11 +338,13 @@ public class BOInventoryFragment extends Fragment {
                             dialog.dismiss();
                         } else {
                             if(invtFunc.InsertInventory(refNbr, remarks)) {
-                                log.InsertUserLog(  "Inventory",refNbr);
+                                //log.InsertUserLog(  "Inventory",refNbr);
                                 invtFunc.ClearTempInventory();
                                 BarcodeList(lvInventoryList);
                                 invtFunc.GetToTQtyCs(tvTotCs);
                                 invtFunc.GetToTQtyPcs(tvTotPcs);
+
+                                Toast.makeText(getActivity(), "BO Inventory Saved", Toast.LENGTH_SHORT).show();
                             } else {
                                 Toast.makeText(getActivity(), "Failed to save inventory", Toast.LENGTH_SHORT).show();
                             }
