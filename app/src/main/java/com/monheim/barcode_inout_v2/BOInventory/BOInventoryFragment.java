@@ -315,10 +315,10 @@ public class BOInventoryFragment extends Fragment {
             layout.addView(etRefNbr);
             layout.addView(etRemarks);
 
-            SimpleDateFormat dateFormat = new SimpleDateFormat("MMddyy", Locale.getDefault());
-            String currentDateRef = "BO"+dateFormat.format(c);
+            //SimpleDateFormat dateFormat = new SimpleDateFormat("MMddyy", Locale.getDefault());
+            //String currentDateRef = "BO"+dateFormat.format(c);
 
-            etRefNbr.setText(currentDateRef);
+            //etRefNbr.setText(currentDateRef);
             etRefNbr.setEnabled(false);
             etRemarks.setText(pubVars.GetInvtRemarks());
 
@@ -327,8 +327,9 @@ public class BOInventoryFragment extends Fragment {
                     .setTitle("Input reference number")
                     .setView(layout)
                     .setPositiveButton("Yes",(dialog, which) -> {
-                        String refNbr = currentDateRef;
+                        //String refNbr = currentDateRef;
                         String remarks = etRemarks.getText().toString();
+                        String refNbr = etRefNbr.getText().toString();
 
                         pubVars.SetInvtReference(refNbr);
                         pubVars.SetInvtRemarks(remarks);
