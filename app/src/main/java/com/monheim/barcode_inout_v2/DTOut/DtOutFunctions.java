@@ -233,7 +233,7 @@ public class DtOutFunctions {
         return true;
     }
     private boolean SyncDT(String date){
-        if(warehouse.equals("Monheim") || warehouse.equals("Maryland") || warehouse.equals("Default"))
+        if(warehouse.equals("Monheim") || warehouse.equals("Maryland"))
         {
 //            try {
 //                if (con != null) {
